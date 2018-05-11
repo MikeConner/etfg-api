@@ -45,7 +45,8 @@ group :development do
 end
 
 group :test do
-  gem 'factory_girl_rails', '4.9.0'
+  gem 'factory_bot_rails', '4.8.2'
   gem 'rspec-tag_matchers', '0.1.2'
   gem 'rspec-its', '1.2.0'
+  gem 'airborne', '0.2.13'
 end
