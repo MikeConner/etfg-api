@@ -1,0 +1,2 @@
+class FundFlowsController < ApplicationController
+end

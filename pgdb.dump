@@ -1,0 +1,1039 @@
+--
+-- PostgreSQL database dump
+--
+
+SET statement_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+--
+-- Name: api; Type: SCHEMA; Schema: -; Owner: etfg
+--
+
+CREATE SCHEMA api;
+
+
+ALTER SCHEMA api OWNER TO etfg;
+
+--
+-- Name: public_bak0; Type: SCHEMA; Schema: -; Owner: postgres
+--
+
+CREATE SCHEMA public_bak0;
+
+
+ALTER SCHEMA public_bak0 OWNER TO postgres;
+
+--
+-- Name: SCHEMA public_bak0; Type: COMMENT; Schema: -; Owner: postgres
+--
+
+COMMENT ON SCHEMA public_bak0 IS 'standard public schema';
+
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = api, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: analytics; Type: TABLE; Schema: api; Owner: etfg; Tablespace: 
+--
+
+CREATE TABLE analytics (
+    run_date date NOT NULL,
+    composite_ticker character varying(8) NOT NULL,
+    risk_total_score numeric(16,4),
+    risk_volatility numeric(16,4),
+    risk_deviation numeric(16,4),
+    risk_country numeric(16,4),
+    risk_structure numeric(16,4),
+    risk_liquidity numeric(16,4),
+    risk_efficiency numeric(16,4),
+    reward_score numeric(16,4),
+    quant_total_score numeric(16,4),
+    quant_tech_st numeric(16,4),
+    quant_tech_it numeric(16,4),
+    quant_tech_lt numeric(16,4),
+    quant_technical numeric(16,4),
+    quant_sent_pc numeric(16,4),
+    quant_sent_si numeric(16,4),
+    quant_sent_iv numeric(16,4),
+    quant_sentiment numeric(16,4),
+    quant_behavioral numeric(16,4),
+    quant_fund_pe numeric(16,4),
+    quant_fund_pcf numeric(16,4),
+    quant_fund_pb numeric(16,4),
+    quant_fund_div numeric(16,4),
+    quant_fundamental numeric(16,4),
+    quant_global_sector numeric(16,4),
+    quant_global_country numeric(16,4),
+    quant_global_theme numeric(16,4),
+    quant_quality_liq numeric(16,4),
+    quant_quality_div numeric(16,4),
+    quant_quality_firm numeric(16,4),
+    quant_quality numeric(16,4),
+    quant_grade character varying(1)
+);
+
+
+ALTER TABLE api.analytics OWNER TO etfg;
+
+--
+-- Name: constituents; Type: TABLE; Schema: api; Owner: etfg; Tablespace: 
+--
+
+CREATE TABLE constituents (
+    run_date date,
+    composite_ticker character varying(8),
+    identifier character varying(32),
+    constituent_name character varying(255),
+    weight numeric(10,6),
+    market_value numeric(20,6),
+    cusip character varying(24),
+    isin character varying(16),
+    figi character varying(16),
+    sedol character varying(16),
+    country character varying(32),
+    exchange character varying(16),
+    total_shares_held numeric(18,4),
+    market_sector character varying(128),
+    security_type character varying(128)
+);
+
+
+ALTER TABLE api.constituents OWNER TO etfg;
+
+--
+-- Name: exposures; Type: TABLE; Schema: api; Owner: etfg; Tablespace: 
+--
+
+CREATE TABLE exposures (
+    date date,
+    ticker character varying(128),
+    type character varying(32),
+    exposure text
+);
+
+
+ALTER TABLE api.exposures OWNER TO etfg;
+
+--
+-- Name: fundflows; Type: TABLE; Schema: api; Owner: etfg; Tablespace: 
+--
+
+CREATE TABLE fundflows (
+    run_date date,
+    composite_ticker character varying(8),
+    shares numeric(14,2),
+    nav numeric(14,6),
+    value numeric(20,6)
+);
+
+
+ALTER TABLE api.fundflows OWNER TO etfg;
+
+--
+-- Name: industry; Type: TABLE; Schema: api; Owner: etfg; Tablespace: 
+--
+
+CREATE TABLE industry (
+    run_date date,
+    composite_ticker character varying(8),
+    issuer character varying(32),
+    name character varying(128),
+    inceptiondate date,
+    related_index character varying(128),
+    tax_classification character varying(32),
+    is_etn integer,
+    fund_aum numeric(24,6),
+    avg_volume character varying(10),
+    asset_class character varying(32),
+    category character varying(32),
+    focus character varying(32),
+    development_level character varying(32),
+    region character varying(32),
+    is_leveraged integer,
+    leverage_factor character varying(16),
+    active integer,
+    administrator character varying(64),
+    advisor character varying(64),
+    custodian character varying(128),
+    distributor character varying(128),
+    portfolio_manager character varying(256),
+    subadvisor character varying(128),
+    transfer_agent character varying(64),
+    trustee character varying(64),
+    futures_commission_merchant character varying(128),
+    fiscal_year_end character varying(16),
+    distribution_frequency character varying(1),
+    listing_exchange character varying(64),
+    creation_unit_size numeric(12,0),
+    creation_fee numeric(8,0),
+    geographic_exposure text,
+    currency_exposure text,
+    sector_exposure text,
+    industry_group_exposure text,
+    industry_exposure text,
+    subindustry_exposure text,
+    coupon_exposure text,
+    maturity_exposure text,
+    option_available integer,
+    option_volume character varying(16),
+    short_interest numeric(12,0),
+    put_call_ratio character varying(32),
+    num_constituents numeric(6,0),
+    discount_premium numeric(8,2),
+    bid_ask_spread numeric(16,12),
+    put_vol character varying(14),
+    call_vol character varying(14),
+    management_fee numeric(12,4),
+    other_expenses numeric(12,4),
+    total_expenses numeric(12,4),
+    fee_waivers numeric(12,4),
+    net_expenses numeric(12,4),
+    lead_market_maker character varying(64)
+);
+
+
+ALTER TABLE api.industry OWNER TO etfg;
+
+SET search_path = public, pg_catalog;
+
+--
+-- Name: derivative_mapping; Type: TABLE; Schema: public; Owner: etfg; Tablespace: 
+--
+
+CREATE TABLE derivative_mapping (
+    exch_code character varying(8),
+    exch_name character varying(30)
+);
+
+
+ALTER TABLE public.derivative_mapping OWNER TO etfg;
+
+--
+-- Name: df; Type: TABLE; Schema: public; Owner: etfg; Tablespace: 
+--
+
+CREATE TABLE df (
+    df_sponsor character varying(255),
+    df_composite_ticker character varying(255),
+    df_composite_name character varying(255),
+    df_sedol character varying(255),
+    df_constituent_name character varying(255),
+    df_weighting character varying(255),
+    df_identifier character varying(255),
+    df_date character varying(255),
+    df_location character varying(255),
+    df_exchange character varying(255),
+    df_total_shares_held character varying(255),
+    df_notional_value character varying(255),
+    df_market_value character varying(255),
+    df_sponsor_sector character varying(255),
+    df_last_trade character varying(255),
+    df_currency character varying(255),
+    df_bloombergsymbol character varying(255),
+    df_bloombergexchange character varying(255),
+    df_bloombergsector character varying(255),
+    df_bloombergindustrygroup character varying(255),
+    df_coupon character varying(255),
+    df_maturity character varying(255),
+    df_rating character varying(255),
+    df_type character varying(255),
+    df_sharesoutstanding character varying(255),
+    df_marketcap character varying(255),
+    df_earnings character varying(255),
+    df_pe_ratio character varying(255),
+    df_face character varying(255),
+    df_esignalticker character varying(255),
+    df_timezone character varying(255),
+    df_dividendamt character varying(255),
+    df_lastdividenddate character varying(255),
+    df_dividendyield character varying(255),
+    df_ric character varying(255),
+    df_sector character varying(255),
+    df_industrygroup character varying(255),
+    df_industry character varying(255),
+    df_subindustry character varying(255),
+    df_cusip character varying(255),
+    df_isin character varying(255),
+    df_figi character varying(255)
+);
+
+
+ALTER TABLE public.df OWNER TO etfg;
+
+--
+-- Name: df_ssc; Type: TABLE; Schema: public; Owner: etfg; Tablespace: 
+--
+
+CREATE TABLE df_ssc (
+    df_sponsor character varying(255),
+    df_composite_ticker character varying(255),
+    df_composite_name character varying(255),
+    df_sedol character varying(255),
+    df_constituent_name character varying(255),
+    df_weighting character varying(255),
+    df_identifier character varying(255),
+    df_date character varying(255),
+    df_location character varying(255),
+    df_exchange character varying(255),
+    df_total_shares_held character varying(255),
+    df_notional_value character varying(255),
+    df_market_value character varying(255),
+    df_sponsor_sector character varying(255),
+    df_last_trade character varying(255),
+    df_currency character varying(255),
+    df_bloombergsymbol character varying(255),
+    df_bloombergexchange character varying(255),
+    df_bloombergsector character varying(255),
+    df_bloombergindustrygroup character varying(255),
+    df_coupon character varying(255),
+    df_maturity character varying(255),
+    df_rating character varying(255),
+    df_type character varying(255),
+    df_sharesoutstanding character varying(255),
+    df_marketcap character varying(255),
+    df_earnings character varying(255),
+    df_pe_ratio character varying(255),
+    df_face character varying(255),
+    df_esignalticker character varying(255),
+    df_timezone character varying(255),
+    df_dividendamt character varying(255),
+    df_lastdividenddate character varying(255),
+    df_dividendyield character varying(255),
+    df_ric character varying(255),
+    df_sector character varying(255),
+    df_industrygroup character varying(255),
+    df_industry character varying(255),
+    df_subindustry character varying(255),
+    df_cusip character varying(255),
+    df_isin character varying(255),
+    df_figi character varying(255)
+);
+
+
+ALTER TABLE public.df_ssc OWNER TO etfg;
+
+--
+-- Name: etp_data; Type: TABLE; Schema: public; Owner: etfg; Tablespace: 
+--
+
+CREATE TABLE etp_data (
+    shares_outstanding numeric(24,0),
+    nav numeric(12,2),
+    ticker character varying(20),
+    date date
+);
+
+
+ALTER TABLE public.etp_data OWNER TO etfg;
+
+--
+-- Name: exchanges; Type: TABLE; Schema: public; Owner: etfg; Tablespace: 
+--
+
+CREATE TABLE exchanges (
+    name character varying(255),
+    cusip character varying(255),
+    figi character varying(255),
+    isin character varying(255),
+    sedol character varying(255),
+    country character varying(255),
+    exchange character varying(255)
+);
+
+
+ALTER TABLE public.exchanges OWNER TO etfg;
+
+--
+-- Name: id_xfer; Type: TABLE; Schema: public; Owner: etfg; Tablespace: 
+--
+
+CREATE TABLE id_xfer (
+    composite_ticker character varying(32),
+    constituent_name character varying(255),
+    cusip character varying(32),
+    figi character varying(32),
+    isin character varying(32),
+    sedol character varying(32),
+    exchange_code character varying(64),
+    exchange_name character varying(128),
+    iso_country character varying(128),
+    market_sector character varying(128),
+    security_type character varying(128),
+    currency character varying(3),
+    ticker character varying(20)
+);
+
+
+ALTER TABLE public.id_xfer OWNER TO etfg;
+
+--
+-- Name: md; Type: TABLE; Schema: public; Owner: etfg; Tablespace: 
+--
+
+CREATE TABLE md (
+    md_sponsor character varying(255),
+    md_composite_ticker character varying(255),
+    md_composite_name character varying(255),
+    md_sedol character varying(255),
+    md_constituent_name character varying(255),
+    md_weighting character varying(255),
+    md_identifier character varying(255),
+    md_date character varying(255),
+    md_location character varying(255),
+    md_exchange character varying(255),
+    md_total_shares_held character varying(255),
+    md_notional_value character varying(255),
+    md_market_value character varying(255),
+    md_sponsor_sector character varying(255),
+    md_last_trade character varying(255),
+    md_currency character varying(255),
+    md_bloombergsymbol character varying(255),
+    md_bloombergexchange character varying(255),
+    md_bloombergsector character varying(255),
+    md_bloombergindustrygroup character varying(255),
+    md_coupon character varying(255),
+    md_maturity character varying(255),
+    md_rating character varying(255),
+    md_type character varying(255),
+    md_sharesoutstanding character varying(255),
+    md_marketcap character varying(255),
+    md_earnings character varying(255),
+    md_pe_ratio character varying(255),
+    md_face character varying(255),
+    md_esignalticker character varying(255),
+    md_timezone character varying(255),
+    md_dividendamt character varying(255),
+    md_lastdividenddate character varying(255),
+    md_dividendyield character varying(255),
+    md_ric character varying(255),
+    md_sector character varying(255),
+    md_industrygroup character varying(255),
+    md_industry character varying(255),
+    md_subindustry character varying(255),
+    md_isin character varying(255),
+    md_cusip character varying(255),
+    md_figi character varying(255)
+);
+
+
+ALTER TABLE public.md OWNER TO etfg;
+
+--
+-- Name: md2; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE md2 (
+    md_sponsor character varying(255),
+    md_composite_ticker character varying(255),
+    md_composite_name character varying(255),
+    md_constituent_ticker character varying(255),
+    md_constituent_name character varying(255),
+    md_weighting character varying(255),
+    md_identifier character varying(255),
+    md_date character varying(255),
+    md_location character varying(255),
+    md_exchange character varying(255),
+    md_total_shares_held character varying(255),
+    md_notional_value character varying(255),
+    md_market_value character varying(255),
+    md_sponsor_sector character varying(255),
+    md_last_trade character varying(255),
+    md_currency character varying(255),
+    md_bloombergsymbol character varying(255),
+    md_bloombergexchange character varying(255),
+    md_bloombergsector character varying(255),
+    md_bloombergindustrygroup character varying(255),
+    md_coupon character varying(255),
+    md_maturity character varying(255),
+    md_rating character varying(255),
+    md_type character varying(255),
+    md_sharesoutstanding character varying(255),
+    md_marketcap character varying(255),
+    md_earnings character varying(255),
+    md_pe_ratio character varying(255),
+    md_face character varying(255),
+    md_esignalticker character varying(255),
+    md_timezone character varying(255),
+    md_dividendamt character varying(255),
+    md_lastdividenddate character varying(255),
+    md_dividendyield character varying(255),
+    md_ric character varying(255),
+    md_sector character varying(255),
+    md_industrygroup character varying(255),
+    md_industry character varying(255),
+    md_subindustry character varying(255),
+    md_isin character varying(255),
+    md_cusip character varying(255),
+    md_sedol character varying(255)
+);
+
+
+ALTER TABLE public.md2 OWNER TO postgres;
+
+--
+-- Name: mic_mapping; Type: TABLE; Schema: public; Owner: etfg; Tablespace: 
+--
+
+CREATE TABLE mic_mapping (
+    mic character varying(8),
+    operating_mic character varying(8),
+    mic_exchange_name character varying(128),
+    corp_exchange character varying(24),
+    equity_exch_code character varying(8),
+    equity_exch_name character varying(24),
+    composite_code character varying(24),
+    iso_country character varying(8)
+);
+
+
+ALTER TABLE public.mic_mapping OWNER TO etfg;
+
+--
+-- Name: openfigi; Type: TABLE; Schema: public; Owner: etfg; Tablespace: 
+--
+
+CREATE TABLE openfigi (
+    figi character varying(16),
+    security_type character varying(128),
+    market_sector character varying(8),
+    ticker character varying(32),
+    name character varying(32),
+    unique_id character varying(24),
+    exch_code character varying(16),
+    share_class_figi character varying(16),
+    composite_figi character varying(16),
+    security_type2 character varying(24),
+    security_description character varying(32),
+    unique_id_fut_opt character varying(64)
+);
+
+
+ALTER TABLE public.openfigi OWNER TO etfg;
+
+--
+-- Name: sector_xref; Type: TABLE; Schema: public; Owner: etfg; Tablespace: 
+--
+
+CREATE TABLE sector_xref (
+    figi character varying(32),
+    isin character varying(32),
+    cusip character varying(32),
+    sedol character varying(32),
+    sector character varying(255),
+    industry character varying(255),
+    subindustry character varying(255),
+    industrygroup character varying(255)
+);
+
+
+ALTER TABLE public.sector_xref OWNER TO etfg;
+
+--
+-- Name: ssc_xfer; Type: TABLE; Schema: public; Owner: etfg; Tablespace: 
+--
+
+CREATE TABLE ssc_xfer (
+    id character varying(32) NOT NULL,
+    name character varying(255),
+    ticker character varying(32)
+);
+
+
+ALTER TABLE public.ssc_xfer OWNER TO etfg;
+
+--
+-- Name: wrds_export; Type: TABLE; Schema: public; Owner: etfg; Tablespace: 
+--
+
+CREATE TABLE wrds_export (
+    run_date date,
+    composite_ticker character varying(32),
+    identifier character varying(32),
+    constituent_name character varying(255),
+    weighting numeric(20,6),
+    market_value numeric(20,6),
+    cusip character varying(32),
+    isin character varying(32),
+    figi character varying(32),
+    exchange_name character varying(128),
+    total_shares_held numeric(20,4),
+    sedol_2 character varying(32),
+    iso_country character varying(32),
+    market_sector character varying(128),
+    security_type character varying(128)
+);
+
+
+ALTER TABLE public.wrds_export OWNER TO etfg;
+
+SET search_path = public_bak0, pg_catalog;
+
+--
+-- Name: df; Type: TABLE; Schema: public_bak0; Owner: etfg; Tablespace: 
+--
+
+CREATE TABLE df (
+    df_sponsor character varying(255),
+    df_composite_ticker character varying(255),
+    df_composite_name character varying(255),
+    df_sedol character varying(255),
+    df_constituent_name character varying(255),
+    df_weighting character varying(255),
+    df_identifier character varying(255),
+    df_date character varying(255),
+    df_location character varying(255),
+    df_exchange character varying(255),
+    df_total_shares_held character varying(255),
+    df_notional_value character varying(255),
+    df_market_value character varying(255),
+    df_sponsor_sector character varying(255),
+    df_last_trade character varying(255),
+    df_currency character varying(255),
+    df_bloombergsymbol character varying(255),
+    df_bloombergexchange character varying(255),
+    df_bloombergsector character varying(255),
+    df_bloombergindustrygroup character varying(255),
+    df_coupon character varying(255),
+    df_maturity character varying(255),
+    df_rating character varying(255),
+    df_type character varying(255),
+    df_sharesoutstanding character varying(255),
+    df_marketcap character varying(255),
+    df_earnings character varying(255),
+    df_pe_ratio character varying(255),
+    df_face character varying(255),
+    df_esignalticker character varying(255),
+    df_timezone character varying(255),
+    df_dividendamt character varying(255),
+    df_lastdividenddate character varying(255),
+    df_dividendyield character varying(255),
+    df_ric character varying(255),
+    df_sector character varying(255),
+    df_industrygroup character varying(255),
+    df_industry character varying(255),
+    df_subindustry character varying(255),
+    df_isin character varying(255),
+    df_cusip character varying(255),
+    df_figi character varying(255)
+);
+
+
+ALTER TABLE public_bak0.df OWNER TO etfg;
+
+--
+-- Name: exchanges; Type: TABLE; Schema: public_bak0; Owner: etfg; Tablespace: 
+--
+
+CREATE TABLE exchanges (
+    name character varying(255),
+    cusip character varying(255),
+    figi character varying(255),
+    isin character varying(255),
+    sedol character varying(255),
+    country character varying(255),
+    exchange character varying(255)
+);
+
+
+ALTER TABLE public_bak0.exchanges OWNER TO etfg;
+
+--
+-- Name: id_xfer; Type: TABLE; Schema: public_bak0; Owner: etfg; Tablespace: 
+--
+
+CREATE TABLE id_xfer (
+    composite_ticker character varying(32),
+    constituent_name character varying(255),
+    cusip character varying(32),
+    figi character varying(32),
+    isin character varying(32),
+    sedol character varying(32),
+    country character varying(64),
+    exchange character varying(64)
+);
+
+
+ALTER TABLE public_bak0.id_xfer OWNER TO etfg;
+
+--
+-- Name: md; Type: TABLE; Schema: public_bak0; Owner: etfg; Tablespace: 
+--
+
+CREATE TABLE md (
+    md_sponsor character varying(255),
+    md_composite_ticker character varying(255),
+    md_composite_name character varying(255),
+    md_sedol character varying(255),
+    md_constituent_name character varying(255),
+    md_weighting character varying(255),
+    md_identifier character varying(255),
+    md_date character varying(255),
+    md_location character varying(255),
+    md_exchange character varying(255),
+    md_total_shares_held character varying(255),
+    md_notional_value character varying(255),
+    md_market_value character varying(255),
+    md_sponsor_sector character varying(255),
+    md_last_trade character varying(255),
+    md_currency character varying(255),
+    md_bloombergsymbol character varying(255),
+    md_bloombergexchange character varying(255),
+    md_bloombergsector character varying(255),
+    md_bloombergindustrygroup character varying(255),
+    md_coupon character varying(255),
+    md_maturity character varying(255),
+    md_rating character varying(255),
+    md_type character varying(255),
+    md_sharesoutstanding character varying(255),
+    md_marketcap character varying(255),
+    md_earnings character varying(255),
+    md_pe_ratio character varying(255),
+    md_face character varying(255),
+    md_esignalticker character varying(255),
+    md_timezone character varying(255),
+    md_dividendamt character varying(255),
+    md_lastdividenddate character varying(255),
+    md_dividendyield character varying(255),
+    md_ric character varying(255),
+    md_sector character varying(255),
+    md_industrygroup character varying(255),
+    md_industry character varying(255),
+    md_subindustry character varying(255),
+    md_isin character varying(255),
+    md_cusip character varying(255),
+    md_figi character varying(255)
+);
+
+
+ALTER TABLE public_bak0.md OWNER TO etfg;
+
+--
+-- Name: md2; Type: TABLE; Schema: public_bak0; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE md2 (
+    md_sponsor character varying(255),
+    md_composite_ticker character varying(255),
+    md_composite_name character varying(255),
+    md_constituent_ticker character varying(255),
+    md_constituent_name character varying(255),
+    md_weighting character varying(255),
+    md_identifier character varying(255),
+    md_date character varying(255),
+    md_location character varying(255),
+    md_exchange character varying(255),
+    md_total_shares_held character varying(255),
+    md_notional_value character varying(255),
+    md_market_value character varying(255),
+    md_sponsor_sector character varying(255),
+    md_last_trade character varying(255),
+    md_currency character varying(255),
+    md_bloombergsymbol character varying(255),
+    md_bloombergexchange character varying(255),
+    md_bloombergsector character varying(255),
+    md_bloombergindustrygroup character varying(255),
+    md_coupon character varying(255),
+    md_maturity character varying(255),
+    md_rating character varying(255),
+    md_type character varying(255),
+    md_sharesoutstanding character varying(255),
+    md_marketcap character varying(255),
+    md_earnings character varying(255),
+    md_pe_ratio character varying(255),
+    md_face character varying(255),
+    md_esignalticker character varying(255),
+    md_timezone character varying(255),
+    md_dividendamt character varying(255),
+    md_lastdividenddate character varying(255),
+    md_dividendyield character varying(255),
+    md_ric character varying(255),
+    md_sector character varying(255),
+    md_industrygroup character varying(255),
+    md_industry character varying(255),
+    md_subindustry character varying(255),
+    md_isin character varying(255),
+    md_cusip character varying(255),
+    md_sedol character varying(255)
+);
+
+
+ALTER TABLE public_bak0.md2 OWNER TO postgres;
+
+--
+-- Name: wrds_export; Type: TABLE; Schema: public_bak0; Owner: etfg; Tablespace: 
+--
+
+CREATE TABLE wrds_export (
+    run_date date,
+    composite_ticker character varying(32),
+    identifier character varying(32),
+    constituent_name character varying(255),
+    weighting numeric(20,6),
+    market_value numeric(20,6),
+    cusip character varying(32),
+    isin character varying(32),
+    figi character varying(32),
+    exchange character varying(32),
+    total_shares_held numeric(20,4),
+    sedol character varying(32),
+    country character varying(32)
+);
+
+
+ALTER TABLE public_bak0.wrds_export OWNER TO etfg;
+
+SET search_path = api, pg_catalog;
+
+--
+-- Name: analytics_run_date_composite_ticker_pk; Type: CONSTRAINT; Schema: api; Owner: etfg; Tablespace: 
+--
+
+ALTER TABLE ONLY analytics
+    ADD CONSTRAINT analytics_run_date_composite_ticker_pk PRIMARY KEY (run_date, composite_ticker);
+
+
+--
+-- Name: fundflows_run_date_composite_ticker_pk; Type: CONSTRAINT; Schema: api; Owner: etfg; Tablespace: 
+--
+
+ALTER TABLE ONLY fundflows
+    ADD CONSTRAINT fundflows_run_date_composite_ticker_pk UNIQUE (run_date, composite_ticker);
+
+
+SET search_path = public, pg_catalog;
+
+--
+-- Name: etp_data_date_ticker_pk; Type: CONSTRAINT; Schema: public; Owner: etfg; Tablespace: 
+--
+
+ALTER TABLE ONLY etp_data
+    ADD CONSTRAINT etp_data_date_ticker_pk UNIQUE (date, ticker);
+
+
+--
+-- Name: ssc_xfer_pkey; Type: CONSTRAINT; Schema: public; Owner: etfg; Tablespace: 
+--
+
+ALTER TABLE ONLY ssc_xfer
+    ADD CONSTRAINT ssc_xfer_pkey PRIMARY KEY (id);
+
+
+SET search_path = api, pg_catalog;
+
+--
+-- Name: constituents_run_date_composite_ticker_index; Type: INDEX; Schema: api; Owner: etfg; Tablespace: 
+--
+
+CREATE INDEX constituents_run_date_composite_ticker_index ON constituents USING btree (run_date, composite_ticker);
+
+
+--
+-- Name: industry_run_date_composite_ticker_index; Type: INDEX; Schema: api; Owner: etfg; Tablespace: 
+--
+
+CREATE INDEX industry_run_date_composite_ticker_index ON industry USING btree (run_date, composite_ticker);
+
+
+SET search_path = public, pg_catalog;
+
+--
+-- Name: cusip_xfer__index; Type: INDEX; Schema: public; Owner: etfg; Tablespace: 
+--
+
+CREATE INDEX cusip_xfer__index ON id_xfer USING btree (cusip);
+
+
+--
+-- Name: derivative_mapping_exch_code_index; Type: INDEX; Schema: public; Owner: etfg; Tablespace: 
+--
+
+CREATE INDEX derivative_mapping_exch_code_index ON derivative_mapping USING btree (exch_code);
+
+
+--
+-- Name: df_composite_ticker_idx; Type: INDEX; Schema: public; Owner: etfg; Tablespace: 
+--
+
+CREATE INDEX df_composite_ticker_idx ON df USING btree (df_composite_ticker);
+
+
+--
+-- Name: figi_openfigi_index; Type: INDEX; Schema: public; Owner: etfg; Tablespace: 
+--
+
+CREATE INDEX figi_openfigi_index ON openfigi USING btree (figi);
+
+
+--
+-- Name: figi_xfer__index; Type: INDEX; Schema: public; Owner: etfg; Tablespace: 
+--
+
+CREATE INDEX figi_xfer__index ON id_xfer USING btree (figi);
+
+
+--
+-- Name: isin_xfer__index; Type: INDEX; Schema: public; Owner: etfg; Tablespace: 
+--
+
+CREATE INDEX isin_xfer__index ON id_xfer USING btree (isin);
+
+
+--
+-- Name: md_composite_ticker_idx; Type: INDEX; Schema: public; Owner: etfg; Tablespace: 
+--
+
+CREATE INDEX md_composite_ticker_idx ON md USING btree (md_composite_ticker);
+
+
+--
+-- Name: mic_mapping_composite_code_index; Type: INDEX; Schema: public; Owner: etfg; Tablespace: 
+--
+
+CREATE INDEX mic_mapping_composite_code_index ON mic_mapping USING btree (composite_code);
+
+
+--
+-- Name: mic_mapping_equity_exch_code_index; Type: INDEX; Schema: public; Owner: etfg; Tablespace: 
+--
+
+CREATE INDEX mic_mapping_equity_exch_code_index ON mic_mapping USING btree (equity_exch_code);
+
+
+--
+-- Name: sector_xref_cusip_uindex; Type: INDEX; Schema: public; Owner: etfg; Tablespace: 
+--
+
+CREATE UNIQUE INDEX sector_xref_cusip_uindex ON sector_xref USING btree (cusip);
+
+
+--
+-- Name: sector_xref_figi_uindex; Type: INDEX; Schema: public; Owner: etfg; Tablespace: 
+--
+
+CREATE UNIQUE INDEX sector_xref_figi_uindex ON sector_xref USING btree (figi);
+
+
+--
+-- Name: sector_xref_isin_uindex; Type: INDEX; Schema: public; Owner: etfg; Tablespace: 
+--
+
+CREATE UNIQUE INDEX sector_xref_isin_uindex ON sector_xref USING btree (isin);
+
+
+--
+-- Name: sector_xref_sedol_uindex; Type: INDEX; Schema: public; Owner: etfg; Tablespace: 
+--
+
+CREATE UNIQUE INDEX sector_xref_sedol_uindex ON sector_xref USING btree (sedol);
+
+
+--
+-- Name: sedol_xfer__index; Type: INDEX; Schema: public; Owner: etfg; Tablespace: 
+--
+
+CREATE INDEX sedol_xfer__index ON id_xfer USING btree (sedol);
+
+
+--
+-- Name: vanguard_xfer__index; Type: INDEX; Schema: public; Owner: etfg; Tablespace: 
+--
+
+CREATE INDEX vanguard_xfer__index ON id_xfer USING btree (composite_ticker, constituent_name);
+
+
+SET search_path = public_bak0, pg_catalog;
+
+--
+-- Name: cusip_xfer__index; Type: INDEX; Schema: public_bak0; Owner: etfg; Tablespace: 
+--
+
+CREATE INDEX cusip_xfer__index ON id_xfer USING btree (cusip);
+
+
+--
+-- Name: df_composite_ticker_idx; Type: INDEX; Schema: public_bak0; Owner: etfg; Tablespace: 
+--
+
+CREATE INDEX df_composite_ticker_idx ON df USING btree (df_composite_ticker);
+
+
+--
+-- Name: figi_xfer__index; Type: INDEX; Schema: public_bak0; Owner: etfg; Tablespace: 
+--
+
+CREATE INDEX figi_xfer__index ON id_xfer USING btree (figi);
+
+
+--
+-- Name: isin_xfer__index; Type: INDEX; Schema: public_bak0; Owner: etfg; Tablespace: 
+--
+
+CREATE INDEX isin_xfer__index ON id_xfer USING btree (isin);
+
+
+--
+-- Name: md_composite_ticker_index; Type: INDEX; Schema: public_bak0; Owner: etfg; Tablespace: 
+--
+
+CREATE INDEX md_composite_ticker_index ON md USING btree (md_composite_ticker);
+
+
+--
+-- Name: sedol_xfer__index; Type: INDEX; Schema: public_bak0; Owner: etfg; Tablespace: 
+--
+
+CREATE INDEX sedol_xfer__index ON id_xfer USING btree (sedol);
+
+
+--
+-- Name: vanguard_xfer__index; Type: INDEX; Schema: public_bak0; Owner: etfg; Tablespace: 
+--
+
+CREATE INDEX vanguard_xfer__index ON id_xfer USING btree (composite_ticker, constituent_name);
+
+
+--
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- Name: public_bak0; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public_bak0 FROM PUBLIC;
+REVOKE ALL ON SCHEMA public_bak0 FROM postgres;
+GRANT ALL ON SCHEMA public_bak0 TO postgres;
+GRANT ALL ON SCHEMA public_bak0 TO PUBLIC;
+
+
+--
+-- PostgreSQL database dump complete
+--
+
