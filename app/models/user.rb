@@ -20,6 +20,12 @@ class User < ApplicationRecord
   devise :database_authenticatable, :trackable, :validatable
   
   validates :username, :uniqueness => { :case_sensitive => false }, :presence => true, :allow_blank => false
+
+  has_and_belongs_to_many :actions
+  
+  def has_permission(enum)
+    actions.map(&:description).include?(enum.to_s)
+  end
   
   # Need to turn off email
   def email_required?

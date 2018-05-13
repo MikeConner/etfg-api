@@ -10,10 +10,34 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_12_215007) do
+ActiveRecord::Schema.define(version: 2018_05_13_172307) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "action_categories", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_action_categories_on_name", unique: true
+  end
+
+  create_table "actions", force: :cascade do |t|
+    t.bigint "action_category_id"
+    t.integer "description", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["action_category_id"], name: "index_actions_on_action_category_id"
+    t.index ["description"], name: "index_actions_on_description", unique: true
+  end
+
+  create_table "actions_users", id: false, force: :cascade do |t|
+    t.bigint "action_id"
+    t.bigint "user_id"
+    t.index ["action_id", "user_id"], name: "index_actions_users_on_action_id_and_user_id", unique: true
+    t.index ["action_id"], name: "index_actions_users_on_action_id"
+    t.index ["user_id"], name: "index_actions_users_on_user_id"
+  end
 
   create_table "analytics", force: :cascade do |t|
     t.date "run_date", null: false

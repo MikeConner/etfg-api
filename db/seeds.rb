@@ -89,3 +89,44 @@ if 0 == Analytic.count
     idx += 1
   end
 end
+  
+if 0 == Action.count
+  category = ActionCategory.create!(:name => 'API Access')
+
+  category.actions.create!(:description => :read_industry)
+  category.actions.create!(:description => :read_analytics)
+  category.actions.create!(:description => :read_fund_flow)
+  category.actions.create!(:description => :read_constituents)
+
+  all_access = Action.all
+  ['icefeed', 'etpdata', 'cloudquote', 'icedata', 'icesignal', 'icebedge', 'pdtpartners', 'steadfastcap', 'fintechstudio', 'istra', 'bwater', 
+   'wellington', 'wquant', 'wallachbeth', 'creditsdone', 'bodhitree', 'dbetfsales'].each do |username|
+     u = User.find_by_username(username)
+     
+     u.actions << all_access
+   end
+   
+   constituents_only = Action.find_by_description(:read_constituents)
+   ['htdonline', 'ensofinancial', 'quantopian'].each do |username|
+     u = User.find_by_username(username)
+     
+     u.actions << constituents_only
+   end
+   
+   u = User.find_by_username('lsi_user')
+   u.actions << Action.find_by_description(:read_industry)
+   
+   u = User.find_by_username('etfg_direct')
+   u.actions << Action.find_by_description(:read_industry)
+   u.actions << Action.find_by_description(:read_constituents)
+
+   u = User.find_by_username('fidopb')
+   u.actions << Action.find_by_description(:read_industry)
+   u.actions << Action.find_by_description(:read_fund_flow)
+   u.actions << Action.find_by_description(:read_constituents)
+   
+   u = User.find_by_username('koyfin')
+   u.actions << Action.find_by_description(:read_industry)
+   u.actions << Action.find_by_description(:read_fund_flow)
+   u.actions << Action.find_by_description(:read_constituents)
+end
