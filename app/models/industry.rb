@@ -76,7 +76,7 @@ class Industry < ApplicationRecord
                       :maximum => 64, :allow_nil => true
   validates_length_of :name, :related_index, :custodian, :distributor, :subadvisor, :futures_commission_merchant,
                       :maximum => 128, :allow_nil => true
-  validates_inclusion_of :is_etn, :is_leveraged, :active, :option_available, :in => [true, false]
+  validates_inclusion_of :is_etn, :is_leveraged, :active, :option_available, :in => [true, false, nil]
   validates_numericality_of :fund_aum, :creation_unit_size, :creation_fee, :short_interest, :num_constituents, :discount_premium,
-                            :bid_ask_spread, :management_fee, :other_expenses, :total_expenses, :fee_waivers, :net_expenses
+                            :bid_ask_spread, :management_fee, :other_expenses, :total_expenses, :fee_waivers, :net_expenses, :allow_nil => true
 end

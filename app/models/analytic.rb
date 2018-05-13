@@ -13,7 +13,7 @@
 #  risk_liquidity                :decimal(16, 4)
 #  risk_efficiency               :decimal(16, 4)
 #  reward_score                  :decimal(16, 4)
-#  quant_tota_score              :decimal(16, 4)
+#  quant_total_score             :decimal(16, 4)
 #  quant_technical_st            :decimal(16, 4)
 #  quant_technical_it            :decimal(16, 4)
 #  quant_technical_lt            :decimal(16, 4)
@@ -44,7 +44,7 @@ class Analytic < ApplicationRecord
   validates_presence_of :run_date
   validates_length_of :composite_ticker, :maximum => 8
   validates_numericality_of :risk_total_score, :risk_volatility, :risk_deviation, :risk_country, :risk_structure, :risk_liquidity, :risk_efficiency,
-                            :reward_score, :quant_tota_score, :quant_technical_st, :quant_technical_it, :quant_technical_lt, :quant_composite_technical,
+                            :reward_score, :quant_total_score, :quant_technical_st, :quant_technical_it, :quant_technical_lt, :quant_composite_technical,
                             :quant_sentiment_pc, :quant_sentiment_si, :quant_sentiment_iv, :quant_composite_sentiment, :quant_composite_behavioral,
                             :quant_fundamental_pe, :quant_fundamental_pcf, :quant_fundamental_pb, :quant_fundamental_div, :quant_composite_fundamental,
                             :quant_global_sector, :quant_global_country, :quant_composite_global, :quant_quality_liquidity, 

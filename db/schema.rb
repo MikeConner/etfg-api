@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_13_172307) do
+ActiveRecord::Schema.define(version: 2018_05_13_211522) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -50,7 +50,7 @@ ActiveRecord::Schema.define(version: 2018_05_13_172307) do
     t.decimal "risk_liquidity", precision: 16, scale: 4
     t.decimal "risk_efficiency", precision: 16, scale: 4
     t.decimal "reward_score", precision: 16, scale: 4
-    t.decimal "quant_tota_score", precision: 16, scale: 4
+    t.decimal "quant_total_score", precision: 16, scale: 4
     t.decimal "quant_technical_st", precision: 16, scale: 4
     t.decimal "quant_technical_it", precision: 16, scale: 4
     t.decimal "quant_technical_lt", precision: 16, scale: 4
