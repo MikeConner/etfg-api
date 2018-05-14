@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_13_211522) do
+ActiveRecord::Schema.define(version: 2018_05_14_033645) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -81,7 +81,7 @@ ActiveRecord::Schema.define(version: 2018_05_13_211522) do
     t.date "run_date", null: false
     t.string "composite_ticker", limit: 8, null: false
     t.string "identifier", limit: 32
-    t.string "constituent_name", null: false
+    t.string "constituent_name"
     t.decimal "weight", precision: 10, scale: 6
     t.decimal "market_value", precision: 20, scale: 6
     t.string "cusip", limit: 24
@@ -95,6 +95,13 @@ ActiveRecord::Schema.define(version: 2018_05_13_211522) do
     t.string "security_type", limit: 128
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["composite_ticker"], name: "index_constituents_on_composite_ticker"
+    t.index ["cusip"], name: "index_constituents_on_cusip"
+    t.index ["figi"], name: "index_constituents_on_figi"
+    t.index ["isin"], name: "index_constituents_on_isin"
+    t.index ["run_date", "composite_ticker"], name: "index_constituents_on_run_date_and_composite_ticker"
+    t.index ["run_date"], name: "index_constituents_on_run_date"
+    t.index ["sedol"], name: "index_constituents_on_sedol"
   end
 
   create_table "fund_flows", force: :cascade do |t|

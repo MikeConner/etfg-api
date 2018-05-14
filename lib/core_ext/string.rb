@@ -8,4 +8,8 @@ class String
     
     ['1', 'true', 'yes', 't', 'y'].include?(self.downcase.squish)
   end
+  
+  def nullable
+    self.blank? ? nil : self
+  end
 end

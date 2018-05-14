@@ -16,6 +16,9 @@ class IndustriesController < ApplicationController
     else
       render :json => result
     end        
+
+  rescue Exception => ex
+    render :json => {:error => ex.message}, :status => :bad_request
   end
 
   # /industry/csv/:date/:fund/getIndustry
@@ -42,6 +45,9 @@ class IndustriesController < ApplicationController
                 :type => "text/plain",
                 :disposition => 'attachment'
     end         
+
+  rescue Exception => ex
+    render :json => {:error => ex.message}, :status => :bad_request
   end
     
   # /industry/:date/getIndustry
@@ -86,6 +92,9 @@ class IndustriesController < ApplicationController
                 :type => "text/plain",
                 :disposition => 'attachment'
     end         
+
+  rescue Exception => ex
+    render :json => {:error => ex.message}, :status => :bad_request
   end
   
   # /industry/exposures/:type/:date/:fund/getIndustryExposures
@@ -114,6 +123,9 @@ class IndustriesController < ApplicationController
     else
       render :json => result
     end          
+
+  rescue Exception => ex
+    render :json => {:error => ex.message}, :status => :bad_request
   end
   
 private

@@ -6,7 +6,7 @@
 #  run_date          :date             not null
 #  composite_ticker  :string(8)        not null
 #  identifier        :string(32)
-#  constituent_name  :string           not null
+#  constituent_name  :string
 #  weight            :decimal(10, 6)
 #  market_value      :decimal(20, 6)
 #  cusip             :string(24)
@@ -23,7 +23,7 @@
 #
 
 class Constituent < ApplicationRecord
-  validates_presence_of :run_date, :constituent_name
+  validates_presence_of :run_date
   validates_length_of :composite_ticker, :maximum => 8, :allow_nil => true
   validates_numericality_of :weight, :market_value, :total_shares_held, :allow_nil => true
   validates_length_of :cusip, :maximum => 24, :allow_nil => true

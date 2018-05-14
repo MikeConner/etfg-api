@@ -14,6 +14,9 @@ class AnalyticsController < ApplicationController
     else
       render :json => result
     end    
+
+  rescue Exception => ex
+    render :json => {:error => ex.message}, :status => :bad_request
   end
   
   # /analytics/:date/getAnalytics
@@ -76,6 +79,9 @@ class AnalyticsController < ApplicationController
       
       render :json => data    
     end   
+    
+  rescue Exception => ex
+    render :json => {:error => ex.message}, :status => :bad_request
   end
   
 private

@@ -14,6 +14,9 @@ class FundFlowsController < ApplicationController
     else
       render :json => result
     end        
+
+  rescue Exception => ex
+    render :json => {:error => ex.message}, :status => :bad_request
   end
   
   # /fundflow/:date/getFundFlow
@@ -28,6 +31,9 @@ class FundFlowsController < ApplicationController
     else
       render :json => result
     end            
+
+  rescue Exception => ex
+    render :json => {:error => ex.message}, :status => :bad_request
   end
   
 private

@@ -6,4 +6,8 @@ class NilClass
   def nullable_to_boolean
     nil
   end
+  
+  def nullable
+    nil
+  end
 end

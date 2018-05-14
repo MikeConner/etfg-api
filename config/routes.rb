@@ -4,27 +4,7 @@ Rails.application.routes.draw do
   
   # Constituents
 =begin
-    $constituentCollection->setPrefix("/constituent");
-
-    $constituentCollection->get('/cusip/{date}/{fund}/{id}', 'getByCusip');
-    $constituentCollection->get('/cusip/{date}/{fund}', 'getByCusip');
-
-    $constituentCollection->get('/isin/{date}/{fund}/{id}', 'getByIsin');
-    $constituentCollection->get('/isin/{date}/{fund}', 'getByIsin');
-
-    $constituentCollection->get('/sedol/{date}/{fund}/{id}', 'getBySedol');
-    $constituentCollection->get('/sedol/{date}/{fund}', 'getBySedol');
-
-
-    $constituentCollection->get('/figi/{date}/{fund}/{id}', 'getByFigi');
-    $constituentCollection->get('/figi/{date}/{fund}', 'getByFigi');
-
-    # Top constituents
-    $topConstituentCollection->setPrefix("/topconstituents");
-
-    $topConstituentCollection->get('/weight/{date}/{fund}', 'getTopConstituents');
-    
-    # ETP Data
+    # ETP Data - Skipping
     
     $etpdataCollection->setPrefix("/etpdata");
 
@@ -32,6 +12,19 @@ Rails.application.routes.draw do
     $etpdataCollection->get('/', 'getEtpData');
     
 =end  
+
+  get '/topconstituents/weight/:date/:fund/getTopConstituents', to: 'constituents#top'
+  get '/constituent/cusip/:date/:fund/:id/getByCusip', to: 'constituents#by_cusip_id'  
+  get '/constituent/isin/:date/:fund/:id/getByIsin', to: 'constituents#by_isin_id'  
+  get '/constituent/figi/:date/:fund/:id/getByFigi', to: 'constituents#by_figi_id'  
+  get '/constituent/sedol/:date/:fund/:id/getBySedol', to: 'constituents#by_sedol_id'  
+
+  # These are exactly equivalent, unless I don't understand something?
+  get '/constituent/cusip/:date/:fund/getByCusip', to: 'constituents#by_cusip'  
+  get '/constituent/isin/:date/:fund/getByIsin', to: 'constituents#by_isin'  
+  get '/constituent/figi/:date/:fund/getByFigi', to: 'constituents#by_figi'  
+  get '/constituent/sedol/:date/:fund/getBySedol', to: 'constituents#by_sedol'  
+  
   get '/fundflow/:date/:fund/getFundFlow', to: 'fund_flows#by_fund'
   get '/fundflow/:date/getFundFlow', to: 'fund_flows#by_date'
   
