@@ -1,22 +1,10 @@
-# PostgreSQL. Versions 9.1 and up are supported.
-#
-# Install the pg driver:
-#   gem install pg
-# On OS X with Homebrew:
-#   gem install pg -- --with-pg-config=/usr/local/bin/pg_config
-# On OS X with MacPorts:
-#   gem install pg -- --with-pg-config=/opt/local/lib/postgresql84/bin/pg_config
-# On Windows:
-#   gem install pg
-#       Choose the win32 build.
-#       Install PostgreSQL and put its /bin directory on your path.
-#
-# Configure Using Gemfile
-# gem 'pg'
 #
 default: &default
   adapter: postgresql
   encoding: unicode
+  host: localhost
+  user: etfg
+  password: ShortEverything!
   # For details on connection pooling, see Rails configuration guide
   # http://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
@@ -24,7 +12,7 @@ default: &default
 
 development:
   <<: *default
-  database: etfg_dev
+  database: etfg_development
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
@@ -83,4 +71,4 @@ production:
   <<: *default
   database: etfg_production
   username: etfg
-  password: <%= ENV['ETFG_DATABASE_PASSWORD'] %>
+  password: ShortEverything!
