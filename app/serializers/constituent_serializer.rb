@@ -22,8 +22,20 @@
 #  updated_at        :datetime         not null
 #
 
-require 'rails_helper'
+class ConstituentSerializer
+  include FastJsonapi::ObjectSerializer
+  
+  attributes :run_date, :composite_ticker, :identifier, :constituent_name, :weight, :market_value, :cusip, :isin, :figi, :sedol, :country,
+             :exchange, :total_shares_held, :market_sector, :security_type
 
-RSpec.describe Constituent, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  def self.extract(batch)
+    result = []
+
+    parsed = JSON.parse(ConstituentSerializer.new(batch).serialized_json)['data']
+    parsed.each do |a|
+      result.push(a['attributes'])
+    end   
+    
+    result     
+  end
 end

@@ -10,10 +10,34 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_12_215007) do
+ActiveRecord::Schema.define(version: 2018_05_14_033645) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "action_categories", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_action_categories_on_name", unique: true
+  end
+
+  create_table "actions", force: :cascade do |t|
+    t.bigint "action_category_id"
+    t.integer "description", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["action_category_id"], name: "index_actions_on_action_category_id"
+    t.index ["description"], name: "index_actions_on_description", unique: true
+  end
+
+  create_table "actions_users", id: false, force: :cascade do |t|
+    t.bigint "action_id"
+    t.bigint "user_id"
+    t.index ["action_id", "user_id"], name: "index_actions_users_on_action_id_and_user_id", unique: true
+    t.index ["action_id"], name: "index_actions_users_on_action_id"
+    t.index ["user_id"], name: "index_actions_users_on_user_id"
+  end
 
   create_table "analytics", force: :cascade do |t|
     t.date "run_date", null: false
@@ -26,7 +50,7 @@ ActiveRecord::Schema.define(version: 2018_05_12_215007) do
     t.decimal "risk_liquidity", precision: 16, scale: 4
     t.decimal "risk_efficiency", precision: 16, scale: 4
     t.decimal "reward_score", precision: 16, scale: 4
-    t.decimal "quant_tota_score", precision: 16, scale: 4
+    t.decimal "quant_total_score", precision: 16, scale: 4
     t.decimal "quant_technical_st", precision: 16, scale: 4
     t.decimal "quant_technical_it", precision: 16, scale: 4
     t.decimal "quant_technical_lt", precision: 16, scale: 4
@@ -57,7 +81,7 @@ ActiveRecord::Schema.define(version: 2018_05_12_215007) do
     t.date "run_date", null: false
     t.string "composite_ticker", limit: 8, null: false
     t.string "identifier", limit: 32
-    t.string "constituent_name", null: false
+    t.string "constituent_name"
     t.decimal "weight", precision: 10, scale: 6
     t.decimal "market_value", precision: 20, scale: 6
     t.string "cusip", limit: 24
@@ -71,6 +95,13 @@ ActiveRecord::Schema.define(version: 2018_05_12_215007) do
     t.string "security_type", limit: 128
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["composite_ticker"], name: "index_constituents_on_composite_ticker"
+    t.index ["cusip"], name: "index_constituents_on_cusip"
+    t.index ["figi"], name: "index_constituents_on_figi"
+    t.index ["isin"], name: "index_constituents_on_isin"
+    t.index ["run_date", "composite_ticker"], name: "index_constituents_on_run_date_and_composite_ticker"
+    t.index ["run_date"], name: "index_constituents_on_run_date"
+    t.index ["sedol"], name: "index_constituents_on_sedol"
   end
 
   create_table "fund_flows", force: :cascade do |t|

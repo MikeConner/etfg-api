@@ -62,21 +62,33 @@
 #  updated_at                  :datetime         not null
 #
 
-class Industry < ApplicationRecord
-  validates_presence_of :run_date, :composite_ticker
-  validates_length_of :distribution_frequency, :is => 1, :allow_nil => true
-  validates_length_of :avg_volume, :maximum => 10, :allow_nil => true
-  validates_length_of :put_vol, :call_vol,
-                      :maximum => 14, :allow_nil => true
-  validates_length_of :leverage_factor, :fiscal_year_end, :option_volume,
-                      :maximum => 16, :allow_nil => true
-  validates_length_of :issuer, :tax_classification, :asset_class, :category, :focus, :development_level, :region, :put_call_ratio, 
-                      :maximum => 32, :allow_nil => true
-  validates_length_of :administrator, :advisor, :transfer_agent, :trustee, :listing_exchange, :lead_market_maker,
-                      :maximum => 64, :allow_nil => true
-  validates_length_of :name, :related_index, :custodian, :distributor, :subadvisor, :futures_commission_merchant,
-                      :maximum => 128, :allow_nil => true
-  validates_inclusion_of :is_etn, :is_leveraged, :active, :option_available, :in => [true, false, nil]
-  validates_numericality_of :fund_aum, :creation_unit_size, :creation_fee, :short_interest, :num_constituents, :discount_premium,
-                            :bid_ask_spread, :management_fee, :other_expenses, :total_expenses, :fee_waivers, :net_expenses, :allow_nil => true
+class IndustrySerializer
+  include FastJsonapi::ObjectSerializer
+  
+  attributes :run_date, :composite_ticker, :distribution_frequency, :avg_volume, :put_vol, :call_vol, :leverage_factor, :fiscal_year_end, 
+             :option_volume, :issuer, :tax_classification, :asset_class, :category, :focus, :development_level, :region, :put_call_ratio, 
+             :administrator, :advisor, :transfer_agent, :trustee, :listing_exchange, :lead_market_maker, :name, :related_index, :custodian, 
+             :distributor, :subadvisor, :futures_commission_merchant, :is_etn, :is_leveraged, :active, :option_available, :fund_aum, 
+             :creation_unit_size, :creation_fee, :short_interest, :num_constituents, :discount_premium, :bid_ask_spread, :management_fee, 
+             :other_expenses, :total_expenses, :fee_waivers, :net_expenses, :geographic_exposure, :currency_exposure, :sector_exposure, 
+             :industry_group_exposure, :subindustry_exposure, :coupon_exposure, :maturity_exposure, :portfolio_manager
+
+  attribute :security_type do |obj|
+    if obj.is_etn
+      'ETN'
+    else
+      ['Currency', 'Commodity'].include?(obj.asset_class) ? 'ETC' : 'ETF'
+    end
+  end
+  
+  def self.extract(batch)
+    result = []
+
+    parsed = JSON.parse(IndustrySerializer.new(batch).serialized_json)['data']
+    parsed.each do |a|
+      result.push(a['attributes'])
+    end   
+    
+    result     
+  end
 end
