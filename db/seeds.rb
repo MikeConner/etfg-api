@@ -43,6 +43,26 @@ if 0 == User.count
   User.create!(:username => 'test', :password => 'password')
 end
 
+if 0 == FundFlow.count
+  fname = '2017-03-31_fundflow.csv'
+  idx = 1
+  CSV.foreach(fname) do |row|
+    rec = FundFlow.new(:run_date => (Date.parse(row[0]) rescue nil),
+                       :composite_ticker => row[1],
+                       :shares => row[2].nullable_to_f,
+                       :nav => row[3].nullable_to_f,
+                       :value => row[4].nullable_to_f)
+    if rec.valid?
+      rec.save!
+    else
+      puts "#{fname}: line #{idx}\n#{row}\n#{rec.errors.full_messages.to_sentence}"
+      break
+    end
+    
+    idx += 1
+  end    
+end
+
 if 0 == Industry.count
   fname = '2017-03-31_industry.csv'
   idx = 1

@@ -30,17 +30,11 @@ Rails.application.routes.draw do
 
     $etpdataCollection->get('/{date}', 'getEtpData');
     $etpdataCollection->get('/', 'getEtpData');
-
-    # Fund Flow
-
-    $fundflowCollection->setPrefix("/fundflow");
-
-    $fundflowCollection->get('/{date}/{fund}', 'getFundFlow');
-    $fundflowCollection->get('/{date}', 'getFundFlow');
-
-    $industryCollection->get('/exposures/{type}/{date}/{fund}', 'getIndustryExposures');
     
 =end  
+  get '/fundflow/:date/:fund/getFundFlow', to: 'fund_flows#by_fund'
+  get '/fundflow/:date/getFundFlow', to: 'fund_flows#by_date'
+  
   get '/industry/csv/:date/:fund/getIndustry', to: 'industries#csv_by_fund'
   get '/industry/csv/:date/getIndustry', to: 'industries#csv_by_date'
   get '/industry/:date/:fund/getIndustry', to: 'industries#by_fund'
