@@ -38,25 +38,16 @@ Rails.application.routes.draw do
     $fundflowCollection->get('/{date}/{fund}', 'getFundFlow');
     $fundflowCollection->get('/{date}', 'getFundFlow');
 
-    # Industry
-
-    $industryCollection->setPrefix("/industry");
-
-
-    $industryCollection->get('/csv/{date}/{fund}', 'getIndustryCsv');
-    $industryCollection->get('/csv/{date}', 'getIndustryCsv');
     $industryCollection->get('/exposures/{type}/{date}/{fund}', 'getIndustryExposures');
-    $industryCollection->get('/{date}/{fund}', 'getIndustry');
-    $industryCollection->get('/{date}', 'getIndustry');
     
 =end  
-
-
+  get '/industry/csv/:date/:fund/getIndustry', to: 'industries#csv_by_fund'
+  get '/industry/csv/:date/getIndustry', to: 'industries#csv_by_date'
+  get '/industry/:date/:fund/getIndustry', to: 'industries#by_fund'
+  get '/industry/:date/getIndustry', to: 'industries#by_date'
+  get '/industry/exposures/:type/:date/:fund/getIndustryExposures', to: 'industries#exposures'
+  
   # Analytics
-  # /analytics
-  # $analyticsCollection->get('/{function}/{date}/{fund}/{group}', 'getAggregateFunction');
-  # $analyticsCollection->get('/{date}/{fund}', 'getAnalytics');
-  # $analyticsCollection->get('/{date}', 'getAnalytics');
   get '/analytics/:function/:date/:fund/:group/getAggregateFunction', to: 'analytics#aggregate'
   get '/analytics/:date/:fund/getAnalytics', to: 'analytics#by_fund'
   get '/analytics/:date/getAnalytics', to: 'analytics#by_date'
