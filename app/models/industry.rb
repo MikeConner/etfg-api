@@ -5,14 +5,14 @@
 #  id                          :bigint(8)        not null, primary key
 #  run_date                    :date             not null
 #  composite_ticker            :string           not null
-#  issuer                      :string(64)
-#  name                        :string(128)
+#  issuer                      :string(128)
+#  name                        :string
 #  inception_date              :date
 #  related_index               :string
-#  tax_classification          :string(64)
+#  tax_classification          :string(128)
 #  is_etn                      :boolean
 #  fund_aum                    :decimal(24, 6)
-#  avg_volume                  :string(10)
+#  avg_volume                  :string(16)
 #  asset_class                 :string(32)
 #  category                    :string(32)
 #  focus                       :string(32)
@@ -65,16 +65,15 @@
 class Industry < ApplicationRecord
   validates_presence_of :run_date, :composite_ticker
   validates_length_of :distribution_frequency, :is => 1, :allow_nil => true
-  validates_length_of :avg_volume, :maximum => 10, :allow_nil => true
   validates_length_of :put_vol, :call_vol,
                       :maximum => 14, :allow_nil => true
-  validates_length_of :leverage_factor, :fiscal_year_end, :option_volume,
+  validates_length_of :leverage_factor, :fiscal_year_end, :option_volume, :avg_volume,
                       :maximum => 16, :allow_nil => true
   validates_length_of :asset_class, :category, :focus, :development_level, :region, :put_call_ratio, 
                       :maximum => 32, :allow_nil => true
-  validates_length_of :administrator, :advisor, :transfer_agent, :trustee, :listing_exchange, :lead_market_maker, :issuer, :tax_classification,
+  validates_length_of :administrator, :advisor, :transfer_agent, :trustee, :listing_exchange, :lead_market_maker,
                       :maximum => 64, :allow_nil => true
-  validates_length_of :name, :custodian, :distributor, :subadvisor, :futures_commission_merchant,
+  validates_length_of :custodian, :distributor, :subadvisor, :futures_commission_merchant, :issuer, :tax_classification,
                       :maximum => 128, :allow_nil => true
   validates_inclusion_of :is_etn, :is_leveraged, :active, :option_available, :in => [true, false, nil]
   validates_numericality_of :fund_aum, :creation_unit_size, :creation_fee, :short_interest, :num_constituents, :discount_premium,

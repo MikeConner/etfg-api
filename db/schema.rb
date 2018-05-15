@@ -117,14 +117,14 @@ ActiveRecord::Schema.define(version: 2018_05_15_044937) do
   create_table "industries", force: :cascade do |t|
     t.date "run_date", null: false
     t.string "composite_ticker", null: false
-    t.string "issuer", limit: 64
-    t.string "name", limit: 128
+    t.string "issuer", limit: 128
+    t.string "name"
     t.date "inception_date"
     t.string "related_index"
-    t.string "tax_classification", limit: 64
+    t.string "tax_classification", limit: 128
     t.boolean "is_etn"
     t.decimal "fund_aum", precision: 24, scale: 6
-    t.string "avg_volume", limit: 10
+    t.string "avg_volume", limit: 16
     t.string "asset_class", limit: 32
     t.string "category", limit: 32
     t.string "focus", limit: 32
