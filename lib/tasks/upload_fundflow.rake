@@ -3,6 +3,8 @@ require 'csv'
 namespace :db do
   desc "Upload the FundFlow data"
   task :upload_fundflow => :environment do
+    FundFlow.delete_all
+    
     File.open('fundflow-log.txt', 'w') do |flog|
       flow_files = Dir['/data/csv_output/fundflow/*.csv']
       num_files = flow_files.count
@@ -21,7 +23,11 @@ namespace :db do
                              :nav => row[3].nullable_to_f,
                              :value => row[4].nullable_to_f)
           if rec.valid?
-            rec.save!
+            begin
+              rec.save!
+            rescue Exception => ex
+              log.write("#{fname}: line #{idx}\n    #{row}\n    Exception: #{ex.message}\n")
+            end
           else
             flog.write("#{fname}: line #{idx}\n    #{row}\n    #{rec.errors.full_messages.to_sentence}\n")
           end
