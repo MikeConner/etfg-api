@@ -5,17 +5,17 @@
 #  id                          :bigint(8)        not null, primary key
 #  run_date                    :date             not null
 #  composite_ticker            :string           not null
-#  issuer                      :string
-#  name                        :string
+#  issuer                      :string(64)
+#  name                        :string(128)
 #  inception_date              :date
 #  related_index               :string(128)
-#  tax_classification          :string
+#  tax_classification          :string(64)
 #  is_etn                      :boolean
 #  fund_aum                    :decimal(24, 6)
-#  avg_volume                  :string
+#  avg_volume                  :string(10)
 #  asset_class                 :string(32)
-#  category                    :string
-#  focus                       :string
+#  category                    :string(32)
+#  focus                       :string(32)
 #  development_level           :string(32)
 #  region                      :string(32)
 #  is_leveraged                :boolean
