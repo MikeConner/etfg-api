@@ -12,10 +12,10 @@
 #  tax_classification          :string
 #  is_etn                      :boolean
 #  fund_aum                    :decimal(24, 6)
-#  avg_volume                  :string(16)
+#  avg_volume                  :string(32)
 #  asset_class                 :string(32)
-#  category                    :string(32)
-#  focus                       :string(32)
+#  category                    :string(64)
+#  focus                       :string(64)
 #  development_level           :string(32)
 #  region                      :string(32)
 #  is_leveraged                :boolean
@@ -67,11 +67,11 @@ class Industry < ApplicationRecord
   validates_length_of :distribution_frequency, :is => 1, :allow_nil => true
   validates_length_of :put_vol, :call_vol,
                       :maximum => 14, :allow_nil => true
-  validates_length_of :leverage_factor, :fiscal_year_end, :option_volume, :avg_volume,
+  validates_length_of :leverage_factor, :fiscal_year_end, :option_volume,
                       :maximum => 16, :allow_nil => true
-  validates_length_of :asset_class, :category, :focus, :development_level, :region, :put_call_ratio, 
+  validates_length_of :asset_class, :development_level, :region, :put_call_ratio, :avg_volume,
                       :maximum => 32, :allow_nil => true
-  validates_length_of :administrator, :advisor, :transfer_agent, :trustee, :listing_exchange, :lead_market_maker,
+  validates_length_of :administrator, :advisor, :transfer_agent, :trustee, :listing_exchange, :lead_market_maker, :category, :focus,
                       :maximum => 64, :allow_nil => true
   validates_length_of :custodian, :distributor, :subadvisor, :futures_commission_merchant,
                       :maximum => 128, :allow_nil => true

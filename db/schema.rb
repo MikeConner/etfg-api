@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_15_051945) do
+ActiveRecord::Schema.define(version: 2018_05_15_052649) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -124,10 +124,10 @@ ActiveRecord::Schema.define(version: 2018_05_15_051945) do
     t.string "tax_classification"
     t.boolean "is_etn"
     t.decimal "fund_aum", precision: 24, scale: 6
-    t.string "avg_volume", limit: 16
+    t.string "avg_volume", limit: 32
     t.string "asset_class", limit: 32
-    t.string "category", limit: 32
-    t.string "focus", limit: 32
+    t.string "category", limit: 64
+    t.string "focus", limit: 64
     t.string "development_level", limit: 32
     t.string "region", limit: 32
     t.boolean "is_leveraged"
