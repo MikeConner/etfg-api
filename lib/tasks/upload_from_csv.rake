@@ -97,11 +97,11 @@ namespace :db do
     
     if 'analytics' == table
       if fname =~ /analytics_(.*?)\./
-        result = Date.parse($1)
+        result = process_run_date($1)
       end
     else
       if fname =~ /(.*?)_/
-        result = Date.parse($1)
+        result = process_run_date($1)
       end
     end
         
