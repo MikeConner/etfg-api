@@ -26,7 +26,7 @@ namespace :db do
         default_date = extract_default_date(args[:table], fname)
         
         begin
-          CSV.foreach(fname, :encoding => 'iso-8859-1:utf-8', :col_sep => deimiter) do |row|
+          CSV.foreach(fname, :encoding => 'iso-8859-1:utf-8', :col_sep => delimiter) do |row|
             rec = load_recs(args[:table], row, default_date)
             tries += 1
             
