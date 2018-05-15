@@ -1,3 +1,5 @@
+require 'csv'
+
 namespace :db do
   desc "Upload the FundFlow data"
   task :upload_fundflow => :environment do
