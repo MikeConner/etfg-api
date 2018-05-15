@@ -20,7 +20,7 @@ namespace :db do
         cnt += 1
         
         CSV.foreach(fname) do |row|
-          rec = load(args[:table], row)
+          rec = load_recs(args[:table], row)
           
           if rec.valid?
             begin
@@ -79,7 +79,7 @@ namespace :db do
     end
   end
 
-  def load(table, row)
+  def load_recs(table, row)
     case table
     when 'industry'
       Industry.new(:run_date => (Date.strptime(row[0], "%m/%d/%Y") rescue nil),
