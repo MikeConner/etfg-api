@@ -39,7 +39,7 @@ namespace :db do
     puts encoding.nil? ? "No encoding" : "Using encoding: #{encoding}"
 
     File.open("#{args[:table]}-log.txt", 'w') do |flog|
-      if 1 == args[:test]
+      if '1' == args[:test]
         data_files = ["/data/csv_output/#{args[:table]}/test.csv"]
       else
         data_files = '1' == args[:historical] ? Dir["/data/csv_output/arc_#{args[:table]}/*.csv"] : Dir["/data/csv_output/#{args[:table]}/*.csv"]
