@@ -39,7 +39,7 @@ namespace :db do
             idx += 1
           end  
         rescue Exception => ex
-          flog.write("#{fname}: line #{idx}\n    #{row}\n    File exception on #{fname}: #{ex.message}\n")
+          flog.write("#{fname}: line #{idx}\n    File exception on #{fname}: #{ex.message}\n")
           file_exceptions += 1
         end  
       end
@@ -85,10 +85,21 @@ namespace :db do
     end
   end
 
+  def process_run_date(str)
+    result = Date.parse(str) rescue nil
+    if result.nil?
+      result = Date.strptime(row[0], "%m/%d/%Y") rescue nil
+    end
+    
+    result  
+  end
+  
   def load_recs(table, row)
+    run_date = process_run_date(row[0])
+    
     case table
     when 'industry'
-      Industry.new(:run_date => (Date.strptime(row[0], "%m/%d/%Y") rescue nil),
+      Industry.new(:run_date => run_date,
                    :composite_ticker => row[1],
                    :issuer => row[2].nullable,
                    :name => row[3].nullable,
@@ -144,13 +155,13 @@ namespace :db do
                    :net_expenses => row[53].nullable_to_f,
                    :lead_market_maker => row[54].nullable)
     when 'fundflow'
-      FundFlow.new(:run_date => (Date.parse(row[0]) rescue nil),
+      FundFlow.new(:run_date => run_date,
                    :composite_ticker => row[1],
                    :shares => row[2].nullable_to_f,
                    :nav => row[3].nullable_to_f,
                    :value => row[4].nullable_to_f)
     when 'analytics'
-      Analytic.new(:run_date => (Date.parse(row[0]) rescue nil),
+      Analytic.new(:run_date => run_date,
                    :composite_ticker => row[1],
                    :risk_total_score => row[2].nullable_to_f,
                    :risk_volatility => row[3].nullable_to_f,
@@ -184,7 +195,7 @@ namespace :db do
                    :quant_composite_quality => row[31].nullable_to_f,
                    :quant_grade => row[32].nullable)
     when 'constituents'
-      Constituent.new(:run_date => (Date.parse(row[0]) rescue nil),
+      Constituent.new(:run_date => run_date,
                       :composite_ticker => row[1],
                       :identifier => row[2].nullable,
                       :constituent_name => row[3].nullable,
