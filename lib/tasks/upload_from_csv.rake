@@ -2,7 +2,18 @@ require 'csv'
 
 namespace :db do
   desc "Upload csv data"
-  task :upload_data, [:table, :flush, :delim, :encoding, :historical] => :environment do |t, args|
+  task :upload_data, [:table, :flush, :delim, :encoding, :test, :historical] => :environment do |t, args|
+    if 0 == args.count
+      puts "rake upload_data[:table, :flush, :delim, :encoding, :test, :historical]"
+      puts "    table = 'industry/constituent/fundflow/analytics'"
+      puts "    flush = 1/0 deletes existing data if 1"
+      puts "    delim = CSV delimiter; defaults to comma"
+      puts "    encoding = CSV encoding to use (e.g., 'windows-1251')"
+      puts "    test = 1/0; loads from test.csv if 1"
+      puts "    historical = 1/0; load from historical directory if 1"
+      next
+    end
+    
     flush(args[:table]) if 1 == args[:flush]
     
     errors = 0
@@ -22,7 +33,12 @@ namespace :db do
     end
     
     File.open("#{args[:table]}-log.txt", 'w') do |flog|
-      data_files = 1 == args[:historical] ? Dir["/data/csv_output/arc_#{args[:table]}/*.csv"] : Dir["/data/csv_output/#{args[:table]}/*.csv"]
+      if 1 == args[:test]
+        data_files = ["/data/csv_output/#{args[:table]}/test.csv"]
+      else
+        data_files = 1 == args[:historical] ? Dir["/data/csv_output/arc_#{args[:table]}/*.csv"] : Dir["/data/csv_output/#{args[:table]}/*.csv"]
+      end
+      
       num_files = data_files.count
       puts "Loading #{num_files} #{args[:table]} files"
       cnt = 1
