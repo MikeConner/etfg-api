@@ -8,6 +8,9 @@ namespace :db do
     errors = 0
     exceptions = 0
     file_exceptions = 0
+    # You can have multiple errors; so use this to compute the error rate
+    success = 0
+    tries = 0
     
     File.open("#{args[:table]}-log.txt", 'w') do |flog|
       data_files = 1 == args[:historical] ? Dir["/data/csv_output/arc_#{args[:table]}/*.csv"] : Dir["/data/csv_output/#{args[:table]}/*.csv"]
@@ -23,10 +26,12 @@ namespace :db do
         begin
           CSV.foreach(fname, :encoding => 'iso-8859-1:utf-8') do |row|
             rec = load_recs(args[:table], row)
+            tries += 1
             
             if rec.valid?
               begin
                 rec.save!
+                success += 1
               rescue Exception => ex
                 flog.write("#{fname}: line #{idx}\n    #{row}\n    Exception: #{ex.message}\n")
                 exceptions += 1
@@ -49,7 +54,7 @@ namespace :db do
       if 0 == num_recs
         puts "Error rate: 100%"
       else
-        pct = (errors + exceptions + file_exceptions).to_f / num_recs * 100.0
+        pct = 0 == tries ? 0 : (tries - success).to_f / tries.to_f * 100.0
         puts "Error rate: #{pct.round(4)}% on #{num_recs} records"
       end
     end
