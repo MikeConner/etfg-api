@@ -2,7 +2,7 @@ require 'csv'
 
 namespace :db do
   desc "Upload csv data"
-  task :upload_data, [:table, :flush, :delim, :historical] => :environment do |t, args|
+  task :upload_data, [:table, :flush, :delim, :encoding, :historical] => :environment do |t, args|
     flush(args[:table]) if 1 == args[:flush]
     
     errors = 0
@@ -12,6 +12,14 @@ namespace :db do
     success = 0
     tries = 0
     delimiter = args.has_key?(:delim) ? args[:delim] : ','
+    encoding = "iso-8859-1:utf-8"
+    
+    if args.has_key?(:encoding)
+      encoding = args[:encoding].blank? ? nil : args[:encoding]
+      unless encoding.nil? or encoding.include?('utf8')
+        encoding += ":utf8"
+      end
+    end
     
     File.open("#{args[:table]}-log.txt", 'w') do |flog|
       data_files = 1 == args[:historical] ? Dir["/data/csv_output/arc_#{args[:table]}/*.csv"] : Dir["/data/csv_output/#{args[:table]}/*.csv"]
@@ -26,7 +34,7 @@ namespace :db do
         default_date = extract_default_date(args[:table], fname)
         
         begin
-          CSV.foreach(fname, :encoding => 'iso-8859-1:utf-8', :col_sep => delimiter) do |row|
+          CSV.foreach(fname, :encoding => encoding, :col_sep => delimiter) do |row|
             rec = load_recs(args[:table], row, default_date)
             tries += 1
             
@@ -41,7 +49,7 @@ namespace :db do
             else
               flog.write("#{fname}: line #{idx}\n    #{rec.errors.full_messages.to_sentence}\n")
               flog.write('------\n')
-              rec.attributes.each do |key, value|
+              rec.attributes.sort.each do |key, value|
                 flog.write("#{key}: #{value}\n")
               end
               errors += 1
