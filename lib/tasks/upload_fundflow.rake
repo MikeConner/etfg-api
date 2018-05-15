@@ -26,7 +26,7 @@ namespace :db do
             begin
               rec.save!
             rescue Exception => ex
-              log.write("#{fname}: line #{idx}\n    #{row}\n    Exception: #{ex.message}\n")
+              flog.write("#{fname}: line #{idx}\n    #{row}\n    Exception: #{ex.message}\n")
             end
           else
             flog.write("#{fname}: line #{idx}\n    #{row}\n    #{rec.errors.full_messages.to_sentence}\n")
