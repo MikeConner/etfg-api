@@ -13,6 +13,10 @@ namespace :db do
       puts "    historical = 1/0; load from historical directory if 1"
       next
     end
+    
+    puts "Flushing table"  if '1' == args[:flush]
+    puts "Test mode" if '1' == args[:test]
+    puts "Loading historical data" if '1' == args[:historical]
         
     flush(args[:table]) if '1' == args[:flush]
     
@@ -32,11 +36,13 @@ namespace :db do
       end
     end
     
+    puts encoding.nil? ? "No encoding" : "Using encoding: #{encoding}"
+
     File.open("#{args[:table]}-log.txt", 'w') do |flog|
       if 1 == args[:test]
         data_files = ["/data/csv_output/#{args[:table]}/test.csv"]
       else
-        data_files = 1 == args[:historical] ? Dir["/data/csv_output/arc_#{args[:table]}/*.csv"] : Dir["/data/csv_output/#{args[:table]}/*.csv"]
+        data_files = '1' == args[:historical] ? Dir["/data/csv_output/arc_#{args[:table]}/*.csv"] : Dir["/data/csv_output/#{args[:table]}/*.csv"]
       end
       
       num_files = data_files.count
