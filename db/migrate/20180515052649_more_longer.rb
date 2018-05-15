@@ -1,8 +1,8 @@
 class MoreLonger < ActiveRecord::Migration[5.2]
   def up
-    change_column :industries, :avg_volume, :string, :limit => 64
-    change_column :industries, :category, :string, :limit => 128
-    change_column :industries, :focus, :string, :limit => 128
+    change_column :industries, :avg_volume, :string
+    change_column :industries, :category, :string
+    change_column :industries, :focus, :string
   end
   
   def down

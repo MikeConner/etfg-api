@@ -12,10 +12,10 @@
 #  tax_classification          :string
 #  is_etn                      :boolean
 #  fund_aum                    :decimal(24, 6)
-#  avg_volume                  :string(64)
+#  avg_volume                  :string
 #  asset_class                 :string(32)
-#  category                    :string(128)
-#  focus                       :string(128)
+#  category                    :string
+#  focus                       :string
 #  development_level           :string(32)
 #  region                      :string(32)
 #  is_leveraged                :boolean
