@@ -44,7 +44,7 @@ namespace :db do
         puts "Error rate: 100%"
       else
         pct = (errors + exceptions).to_f / num_recs * 100.0
-        puts "Error rate: #{pct.round(4)}%"
+        puts "Error rate: #{pct.round(4)}% on #{num_recs} records"
       end
     end
   end  
