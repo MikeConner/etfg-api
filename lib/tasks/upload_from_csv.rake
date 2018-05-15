@@ -2,7 +2,7 @@ require 'csv'
 
 namespace :db do
   desc "Upload csv data"
-  task :upload_data, [:table, :flush, :historical] => :environment do |t, args|
+  task :upload_data, [:table, :flush, :delim, :historical] => :environment do |t, args|
     flush(args[:table]) if 1 == args[:flush]
     
     errors = 0
@@ -11,6 +11,7 @@ namespace :db do
     # You can have multiple errors; so use this to compute the error rate
     success = 0
     tries = 0
+    delimiter = args.has_key?(:delim) ? args[:delim] : ','
     
     File.open("#{args[:table]}-log.txt", 'w') do |flog|
       data_files = 1 == args[:historical] ? Dir["/data/csv_output/arc_#{args[:table]}/*.csv"] : Dir["/data/csv_output/#{args[:table]}/*.csv"]
@@ -22,10 +23,11 @@ namespace :db do
         pct = cnt.to_f / num_files.to_f * 100.0
         puts "File #{cnt} (#{pct.round(1)}%) [#{errors + exceptions + file_exceptions} errors]"
         cnt += 1
+        default_date = extract_default_date(args[:table], fname)
         
         begin
-          CSV.foreach(fname, :encoding => 'iso-8859-1:utf-8') do |row|
-            rec = load_recs(args[:table], row)
+          CSV.foreach(fname, :encoding => 'iso-8859-1:utf-8', :col_sep => deimiter) do |row|
+            rec = load_recs(args[:table], row, default_date)
             tries += 1
             
             if rec.valid?
@@ -90,6 +92,22 @@ namespace :db do
     end
   end
 
+  def extract_default_date(table, fname)
+    result = nil
+    
+    if 'analytics' == table
+      if fname =~ /analytics_(.*?)\./
+        result = Date.parse($1)
+      end
+    else
+      if fname =~ /(.*?)_/
+        result = Date.parse($1)
+      end
+    end
+        
+    result
+  end
+
   def process_run_date(str)
     result = Date.parse(str) rescue nil
     if result.nil?
@@ -99,12 +117,12 @@ namespace :db do
     result  
   end
   
-  def load_recs(table, row)
+  def load_recs(table, row, default_date)
     run_date = process_run_date(row[0])
     
     case table
     when 'industry'
-      Industry.new(:run_date => run_date,
+      Industry.new(:run_date => run_date || default_date,
                    :composite_ticker => row[1],
                    :issuer => row[2].nullable,
                    :name => row[3].nullable,
