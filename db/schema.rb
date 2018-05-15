@@ -124,10 +124,10 @@ ActiveRecord::Schema.define(version: 2018_05_15_052649) do
     t.string "tax_classification"
     t.boolean "is_etn"
     t.decimal "fund_aum", precision: 24, scale: 6
-    t.string "avg_volume", limit: 32
+    t.string "avg_volume", limit: 64
     t.string "asset_class", limit: 32
-    t.string "category", limit: 64
-    t.string "focus", limit: 64
+    t.string "category", limit: 128
+    t.string "focus", limit: 128
     t.string "development_level", limit: 32
     t.string "region", limit: 32
     t.boolean "is_leveraged"
