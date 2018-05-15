@@ -7,6 +7,7 @@ namespace :db do
     
     errors = 0
     exceptions = 0
+    file_exceptions = 0
     
     File.open("#{args[:table]}-log.txt", 'w') do |flog|
       data_files = 1 == args[:historical] ? Dir["/data/csv_output/arc_#{args[:table]}/*.csv"] : Dir["/data/csv_output/#{args[:table]}/*.csv"]
@@ -19,31 +20,36 @@ namespace :db do
         puts "File #{cnt} (#{pct.round(1)}%)"
         cnt += 1
         
-        CSV.foreach(fname, :encoding => 'windows-1251:utf-8') do |row|
-          rec = load_recs(args[:table], row)
-          
-          if rec.valid?
-            begin
-              rec.save!
-            rescue Exception => ex
-              flog.write("#{fname}: line #{idx}\n    #{row}\n    Exception: #{ex.message}\n")
-              exceptions += 1
+        begin
+          CSV.foreach(fname, :encoding => 'iso-8859-1:utf-8') do |row|
+            rec = load_recs(args[:table], row)
+            
+            if rec.valid?
+              begin
+                rec.save!
+              rescue Exception => ex
+                flog.write("#{fname}: line #{idx}\n    #{row}\n    Exception: #{ex.message}\n")
+                exceptions += 1
+              end
+            else
+              flog.write("#{fname}: line #{idx}\n    #{row}\n    #{rec.errors.full_messages.to_sentence}\n")
+              errors += 1
             end
-          else
-            flog.write("#{fname}: line #{idx}\n    #{row}\n    #{rec.errors.full_messages.to_sentence}\n")
-            errors += 1
-          end
-        
-          idx += 1
-        end    
+          
+            idx += 1
+          end  
+        rescue Exception => ex
+          flog.write("#{fname}: line #{idx}\n    #{row}\n    File exception on #{fname}: #{ex.message}\n")
+          file_exceptions += 1
+        end  
       end
       
-      puts "#{errors} Errors; #{exceptions} Exceptions"
+      puts "#{errors} Errors; #{exceptions} Exceptions; #{file_exceptions} File Exceptions"
       num_recs = count_records(args[:table])
       if 0 == num_recs
         puts "Error rate: 100%"
       else
-        pct = (errors + exceptions).to_f / num_recs * 100.0
+        pct = (errors + exceptions + file_exceptions).to_f / num_recs * 100.0
         puts "Error rate: #{pct.round(4)}% on #{num_recs} records"
       end
     end
