@@ -65,15 +65,17 @@
 class Industry < ApplicationRecord
   validates_presence_of :run_date, :composite_ticker
   validates_length_of :distribution_frequency, :is => 1, :allow_nil => true
+  validates_length_of :avg_volume,
+                      :maximum => 10, :allow_nil => true
   validates_length_of :put_vol, :call_vol,
                       :maximum => 14, :allow_nil => true
   validates_length_of :leverage_factor, :fiscal_year_end, :option_volume,
                       :maximum => 16, :allow_nil => true
   validates_length_of :asset_class, :development_level, :region, :put_call_ratio,
                       :maximum => 32, :allow_nil => true
-  validates_length_of :administrator, :advisor, :transfer_agent, :trustee, :listing_exchange, :lead_market_maker,
+  validates_length_of :administrator, :advisor, :transfer_agent, :trustee, :listing_exchange, :lead_market_maker, :issuer, :tax_classification,
                       :maximum => 64, :allow_nil => true
-  validates_length_of :custodian, :distributor, :subadvisor, :futures_commission_merchant,
+  validates_length_of :custodian, :distributor, :subadvisor, :futures_commission_merchant, :related_index, :name,
                       :maximum => 128, :allow_nil => true
   validates_inclusion_of :is_etn, :is_leveraged, :active, :option_available, :in => [true, false, nil]
   validates_numericality_of :fund_aum, :creation_unit_size, :creation_fee, :short_interest, :num_constituents, :discount_premium,
