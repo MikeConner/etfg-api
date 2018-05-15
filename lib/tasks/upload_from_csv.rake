@@ -17,7 +17,7 @@ namespace :db do
       data_files.each do |fname|
         idx = 1
         pct = cnt.to_f / num_files.to_f * 100.0
-        puts "File #{cnt} (#{pct.round(1)}%)"
+        puts "File #{cnt} (#{pct.round(1)}%) [#{errors + exceptions + file_exceptions} errors]"
         cnt += 1
         
         begin
