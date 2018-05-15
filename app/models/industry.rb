@@ -5,11 +5,11 @@
 #  id                          :bigint(8)        not null, primary key
 #  run_date                    :date             not null
 #  composite_ticker            :string           not null
-#  issuer                      :string(32)
+#  issuer                      :string(64)
 #  name                        :string(128)
 #  inception_date              :date
-#  related_index               :string(128)
-#  tax_classification          :string(32)
+#  related_index               :string
+#  tax_classification          :string(64)
 #  is_etn                      :boolean
 #  fund_aum                    :decimal(24, 6)
 #  avg_volume                  :string(10)
@@ -70,11 +70,11 @@ class Industry < ApplicationRecord
                       :maximum => 14, :allow_nil => true
   validates_length_of :leverage_factor, :fiscal_year_end, :option_volume,
                       :maximum => 16, :allow_nil => true
-  validates_length_of :issuer, :tax_classification, :asset_class, :category, :focus, :development_level, :region, :put_call_ratio, 
+  validates_length_of :asset_class, :category, :focus, :development_level, :region, :put_call_ratio, 
                       :maximum => 32, :allow_nil => true
-  validates_length_of :administrator, :advisor, :transfer_agent, :trustee, :listing_exchange, :lead_market_maker,
+  validates_length_of :administrator, :advisor, :transfer_agent, :trustee, :listing_exchange, :lead_market_maker, :issuer, :tax_classification,
                       :maximum => 64, :allow_nil => true
-  validates_length_of :name, :related_index, :custodian, :distributor, :subadvisor, :futures_commission_merchant,
+  validates_length_of :name, :custodian, :distributor, :subadvisor, :futures_commission_merchant,
                       :maximum => 128, :allow_nil => true
   validates_inclusion_of :is_etn, :is_leveraged, :active, :option_available, :in => [true, false, nil]
   validates_numericality_of :fund_aum, :creation_unit_size, :creation_fee, :short_interest, :num_constituents, :discount_premium,
