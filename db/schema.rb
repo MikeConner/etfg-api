@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_15_044937) do
+ActiveRecord::Schema.define(version: 2018_05_15_051945) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -117,11 +117,11 @@ ActiveRecord::Schema.define(version: 2018_05_15_044937) do
   create_table "industries", force: :cascade do |t|
     t.date "run_date", null: false
     t.string "composite_ticker", null: false
-    t.string "issuer", limit: 128
+    t.string "issuer"
     t.string "name"
     t.date "inception_date"
-    t.string "related_index"
-    t.string "tax_classification", limit: 128
+    t.string "related_index", limit: 128
+    t.string "tax_classification"
     t.boolean "is_etn"
     t.decimal "fund_aum", precision: 24, scale: 6
     t.string "avg_volume", limit: 16

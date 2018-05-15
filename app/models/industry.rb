@@ -5,11 +5,11 @@
 #  id                          :bigint(8)        not null, primary key
 #  run_date                    :date             not null
 #  composite_ticker            :string           not null
-#  issuer                      :string(128)
+#  issuer                      :string
 #  name                        :string
 #  inception_date              :date
-#  related_index               :string
-#  tax_classification          :string(128)
+#  related_index               :string(128)
+#  tax_classification          :string
 #  is_etn                      :boolean
 #  fund_aum                    :decimal(24, 6)
 #  avg_volume                  :string(16)
@@ -73,7 +73,7 @@ class Industry < ApplicationRecord
                       :maximum => 32, :allow_nil => true
   validates_length_of :administrator, :advisor, :transfer_agent, :trustee, :listing_exchange, :lead_market_maker,
                       :maximum => 64, :allow_nil => true
-  validates_length_of :custodian, :distributor, :subadvisor, :futures_commission_merchant, :issuer, :tax_classification,
+  validates_length_of :custodian, :distributor, :subadvisor, :futures_commission_merchant,
                       :maximum => 128, :allow_nil => true
   validates_inclusion_of :is_etn, :is_leveraged, :active, :option_available, :in => [true, false, nil]
   validates_numericality_of :fund_aum, :creation_unit_size, :creation_fee, :short_interest, :num_constituents, :discount_premium,
