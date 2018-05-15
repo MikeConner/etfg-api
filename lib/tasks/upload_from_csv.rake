@@ -19,7 +19,7 @@ namespace :db do
         puts "File #{cnt} (#{pct.round(1)}%)"
         cnt += 1
         
-        CSV.foreach(fname) do |row|
+        CSV.foreach(fname, :encoding => 'windows-1251:utf-8') do |row|
           rec = load_recs(args[:table], row)
           
           if rec.valid?
