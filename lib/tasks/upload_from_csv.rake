@@ -39,7 +39,11 @@ namespace :db do
                 exceptions += 1
               end
             else
-              flog.write("#{fname}: line #{idx}\n    #{row}\n    #{rec.errors.full_messages.to_sentence}\n")
+              flog.write("#{fname}: line #{idx}\n    #{rec.errors.full_messages.to_sentence}\n")
+              flog.write('------\n')
+              rec.attributes.each do |key, value|
+                flog.write("#{key}: #{value}\n")
+              end
               errors += 1
             end
           
@@ -116,7 +120,7 @@ namespace :db do
     
     result  
   end
-  
+    
   def load_recs(table, row, default_date)
     run_date = process_run_date(row[0])
     
