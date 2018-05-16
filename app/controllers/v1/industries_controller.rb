@@ -143,7 +143,7 @@ class V1::IndustriesController < ApplicationController
     render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :bad_request
   end
   
- # /v1/industries/products?date=20180509
+  # /v1/industries/products?date=20180509
   # /v1/industries/products?start_date=20180509&end_date=20180512
   def products
     unless params.has_key?(:date) or (params.has_key?(:start_date) and params.has_key?(:end_date))

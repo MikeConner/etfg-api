@@ -18,7 +18,11 @@ Rails.application.routes.draw do
         get 'csv'
         get 'products'
       end
-    end    
+    end  
+    
+    resources :fundflows, :only => [:index, :show] do
+      get 'products', :on => :collection
+    end  
   end
 
   namespace :v1 do
@@ -50,8 +54,8 @@ Rails.application.routes.draw do
   get '/api/constituent/figi/:date/:fund/getByFigi', to: 'constituents#by_figi'  
   get '/api/constituent/sedol/:date/:fund/getBySedol', to: 'constituents#by_sedol'  
   
-  get '/api/fundflow/:date/:fund/getFundFlow', to: 'fund_flows#by_fund'
-  get '/api/fundflow/:date/getFundFlow', to: 'fund_flows#by_date'
+  get '/api/fundflow/:date/:fund/getFundFlow', to: 'v1/fundflows#show'
+  get '/api/fundflow/:date/getFundFlow', to: 'v1/fundflows#index'
   
   get '/api/industry/csv/:date/:fund/getIndustry', to: 'v1/industries#csv'
   get '/api/industry/csv/:date/getIndustry', to: 'v1/industries#csv'
