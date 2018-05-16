@@ -26,7 +26,7 @@ class V1::IndustriesController < ApplicationController
     end
     
   rescue Exception => ex
-    render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :bad_request    
+    render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :internal_server_error    
   end
   
   # /v1/industries/:fund?date=20180509
@@ -52,7 +52,7 @@ class V1::IndustriesController < ApplicationController
     end    
 
   rescue Exception => ex
-    render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :bad_request
+    render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :internal_server_error
   end
   
   # All these work with start/end dates as well
@@ -102,7 +102,7 @@ class V1::IndustriesController < ApplicationController
     end    
             
   rescue Exception => ex
-    render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :bad_request
+    render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :internal_server_error
   end
   
   # /v1/industries/:fund/exposures?date=20180509&type=geographic
@@ -140,7 +140,7 @@ class V1::IndustriesController < ApplicationController
     end          
     
   rescue Exception => ex
-    render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :bad_request
+    render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :internal_server_error
   end
   
   # /v1/industries/products?date=20180509
@@ -153,7 +153,7 @@ class V1::IndustriesController < ApplicationController
     render :json => Industry.where(Utilities.date_clause(params, 'industries')).order(:composite_ticker).map(&:composite_ticker).uniq
     
   rescue Exception => ex
-    render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :bad_request    
+    render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :internal_server_error    
   end
     
 private

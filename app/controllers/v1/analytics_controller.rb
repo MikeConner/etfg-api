@@ -25,7 +25,7 @@ class V1::AnalyticsController < ApplicationController
     end    
 
   rescue Exception => ex
-    render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :bad_request
+    render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :internal_server_error
   end
   
   # /v1/analytics/:fund?date=20180509
@@ -51,7 +51,7 @@ class V1::AnalyticsController < ApplicationController
     end    
 
   rescue Exception => ex
-    render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :bad_request
+    render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :internal_server_error
   end
     
   # /v1/analytics/:fund/aggregate?date=20180509&group=asset_class&function=max
@@ -110,7 +110,7 @@ class V1::AnalyticsController < ApplicationController
     render :json => ActiveRecord::Base.connection.execute(sql)
     
   rescue Exception => ex
-    render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :bad_request
+    render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :internal_server_error
   end
   
   # /v1/analytics/products?date=20180509
@@ -123,7 +123,7 @@ class V1::AnalyticsController < ApplicationController
     render :json => Analytic.where(Utilities.date_clause(params, 'analytics')).order(:composite_ticker).map(&:composite_ticker).uniq
     
   rescue Exception => ex
-    render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :bad_request
+    render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :internal_server_error
   end
   
 private  

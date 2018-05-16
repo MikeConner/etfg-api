@@ -23,6 +23,13 @@ Rails.application.routes.draw do
     resources :fundflows, :only => [:index, :show] do
       get 'products', :on => :collection
     end  
+    
+    resources :constituents, :only => [:show] do
+      member do
+        get 'products'
+        get 'top'
+      end
+    end
   end
 
   namespace :v1 do
@@ -42,17 +49,18 @@ Rails.application.routes.draw do
 
   # Legacy routes
   
-  get '/api/topconstituents/weight/:date/:fund/getTopConstituents', to: 'constituents#top'
-  get '/api/constituent/cusip/:date/:fund/:id/getByCusip', to: 'constituents#by_cusip_id'  
-  get '/api/constituent/isin/:date/:fund/:id/getByIsin', to: 'constituents#by_isin_id'  
-  get '/api/constituent/figi/:date/:fund/:id/getByFigi', to: 'constituents#by_figi_id'  
-  get '/api/constituent/sedol/:date/:fund/:id/getBySedol', to: 'constituents#by_sedol_id'  
+  get '/api/topconstituents/weight/:date/:fund/getTopConstituents', to: 'v1/constituents#top'
+  
+  get '/api/constituent/:type/:date/:fund/:identifier/getByCusip', to: 'v1/constituents#show'  
+  get '/api/constituent/:type/:date/:fund/:identifier/getByIsin', to: 'v1/constituents#show'  
+  get '/api/constituent/:type/:date/:fund/:identifier/getByFigi', to: 'v1/constituents#show'  
+  get '/api/constituent/:type/:date/:fund/:identifier/getBySedol', to: 'v1/constituents#show'  
 
-  # These are exactly equivalent, unless I don't understand something?
-  get '/api/constituent/cusip/:date/:fund/getByCusip', to: 'constituents#by_cusip'  
-  get '/api/constituent/isin/:date/:fund/getByIsin', to: 'constituents#by_isin'  
-  get '/api/constituent/figi/:date/:fund/getByFigi', to: 'constituents#by_figi'  
-  get '/api/constituent/sedol/:date/:fund/getBySedol', to: 'constituents#by_sedol'  
+  # :type = cusip/isin/figi/sedol
+  get '/api/constituent/:type/:date/:fund/getByCusip', to: 'v1/constituents#show'  
+  get '/api/constituent/:type/:date/:fund/getByIsin', to: 'v1/constituents#show'  
+  get '/api/constituent/:type/:date/:fund/getByFigi', to: 'v1/constituents#show'  
+  get '/api/constituent/:type/:date/:fund/getBySedol', to: 'v1/constituents#show'  
   
   get '/api/fundflow/:date/:fund/getFundFlow', to: 'v1/fundflows#show'
   get '/api/fundflow/:date/getFundFlow', to: 'v1/fundflows#index'

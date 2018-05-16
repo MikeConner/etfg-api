@@ -25,7 +25,7 @@ class V1::FundflowsController < ApplicationController
     end
     
   rescue Exception => ex
-    render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :bad_request    
+    render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :internal_server_error    
   end
   
   # /v1/fundflows/:fund?date=20180509
@@ -51,7 +51,7 @@ class V1::FundflowsController < ApplicationController
     end    
 
   rescue Exception => ex
-    render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :bad_request
+    render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :internal_server_error
   end
 
   # /v1/fundflows/products?date=20180509
@@ -64,7 +64,7 @@ class V1::FundflowsController < ApplicationController
     render :json => FundFlow.where(Utilities.date_clause(params, 'fundflows')).order(:composite_ticker).map(&:composite_ticker).uniq
     
   rescue Exception => ex
-    render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :bad_request    
+    render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :internal_server_error    
   end
   
 private
