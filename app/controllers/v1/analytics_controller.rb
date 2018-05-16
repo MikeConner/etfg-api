@@ -4,26 +4,13 @@ class V1::AnalyticsController < ApplicationController
   before_action :authenticate_user!
   before_action :check_permissions
 
-  # /v1/analytics/products?date=20180509
-  # /v1/analytics/products?start_date=20180509&end_date=20180512
-  def products
-    unless params.has_key?(:date) or (params.has_key?(:start_date) and params.has_key?(:end_date))
-      render :json => {:error => 'Date (or start_date/end_date) required'}, :status => :bad_request and return
-    end
-    
-    render :json => Analytic.where(Utilities.date_clause(params, 'analytics')).order(:composite_ticker).map(&:composite_ticker).uniq
-    
-  rescue Exception => ex
-    render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :bad_request
-  end
-  
   # /v1/analytics?date=20180509
   # /v1/analytics?start_date=20180509&end_date=20180520
   # /api/analytics/:date/getAnalytics
   # /api/analytics/start_date:end_date/getAnalytics
   def index
     unless params.has_key?(:date) or (params.has_key?(:start_date) and params.has_key?(:end_date))
-      render :json => {:error => 'Date (or start_date/end_date) required'}, :status => :bad_request and return
+      render :json => {:error => I18n.t('date_required')}, :status => :bad_request and return
     end
            
     result = []
@@ -47,7 +34,7 @@ class V1::AnalyticsController < ApplicationController
   # /api/analytics/start_date:end_date/:fund/getAnalytics
   def show
     unless params.has_key?(:date) or (params.has_key?(:start_date) and params.has_key?(:end_date))
-      render :json => {:error => 'Date required'}, :status => :bad_request and return
+      render :json => {:error => I18n.t('date_required')}, :status => :bad_request and return
     end
 
     fund = params[:id] || params[:fund]
@@ -73,7 +60,7 @@ class V1::AnalyticsController < ApplicationController
   # /api/analytics/start_date:end_date/:fund/:group/:function/getAggregateFunction
   def aggregate
     unless params.has_key?(:date) or (params.has_key?(:start_date) and params.has_key?(:end_date))
-      render :json => {:error => 'Date required'}, :status => :bad_request and return
+      render :json => {:error => I18n.t('date_required')}, :status => :bad_request and return
     end
     unless params.has_key?(:fund) or params.has_key?(:id)
       render :json => {:error => 'Ticker required'}, :status => :bad_request and return
@@ -121,6 +108,19 @@ class V1::AnalyticsController < ApplicationController
           "(SELECT composite_ticker FROM industries WHERE (#{where_clause}))"
     
     render :json => ActiveRecord::Base.connection.execute(sql)
+    
+  rescue Exception => ex
+    render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :bad_request
+  end
+  
+  # /v1/analytics/products?date=20180509
+  # /v1/analytics/products?start_date=20180509&end_date=20180512
+  def products
+    unless params.has_key?(:date) or (params.has_key?(:start_date) and params.has_key?(:end_date))
+      render :json => {:error => I18n.t('date_required')}, :status => :bad_request and return
+    end
+    
+    render :json => Analytic.where(Utilities.date_clause(params, 'analytics')).order(:composite_ticker).map(&:composite_ticker).uniq
     
   rescue Exception => ex
     render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :bad_request

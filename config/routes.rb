@@ -9,7 +9,15 @@ Rails.application.routes.draw do
     end
     
     resources :industries, :only => [:index, :show] do
-      get 'exposures', :on => :member
+      member do
+        get 'exposures'
+        get 'csv'
+      end
+      
+      collection do
+        get 'csv'
+        get 'products'
+      end
     end    
   end
 
@@ -45,11 +53,11 @@ Rails.application.routes.draw do
   get '/api/fundflow/:date/:fund/getFundFlow', to: 'fund_flows#by_fund'
   get '/api/fundflow/:date/getFundFlow', to: 'fund_flows#by_date'
   
-  get '/api/industry/csv/:date/:fund/getIndustry', to: 'industries#csv_by_fund'
-  get '/api/industry/csv/:date/getIndustry', to: 'industries#csv_by_date'
-  get '/api/industry/:date/:fund/getIndustry', to: 'industries#by_fund'
-  get '/api/industry/:date/getIndustry', to: 'industries#by_date'
-  get '/api/industry/exposures/:type/:date/:fund/getIndustryExposures', to: 'industries#legacy_exposures'
+  get '/api/industry/csv/:date/:fund/getIndustry', to: 'v1/industries#csv'
+  get '/api/industry/csv/:date/getIndustry', to: 'v1/industries#csv'
+  get '/api/industry/:date/:fund/getIndustry', to: 'v1/industries#show'
+  get '/api/industry/:date/getIndustry', to: 'v1/industries#index'
+  get '/api/industry/exposures/:type/:date/:fund/getIndustryExposures', to: 'v1/industries#exposures'
   
   # Analytics
   get '/api/analytics/:date/:fund/:group/:function/getAggregateFunction', to: 'v1/analytics#aggregate'

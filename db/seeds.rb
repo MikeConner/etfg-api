@@ -67,7 +67,7 @@ if 0 == Industry.count
   fname = '2017-03-31_industry.csv'
   idx = 1
   CSV.foreach(fname) do |row|
-    rec = Industry.new(:run_date => (Date.strptime(row[0], "%m/%d/%Y") rescue nil),
+    rec = Industry.new(:run_date => (Date.strptime(row[0], "%m/%d/%y") rescue nil),
                        :composite_ticker => row[1],
                        :issuer => row[2].nullable,
                        :name => row[3].nullable,
