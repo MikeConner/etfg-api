@@ -30,4 +30,5 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  valid_function: "Valid function required: one of (%{functions})"
+  valid_group: "Valid group required: one or more of (%{groups}), colon-delimited"

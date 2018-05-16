@@ -41,6 +41,10 @@
 #
 
 class Analytic < ApplicationRecord
+  
+  VALID_FUNCTIONS = ['min', 'max', 'avg']
+  VALID_GROUPS = ['asset_class', 'focus', 'region', 'category', 'development_level']
+  
   validates_presence_of :run_date
   validates_length_of :composite_ticker, :maximum => 8
   validates_numericality_of :risk_total_score, :risk_volatility, :risk_deviation, :risk_country, :risk_structure, :risk_liquidity, :risk_efficiency,
