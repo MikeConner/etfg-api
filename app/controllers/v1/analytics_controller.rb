@@ -4,7 +4,7 @@ class V1::AnalyticsController < ApplicationController
   before_action :authenticate_user!
   before_action :check_permissions
 
-  # /v1/analytics?date=20180509
+  # /v1/analytics?date=20180509&output=[csv|json]
   # /v1/analytics?start_date=20180509&end_date=20180520
   # /api/analytics/:date/getAnalytics
   # /api/analytics/start_date:end_date/getAnalytics
@@ -12,6 +12,8 @@ class V1::AnalyticsController < ApplicationController
     unless params.has_key?(:date) or (params.has_key?(:start_date) and params.has_key?(:end_date))
       render :json => {:error => I18n.t('date_required')}, :status => :bad_request and return
     end
+    
+    set_output_type
            
     result = []
     Analytic.where(Utilities.date_clause(params, 'analytics')).find_in_batches do |batch|
@@ -21,14 +23,22 @@ class V1::AnalyticsController < ApplicationController
     if result.empty?
       head :not_found
     else
-      render :json => result
+      if 'csv' == @output_type
+        fname = params.has_key?(:date) ? "Analytics #{params[:date]}" : "Analytics #{params[:start_date]}_#{params[:end_date]}"
+        send_data Utilities.csv_emitter(result),
+                  :filename => "#{fname}.csv",
+                  :type => "text/csv",
+                  :disposition => 'attachment'
+      else
+        render :json => result
+      end
     end    
 
   rescue Exception => ex
     render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :internal_server_error
   end
   
-  # /v1/analytics/:fund?date=20180509
+  # /v1/analytics/:fund?date=20180509&output=[csv|json]
   # /v1/analytics/:fund?start_date=20180509&end_date=20180512
   # /api/analytics/:date/:fund/getAnalytics
   # /api/analytics/start_date:end_date/:fund/getAnalytics
@@ -38,6 +48,7 @@ class V1::AnalyticsController < ApplicationController
     end
 
     fund = params[:id] || params[:fund]
+    set_output_type
            
     result = []
     Analytic.where(Utilities.date_clause(params, 'analytics')).where(:composite_ticker => fund).find_in_batches do |batch|
@@ -47,7 +58,15 @@ class V1::AnalyticsController < ApplicationController
     if result.empty?
       head :not_found
     else
-      render :json => result
+      if 'csv' == @output_type
+        fname = params.has_key?(:date) ? "Analytics #{fund}-#{params[:date]}" : "Analytics #{fund}-#{params[:start_date]}_#{params[:end_date]}"
+        send_data Utilities.csv_emitter(result),
+                  :filename => "#{fname}.csv",
+                  :type => "text/csv",
+                  :disposition => 'attachment'
+      else
+        render :json => result
+      end
     end    
 
   rescue Exception => ex
@@ -71,7 +90,7 @@ class V1::AnalyticsController < ApplicationController
     unless params.has_key?(:function) and Analytic::VALID_FUNCTIONS.include?(params[:function].downcase)
       render :json => {:error => I18n.t('valid_function', :functions => Analytic::VALID_FUNCTIONS.join(','))}, :status => :bad_request and return
     end
-
+        
     # Extract and validate groups
     groups = []
     params[:group].downcase.split(/:/).each do |g|
@@ -127,6 +146,12 @@ class V1::AnalyticsController < ApplicationController
   end
   
 private  
+  # can be csv or json (default)
+  def set_output_type
+    # downcase will throw if nil; default to json if missing
+    @output_type = params[:output].downcase rescue 'json'
+  end
+
   # Params like "asset class" might have a space or underscore; normalize to underscore
   # Also ignore capitalization and remove leading/trailing whitespace
   def spacey_param(p)

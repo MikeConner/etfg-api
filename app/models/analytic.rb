@@ -36,11 +36,10 @@
 #  quant_quality_firm            :decimal(16, 4)
 #  quant_composite_quality       :decimal(16, 4)
 #  quant_grade                   :string(1)
-#  created_at                    :datetime         not null
-#  updated_at                    :datetime         not null
 #
 
 class Analytic < ApplicationRecord
+  self.record_timestamps = false
   
   VALID_FUNCTIONS = ['min', 'max', 'avg']
   VALID_GROUPS = ['asset_class', 'focus', 'region', 'category', 'development_level']

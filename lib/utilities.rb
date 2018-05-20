@@ -1,4 +1,18 @@
-module Utilities
+require 'csv'
+
+module Utilities  
+  def self.csv_emitter(data)
+   csv_string = CSV.generate do |csv|
+      csv << data[0].keys
+      
+      data.each do |row|
+        csv << row.values
+      end
+    end 
+    
+    csv_string   
+  end
+  
   # Parse dates and date ranges out of parameters (common to all functions)
   def self.date_clause(params, table)
     if params.has_key?(:date)

@@ -18,11 +18,11 @@
 #  total_shares_held :decimal(18, 4)
 #  market_sector     :string(128)
 #  security_type     :string(128)
-#  created_at        :datetime         not null
-#  updated_at        :datetime         not null
 #
 
 class Constituent < ApplicationRecord
+  self.record_timestamps = false
+  
   validates_presence_of :run_date
   validates_length_of :composite_ticker, :maximum => 8, :allow_nil => true
   validates_numericality_of :weight, :market_value, :total_shares_held, :allow_nil => true

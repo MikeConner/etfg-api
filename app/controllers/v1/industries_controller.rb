@@ -1,11 +1,10 @@
-require 'csv'
 require 'utilities'
 
 class V1::IndustriesController < ApplicationController
   before_action :authenticate_user!
   before_action :check_permissions
   
-  # /v1/industries?date=20180509
+  # /v1/industries?date=20180509&output=[csv/json] (defaults to json)
   # /v1/industries?start_date=20180509&end_date=20180509
   # /api/industry/:date/getIndustry
   # /api/industry/start_date:end_date/getIndustry
@@ -13,6 +12,7 @@ class V1::IndustriesController < ApplicationController
     unless params.has_key?(:date) or (params.has_key?(:start_date) and params.has_key?(:end_date))
       render :json => {:error => I18n.t('date_required')}, :status => :bad_request and return
     end
+    set_output_type
       
     result = []
     Industry.where(Utilities.date_clause(params, 'industries')).find_in_batches do |batch|
@@ -22,14 +22,22 @@ class V1::IndustriesController < ApplicationController
     if result.empty?
       head :not_found
     else
-      render :json => result
+      if 'csv' == @output_type
+        fname = params.has_key?(:date) ? "Industry #{params[:date]}" : "Industry #{params[:start_date]}_#{params[:end_date]}"
+        send_data Utilities.csv_emitter(result),
+                  :filename => "#{fname}.csv",
+                  :type => "text/csv",
+                  :disposition => 'attachment'
+      else
+        render :json => result
+      end
     end
     
   rescue Exception => ex
     render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :internal_server_error    
   end
   
-  # /v1/industries/:fund?date=20180509
+  # /v1/industries/:fund?date=20180509&data_type=[csv|json]
   # /v1/industries/:fund?start_date=20180509&end_date=20180509
   # /api/industry/:date/:fund/getIndustry
   # /api/industry/start_date:end_date/:fund/getIndustry
@@ -39,6 +47,7 @@ class V1::IndustriesController < ApplicationController
     end
     
     fund = params[:id] || params[:fund]
+    set_output_type
     
     result = []
     Industry.where(Utilities.date_clause(params, 'industries')).where(:composite_ticker => fund).find_in_batches do |batch|
@@ -48,17 +57,21 @@ class V1::IndustriesController < ApplicationController
     if result.empty?
       head :not_found
     else
-      render :json => result
+      if 'csv' == @output_type
+        fname = params.has_key?(:date) ? "Industry #{fund}-#{params[:date]}" : "Industry #{fund}-#{params[:start_date]}_#{params[:end_date]}"
+        send_data Utilities.csv_emitter(result),
+                  :filename => "#{fname}.csv",
+                  :type => "text/csv",
+                  :disposition => 'attachment'
+      else
+        render :json => result
+      end
     end    
 
   rescue Exception => ex
     render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :internal_server_error
   end
   
-  # All these work with start/end dates as well
-  #
-  # /v1/industries/:fund/csv?date=20180509
-  # /v1/industries/csv?date=20180509
   # /api/industry/csv/:date/:fund/getIndustry
   # /api/industry/csv/:date/getIndustry
   def csv
@@ -66,8 +79,8 @@ class V1::IndustriesController < ApplicationController
       render :json => {:error => I18n.t('date_required')}, :status => :bad_request and return
     end
     
-    fund = params[:id] || params[:fund]
-    fname = params.has_key?(:date) ? "Industry #{params[:date]}" : "Industry #{params[:start_date]}_#{params[:end_date]}"
+    fund = params[:fund]
+    fname = params.has_key?(:date) ? "Industry #{fund} #{params[:date]}" : "Industry #{fund} #{params[:start_date]}_#{params[:end_date]}"
     
     result = []
         
@@ -86,16 +99,8 @@ class V1::IndustriesController < ApplicationController
     
     if result.empty?
       head :not_found
-    else
-      csv_string = CSV.generate do |csv|
-        csv << result[0].keys
-        
-        result.each do |row|
-          csv << row.values
-        end
-      end
-      
-      send_data csv_string,
+    else       
+      send_data Utilities.csv_emitter(result),
                 :filename => "#{fname}.csv",
                 :type => "text/csv",
                 :disposition => 'attachment'
@@ -105,7 +110,7 @@ class V1::IndustriesController < ApplicationController
     render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :internal_server_error
   end
   
-  # /v1/industries/:fund/exposures?date=20180509&type=geographic
+  # /v1/industries/:fund/exposures?date=20180509&type=geographic&output=[csv|json]
   # /v1/industries/:fund/exposures?start_date=20180509&end_date=20180512&type=geographic
   # /api/industry/exposures/:type/:date/:fund/getIndustryExposures
   # /api/industry/exposures/:type/start_date:end_date/:fund/getIndustryExposures
@@ -113,12 +118,12 @@ class V1::IndustriesController < ApplicationController
     unless params.has_key?(:date) or (params.has_key?(:start_date) and params.has_key?(:end_date))
       render :json => {:error => I18n.t('date_required')}, :status => :bad_request and return
     end
-    unless params.has_key?(:type) and 
-           ['geographic', 'currency', 'sector', 'industry_group', 'industry', 'subindustry', 'coupon', 'maturity'].include?(params[:type].downcase)
+    unless params.has_key?(:type) and Industry::VALID_EXPOSURES.include?(params[:type].downcase)
       render :json => {:error => 'Invalid exposure type'}, :status => :bad_request and return
     end
     
     fund = params[:id] || params[:fund]
+    set_output_type
     fieldname = "#{params[:type].downcase}_exposure"
     
     result = []
@@ -136,14 +141,23 @@ class V1::IndustriesController < ApplicationController
     if result.empty?
       head :not_found
     else
-      render :json => result
+      if 'csv' == @output_type
+        fname = params.has_key?(:date) ? "Industry #{fieldname}-#{fund}-#{params[:date]}" : "Industry #{fieldname}-#{fund}-#{params[:start_date]}_#{params[:end_date]}"
+        send_data Utilities.csv_emitter(result),
+                  :filename => "#{fname}.csv",
+                  :type => "text/csv",
+                  :disposition => 'attachment'
+      else
+        render :json => result
+      end
     end          
     
   rescue Exception => ex
     render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :internal_server_error
   end
   
-  # /v1/industries/products?date=20180509
+  # This doesn't support output type because it's just a simple list
+  # /v1/industries/products?date=20180509&
   # /v1/industries/products?start_date=20180509&end_date=20180512
   def products
     unless params.has_key?(:date) or (params.has_key?(:start_date) and params.has_key?(:end_date))
@@ -157,6 +171,12 @@ class V1::IndustriesController < ApplicationController
   end
     
 private
+  # can be csv or json (default)
+  def set_output_type
+    # downcase will throw if nil; default to json if missing
+    @output_type = params[:output].downcase rescue 'json'
+  end
+  
   def check_permissions
     unless current_user.has_permission(:read_industry)
       head :forbidden

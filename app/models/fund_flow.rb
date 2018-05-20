@@ -8,11 +8,11 @@
 #  shares           :decimal(14, 2)
 #  nav              :decimal(14, 6)
 #  value            :decimal(20, 6)
-#  created_at       :datetime         not null
-#  updated_at       :datetime         not null
 #
 
 class FundFlow < ApplicationRecord
+  self.record_timestamps = false
+
   validates_presence_of :run_date
   validates_length_of :composite_ticker, :maximum => 8
   validates_numericality_of :shares, :nav, :value, :allow_nil => true

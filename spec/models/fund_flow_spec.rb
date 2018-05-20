@@ -8,8 +8,6 @@
 #  shares           :decimal(14, 2)
 #  nav              :decimal(14, 6)
 #  value            :decimal(20, 6)
-#  created_at       :datetime         not null
-#  updated_at       :datetime         not null
 #
 
 require 'rails_helper'

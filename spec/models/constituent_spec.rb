@@ -18,8 +18,6 @@
 #  total_shares_held :decimal(18, 4)
 #  market_sector     :string(128)
 #  security_type     :string(128)
-#  created_at        :datetime         not null
-#  updated_at        :datetime         not null
 #
 
 require 'rails_helper'

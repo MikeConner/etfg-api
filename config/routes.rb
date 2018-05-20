@@ -9,15 +9,8 @@ Rails.application.routes.draw do
     end
     
     resources :industries, :only => [:index, :show] do
-      member do
-        get 'exposures'
-        get 'csv'
-      end
-      
-      collection do
-        get 'csv'
-        get 'products'
-      end
+      get 'exposures', :on => :member
+      get 'products', :on => :collection
     end  
     
     resources :fundflows, :only => [:index, :show] do

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_14_033645) do
+ActiveRecord::Schema.define(version: 2018_05_19_201934) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -73,8 +73,9 @@ ActiveRecord::Schema.define(version: 2018_05_14_033645) do
     t.decimal "quant_quality_firm", precision: 16, scale: 4
     t.decimal "quant_composite_quality", precision: 16, scale: 4
     t.string "quant_grade", limit: 1
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.index ["composite_ticker"], name: "index_analytics_on_composite_ticker"
+    t.index ["run_date", "composite_ticker"], name: "index_analytics_on_run_date_and_composite_ticker", unique: true
+    t.index ["run_date"], name: "index_analytics_on_run_date"
   end
 
   create_table "constituents", force: :cascade do |t|
@@ -93,15 +94,9 @@ ActiveRecord::Schema.define(version: 2018_05_14_033645) do
     t.decimal "total_shares_held", precision: 18, scale: 4
     t.string "market_sector", limit: 128
     t.string "security_type", limit: 128
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.index ["composite_ticker"], name: "index_constituents_on_composite_ticker"
-    t.index ["cusip"], name: "index_constituents_on_cusip"
-    t.index ["figi"], name: "index_constituents_on_figi"
-    t.index ["isin"], name: "index_constituents_on_isin"
-    t.index ["run_date", "composite_ticker"], name: "index_constituents_on_run_date_and_composite_ticker"
+    t.index ["constituent_name"], name: "index_constituents_on_constituent_name"
     t.index ["run_date"], name: "index_constituents_on_run_date"
-    t.index ["sedol"], name: "index_constituents_on_sedol"
   end
 
   create_table "fund_flows", force: :cascade do |t|
@@ -110,18 +105,19 @@ ActiveRecord::Schema.define(version: 2018_05_14_033645) do
     t.decimal "shares", precision: 14, scale: 2
     t.decimal "nav", precision: 14, scale: 6
     t.decimal "value", precision: 20, scale: 6
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.index ["composite_ticker"], name: "index_fund_flows_on_composite_ticker"
+    t.index ["run_date", "composite_ticker"], name: "index_fund_flows_on_run_date_and_composite_ticker", unique: true
+    t.index ["run_date"], name: "index_fund_flows_on_run_date"
   end
 
   create_table "industries", force: :cascade do |t|
     t.date "run_date", null: false
     t.string "composite_ticker", null: false
-    t.string "issuer", limit: 64
+    t.string "issuer", limit: 32
     t.string "name", limit: 128
     t.date "inception_date"
     t.string "related_index", limit: 128
-    t.string "tax_classification", limit: 64
+    t.string "tax_classification", limit: 32
     t.boolean "is_etn"
     t.decimal "fund_aum", precision: 24, scale: 6
     t.string "avg_volume", limit: 10
@@ -170,8 +166,9 @@ ActiveRecord::Schema.define(version: 2018_05_14_033645) do
     t.decimal "fee_waivers", precision: 12, scale: 4
     t.decimal "net_expenses", precision: 12, scale: 4
     t.string "lead_market_maker", limit: 64
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.index ["composite_ticker"], name: "index_industries_on_composite_ticker"
+    t.index ["run_date", "composite_ticker"], name: "index_industries_on_run_date_and_composite_ticker", unique: true
+    t.index ["run_date"], name: "index_industries_on_run_date"
   end
 
   create_table "users", force: :cascade do |t|

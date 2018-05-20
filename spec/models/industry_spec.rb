@@ -5,11 +5,11 @@
 #  id                          :bigint(8)        not null, primary key
 #  run_date                    :date             not null
 #  composite_ticker            :string           not null
-#  issuer                      :string(64)
+#  issuer                      :string(32)
 #  name                        :string(128)
 #  inception_date              :date
 #  related_index               :string(128)
-#  tax_classification          :string(64)
+#  tax_classification          :string(32)
 #  is_etn                      :boolean
 #  fund_aum                    :decimal(24, 6)
 #  avg_volume                  :string(10)
@@ -58,8 +58,6 @@
 #  fee_waivers                 :decimal(12, 4)
 #  net_expenses                :decimal(12, 4)
 #  lead_market_maker           :string(64)
-#  created_at                  :datetime         not null
-#  updated_at                  :datetime         not null
 #
 
 require 'rails_helper'
