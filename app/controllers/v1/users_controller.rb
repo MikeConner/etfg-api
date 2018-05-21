@@ -1,6 +1,7 @@
 class V1::UsersController < ApplicationController
   before_action :authenticate_user!
-  before_action :check_permissions
+  before_action :check_permissions, :except => [:create, :destroy]
+  before_action :check_manage_users, :only => [:create, :destroy]
   
   def index
     result = []
@@ -19,7 +20,7 @@ class V1::UsersController < ApplicationController
       head :not_found and return
     end
     
-    render :json => get_permissions(user)
+    render :json => get_permissions(user).except(:id)
   rescue Exception => ex
     render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :internal_server_error    
   end
@@ -81,6 +82,12 @@ class V1::UsersController < ApplicationController
 private
   def get_permissions(u)
     {:id => u.id, :username => u.username, :permissions => u.actions.pluck(:description)}
+  end
+  
+  def check_manage_users
+    unless current_user.has_permission(:manage_users)
+      head :forbidden
+    end    
   end
   
   def check_permissions
