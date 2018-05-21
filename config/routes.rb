@@ -23,6 +23,8 @@ Rails.application.routes.draw do
         get 'top'
       end
     end
+    
+    resources :users, :except => [:new, :edit]
   end
 
   namespace :v1 do

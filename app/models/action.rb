@@ -16,7 +16,7 @@ class Action < ApplicationRecord
     
   has_and_belongs_to_many :users
   
-  enum description: [:read_industry, :read_analytics, :read_fund_flow, :read_constituents]
+  enum description: [:read_industry, :read_analytics, :read_fund_flow, :read_constituents, :change_permissions, :manage_users]
   
   def to_s
     self.description.to_s.humanize
