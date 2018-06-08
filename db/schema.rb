@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_19_201934) do
+ActiveRecord::Schema.define(version: 2018_06_08_205823) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -80,7 +80,7 @@ ActiveRecord::Schema.define(version: 2018_05_19_201934) do
 
   create_table "constituents", force: :cascade do |t|
     t.date "run_date", null: false
-    t.string "composite_ticker", limit: 8, null: false
+    t.string "composite_ticker", limit: 12, null: false
     t.string "identifier", limit: 32
     t.string "constituent_name"
     t.decimal "weight", precision: 10, scale: 6

@@ -4,7 +4,7 @@
 #
 #  id                :bigint(8)        not null, primary key
 #  run_date          :date             not null
-#  composite_ticker  :string(8)        not null
+#  composite_ticker  :string(12)       not null
 #  identifier        :string(32)
 #  constituent_name  :string
 #  weight            :decimal(10, 6)
