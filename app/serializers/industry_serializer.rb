@@ -4,7 +4,7 @@
 #
 #  id                          :bigint(8)        not null, primary key
 #  run_date                    :date             not null
-#  composite_ticker            :string           not null
+#  composite_ticker            :string(12)       not null
 #  issuer                      :string(32)
 #  name                        :string(128)
 #  inception_date              :date

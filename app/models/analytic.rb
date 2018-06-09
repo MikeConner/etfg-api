@@ -4,7 +4,7 @@
 #
 #  id                            :bigint(8)        not null, primary key
 #  run_date                      :date             not null
-#  composite_ticker              :string(8)        not null
+#  composite_ticker              :string(12)       not null
 #  risk_total_score              :decimal(16, 4)
 #  risk_volatility               :decimal(16, 4)
 #  risk_deviation                :decimal(16, 4)

@@ -222,6 +222,7 @@ if 0 == Action.count
   ['icefeed', 'etpdata', 'cloudquote', 'icedata', 'icesignal', 'icebedge', 'pdtpartners', 'steadfastcap', 'fintechstudio', 'istra', 'bwater', 
    'wellington', 'wquant', 'wallachbeth', 'creditsdone', 'bodhitree', 'dbetfsales'].each do |username|
      u = User.find_by_username(username)
+     next if u.nil?
      
      u.actions << all_access
    end
@@ -229,24 +230,33 @@ if 0 == Action.count
    constituents_only = Action.find_by_description(:read_constituents)
    ['htdonline', 'ensofinancial', 'quantopian'].each do |username|
      u = User.find_by_username(username)
+     next if u.nil?
      
      u.actions << constituents_only
    end
    
    u = User.find_by_username('lsi_user')
-   u.actions << Action.find_by_description(:read_industry)
+   unless u.nil?
+     u.actions << Action.find_by_description(:read_industry)
+   end
    
    u = User.find_by_username('etfg_direct')
-   u.actions << Action.find_by_description(:read_industry)
-   u.actions << Action.find_by_description(:read_constituents)
+   unless u.nil?
+     u.actions << Action.find_by_description(:read_industry)
+     u.actions << Action.find_by_description(:read_constituents)
+   end
 
    u = User.find_by_username('fidopb')
-   u.actions << Action.find_by_description(:read_industry)
-   u.actions << Action.find_by_description(:read_fund_flow)
-   u.actions << Action.find_by_description(:read_constituents)
+   unless u.nil?
+     u.actions << Action.find_by_description(:read_industry)
+     u.actions << Action.find_by_description(:read_fund_flow)
+     u.actions << Action.find_by_description(:read_constituents)
+   end
    
    u = User.find_by_username('koyfin')
-   u.actions << Action.find_by_description(:read_industry)
-   u.actions << Action.find_by_description(:read_fund_flow)
-   u.actions << Action.find_by_description(:read_constituents)
+   unless u.nil?
+     u.actions << Action.find_by_description(:read_industry)
+     u.actions << Action.find_by_description(:read_fund_flow)
+     u.actions << Action.find_by_description(:read_constituents)
+   end
 end
