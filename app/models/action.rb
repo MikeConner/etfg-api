@@ -16,7 +16,8 @@ class Action < ApplicationRecord
     
   has_and_belongs_to_many :users
   
-  enum description: [:read_industry, :read_analytics, :read_fund_flow, :read_constituents, :change_permissions, :manage_users]
+  # :full_historical lets an internal user access < 2017 data for testing
+  enum description: [:read_industry, :read_analytics, :read_fund_flow, :read_constituents, :change_permissions, :manage_users, :full_historical]
   
   def to_s
     self.description.to_s.humanize

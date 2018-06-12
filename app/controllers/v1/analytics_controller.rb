@@ -13,6 +13,13 @@ class V1::AnalyticsController < ApplicationController
       render :json => {:error => I18n.t('date_required')}, :status => :bad_request and return
     end
     
+    unless current_user.has_permission(:full_historical)   
+      earliest_date = Utilities.earliest_date(params, 'analytics')
+      if earliest_date < Utilities::TESTED_DATA_BOUNDARY
+        head :forbidden and return
+      end
+    end
+    
     set_output_type
            
     result = []
@@ -45,6 +52,13 @@ class V1::AnalyticsController < ApplicationController
   def show
     unless params.has_key?(:date) or (params.has_key?(:start_date) and params.has_key?(:end_date))
       render :json => {:error => I18n.t('date_required')}, :status => :bad_request and return
+    end
+
+    unless current_user.has_permission(:full_historical)   
+      earliest_date = Utilities.earliest_date(params, 'analytics')
+      if earliest_date < Utilities::TESTED_DATA_BOUNDARY
+        head :forbidden and return
+      end
     end
 
     fund = params[:id] || params[:fund]
@@ -103,6 +117,13 @@ class V1::AnalyticsController < ApplicationController
       end
     end
 
+    unless current_user.has_permission(:full_historical)   
+      earliest_date = Utilities.earliest_date(params, 'analytics')
+      if earliest_date < Utilities::TESTED_DATA_BOUNDARY
+        head :forbidden and return
+      end
+    end
+
     # Compute total list of numeric fields (all but the following list)
     field_list = Analytic.new.attributes
     ['id', 'run_date', 'composite_ticker', 'quant_grade', 'created_at', 'updated_at'].each do |f|
@@ -137,6 +158,13 @@ class V1::AnalyticsController < ApplicationController
   def products
     unless params.has_key?(:date) or (params.has_key?(:start_date) and params.has_key?(:end_date))
       render :json => {:error => I18n.t('date_required')}, :status => :bad_request and return
+    end
+
+    unless current_user.has_permission(:full_historical)   
+      earliest_date = Utilities.earliest_date(params, 'analytics')
+      if earliest_date < Utilities::TESTED_DATA_BOUNDARY
+        head :forbidden and return
+      end
     end
     
     render :json => Analytic.where(Utilities.date_clause(params, 'analytics')).order(:composite_ticker).map(&:composite_ticker).uniq

@@ -217,6 +217,7 @@ if 0 == Action.count
   category.actions.create!(:description => :read_analytics)
   category.actions.create!(:description => :read_fund_flow)
   category.actions.create!(:description => :read_constituents)
+  category.actions.create!(:description => :full_historical)
 
   all_access = Action.all
   ['icefeed', 'etpdata', 'cloudquote', 'icedata', 'icesignal', 'icebedge', 'pdtpartners', 'steadfastcap', 'fintechstudio', 'istra', 'bwater', 

@@ -30,6 +30,13 @@ class V1::ConstituentsController < ApplicationController
         render :json => {:error => 'Invalid constituent type'}, :status => :bad_request and return
       end
     end
+
+    unless current_user.has_permission(:full_historical)   
+      earliest_date = Utilities.earliest_date(params, 'constituents')
+      if earliest_date < Utilities::TESTED_DATA_BOUNDARY
+        head :forbidden and return
+      end
+    end
     
     fund = params[:id] || params[:fund]
     set_output_type
@@ -64,13 +71,42 @@ class V1::ConstituentsController < ApplicationController
     render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :internal_server_error    
   end
   
-  # /v1/constituents/:fund/products?date=20180509
+  # /v1/constituents/products?date=20180509
   def products
     unless params.has_key?(:date) or (params.has_key?(:start_date) and params.has_key?(:end_date))
       render :json => {:error => I18n.t('date_required')}, :status => :bad_request and return
     end
     
+    unless current_user.has_permission(:full_historical)   
+      earliest_date = Utilities.earliest_date(params, 'constituents')
+      if earliest_date < Utilities::TESTED_DATA_BOUNDARY
+        head :forbidden and return
+      end
+    end
+
     render :json => Constituent.where(Utilities.date_clause(params, 'constituents')).order(:composite_ticker).map(&:composite_ticker).uniq
+    
+  rescue Exception => ex
+    render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :internal_server_error    
+  end
+  
+  # /v1/constituents/:fund/contents?date=20180509
+  def contents
+    unless params.has_key?(:date) or (params.has_key?(:start_date) and params.has_key?(:end_date))
+      render :json => {:error => I18n.t('date_required')}, :status => :bad_request and return
+    end
+
+    unless current_user.has_permission(:full_historical)   
+      earliest_date = Utilities.earliest_date(params, 'constituents')
+      if earliest_date < Utilities::TESTED_DATA_BOUNDARY
+        head :forbidden and return
+      end
+    end
+
+    fund = params[:id] || params[:fund]
+    
+    render :json => Constituent.where(Utilities.date_clause(params, 'constituents'))
+                               .where(:composite_ticker => fund).order(:constituent_name).map(&:constituent_name).uniq
     
   rescue Exception => ex
     render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :internal_server_error
@@ -81,6 +117,13 @@ class V1::ConstituentsController < ApplicationController
   def top
     unless params.has_key?(:date) or (params.has_key?(:start_date) and params.has_key?(:end_date))
       render :json => {:error => I18n.t('date_required')}, :status => :bad_request and return
+    end
+
+    unless current_user.has_permission(:full_historical)   
+      earliest_date = Utilities.earliest_date(params, 'constituents')
+      if earliest_date < Utilities::TESTED_DATA_BOUNDARY
+        head :forbidden and return
+      end
     end
       
     fund = params[:id] || params[:fund]

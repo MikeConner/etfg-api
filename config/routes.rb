@@ -19,9 +19,11 @@ Rails.application.routes.draw do
     
     resources :constituents, :only => [:show] do
       member do
-        get 'products'
+        get 'contents'
         get 'top'
       end
+      
+      get 'products', :on => :collection
     end
     
     resources :users, :except => [:new, :edit]
