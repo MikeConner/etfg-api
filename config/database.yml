@@ -2,7 +2,7 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  host: localhost
+  host: 10.10.10.50
   # For details on connection pooling, see Rails configuration guide
   # http://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
@@ -67,6 +67,6 @@ test:
 #
 production:
   <<: *default
-  database: etfg_production
+  database: etfg
   username: etfg
   password: ShortEverything!
