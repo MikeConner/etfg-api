@@ -20,7 +20,8 @@
 #  security_type     :string(128)
 #
 
-class Constituent < ApplicationRecord
+class Constituent < EtfgDbBase
+#  establish_connection ETFG_DB
   self.record_timestamps = false
   
   validates_presence_of :run_date

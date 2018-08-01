@@ -60,8 +60,9 @@
 #  lead_market_maker           :string(64)
 #
 
-class Industry < ApplicationRecord
+class Industry < EtfgDbBase
   self.record_timestamps = false
+#  establish_connection ETFG_DB
   
   VALID_EXPOSURES = ['geographic', 'currency', 'sector', 'industry_group', 'industry', 'subindustry', 'coupon', 'maturity']
   

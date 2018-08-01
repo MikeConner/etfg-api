@@ -10,8 +10,10 @@
 #  value            :decimal(20, 6)
 #
 
-class FundFlow < ApplicationRecord
+class FundFlow < EtfgDbBase
   self.record_timestamps = false
+
+#  establish_connection ETFG_DB
 
   validates_presence_of :run_date
   validates_length_of :composite_ticker, :maximum => 8

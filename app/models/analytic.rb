@@ -38,8 +38,9 @@
 #  quant_grade                   :string(1)
 #
 
-class Analytic < ApplicationRecord
+class Analytic < EtfgDbBase
   self.record_timestamps = false
+#  establish_connection ETFG_DB
   
   VALID_FUNCTIONS = ['min', 'max', 'avg']
   VALID_GROUPS = ['asset_class', 'focus', 'region', 'category', 'development_level']
