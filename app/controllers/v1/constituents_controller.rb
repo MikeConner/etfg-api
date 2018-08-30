@@ -129,7 +129,7 @@ class V1::ConstituentsController < ApplicationController
     fund = params[:id] || params[:fund]
     set_output_type
     
-    result = ConstituentSerializer.extract(Constituent.where(Utilities.date_clause(params, 'constituents'), :composite_ticker => params[:fund]).order('weight DESC').limit(TOP_N))
+    result = ConstituentSerializer.extract(Constituent.where(Utilities.date_clause(params, 'constituents')).where(:composite_ticker => fund ).order('weight DESC').limit(TOP_N))
        
     if result.empty?
       head :not_found
