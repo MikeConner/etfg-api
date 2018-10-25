@@ -1,7 +1,7 @@
 require 'csv'
 
 module Utilities  
-  TESTED_DATA_BOUNDARY = Date.parse("2017-01-01")
+  TESTED_DATA_BOUNDARY = Date.parse("2017-05-01")
   
   def self.csv_emitter(data)
    csv_string = CSV.generate do |csv|
