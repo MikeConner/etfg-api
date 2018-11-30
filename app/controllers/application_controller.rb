@@ -18,21 +18,15 @@ class ApplicationController < ActionController::API
 
   def set_schema
     if request.fullpath.match(/^(\/v2)/)
-      Action.table_name = 'apiv2.actions'
-      ActionCategory.table_name = 'apiv2.action_categories'
       Analytic.table_name = 'apiv2.analytics'
       Constituent.table_name = 'apiv2.constituents'
       FundFlow.table_name = 'apiv2.fund_flows'
       Industry.table_name = 'apiv2.industries'
-      User.table_name = 'apiv2.users'
     elsif request.fullpath.match(/^(\/v1)/)
-      Action.table_name = 'api.actions'
-      ActionCategory.table_name = 'api.action_categories'
       Analytic.table_name = 'api.analytics'
       Constituent.table_name = 'api.constituents'
       FundFlow.table_name = 'api.fund_flows'
       Industry.table_name = 'api.industries'
-      User.table_name = 'api.users'
     end
   end
 
