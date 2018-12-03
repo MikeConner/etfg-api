@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_08_235913) do
+ActiveRecord::Schema.define(version: 2018_12_03_073646) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -73,6 +73,7 @@ ActiveRecord::Schema.define(version: 2018_06_08_235913) do
     t.decimal "quant_quality_firm", precision: 16, scale: 4
     t.decimal "quant_composite_quality", precision: 16, scale: 4
     t.string "quant_grade", limit: 1
+    t.date "as_of_date"
     t.index ["composite_ticker"], name: "index_analytics_on_composite_ticker"
     t.index ["run_date", "composite_ticker"], name: "index_analytics_on_run_date_and_composite_ticker", unique: true
     t.index ["run_date"], name: "index_analytics_on_run_date"
@@ -94,6 +95,8 @@ ActiveRecord::Schema.define(version: 2018_06_08_235913) do
     t.decimal "total_shares_held", precision: 18, scale: 4
     t.string "market_sector", limit: 128
     t.string "security_type", limit: 128
+    t.date "as_of_date"
+    t.string "currency", limit: 16
     t.index ["composite_ticker"], name: "index_constituents_on_composite_ticker"
     t.index ["constituent_name"], name: "index_constituents_on_constituent_name"
     t.index ["run_date"], name: "index_constituents_on_run_date"
@@ -105,6 +108,7 @@ ActiveRecord::Schema.define(version: 2018_06_08_235913) do
     t.decimal "shares", precision: 14, scale: 2
     t.decimal "nav", precision: 14, scale: 6
     t.decimal "value", precision: 20, scale: 6
+    t.date "as_of_date"
     t.index ["composite_ticker"], name: "index_fund_flows_on_composite_ticker"
     t.index ["run_date", "composite_ticker"], name: "index_fund_flows_on_run_date_and_composite_ticker", unique: true
     t.index ["run_date"], name: "index_fund_flows_on_run_date"
@@ -166,6 +170,7 @@ ActiveRecord::Schema.define(version: 2018_06_08_235913) do
     t.decimal "fee_waivers", precision: 12, scale: 4
     t.decimal "net_expenses", precision: 12, scale: 4
     t.string "lead_market_maker", limit: 64
+    t.date "as_of_date"
     t.index ["composite_ticker"], name: "index_industries_on_composite_ticker"
     t.index ["run_date", "composite_ticker"], name: "index_industries_on_run_date_and_composite_ticker", unique: true
     t.index ["run_date"], name: "index_industries_on_run_date"
