@@ -4,6 +4,7 @@
 #
 #  id                          :bigint(8)        not null, primary key
 #  run_date                    :date             not null
+#  as_of_date                  :date
 #  composite_ticker            :string(12)       not null
 #  issuer                      :string(32)
 #  name                        :string(128)
@@ -12,7 +13,7 @@
 #  tax_classification          :string(32)
 #  is_etn                      :boolean
 #  fund_aum                    :decimal(24, 6)
-#  avg_volume                  :string(10)
+#  avg_volume                  :string(24)
 #  asset_class                 :string(32)
 #  category                    :string(32)
 #  focus                       :string(32)
@@ -60,8 +61,33 @@
 #  lead_market_maker           :string(64)
 #
 
-require 'rails_helper'
+class IndustryV2Serializer
+  include FastJsonapi::ObjectSerializer
+  
+  attributes :run_date, :as_of_date, :composite_ticker, :distribution_frequency, :avg_volume, :put_vol, :call_vol, :leverage_factor, 
+             :fiscal_year_end, :option_volume, :issuer, :tax_classification, :asset_class, :category, :focus, :development_level, :region, 
+             :put_call_ratio, :administrator, :advisor, :transfer_agent, :trustee, :listing_exchange, :lead_market_maker, :name, :related_index, 
+             :custodian, :distributor, :subadvisor, :futures_commission_merchant, :is_etn, :is_leveraged, :active, :option_available, :fund_aum, 
+             :creation_unit_size, :creation_fee, :short_interest, :num_constituents, :discount_premium, :bid_ask_spread, :management_fee, 
+             :other_expenses, :total_expenses, :fee_waivers, :net_expenses, :geographic_exposure, :currency_exposure, :sector_exposure, 
+             :industry_group_exposure, :subindustry_exposure, :coupon_exposure, :maturity_exposure, :portfolio_manager
 
-RSpec.describe Industry, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  attribute :security_type do |obj|
+    if obj.is_etn
+      'ETN'
+    else
+      ['Currency', 'Commodity'].include?(obj.asset_class) ? 'ETC' : 'ETF'
+    end
+  end
+  
+  def self.extract(batch)
+    result = []
+
+    parsed = JSON.parse(IndustryV2Serializer.new(batch).serialized_json)['data']
+    parsed.each do |a|
+      result.push(a['attributes'])
+    end   
+    
+    result     
+  end
 end

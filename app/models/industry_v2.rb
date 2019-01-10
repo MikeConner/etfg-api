@@ -4,6 +4,7 @@
 #
 #  id                          :bigint(8)        not null, primary key
 #  run_date                    :date             not null
+#  as_of_date                  :date
 #  composite_ticker            :string(12)       not null
 #  issuer                      :string(32)
 #  name                        :string(128)
@@ -12,7 +13,7 @@
 #  tax_classification          :string(32)
 #  is_etn                      :boolean
 #  fund_aum                    :decimal(24, 6)
-#  avg_volume                  :string(10)
+#  avg_volume                  :string(24)
 #  asset_class                 :string(32)
 #  category                    :string(32)
 #  focus                       :string(32)
@@ -60,8 +61,27 @@
 #  lead_market_maker           :string(64)
 #
 
-require 'rails_helper'
-
-RSpec.describe Industry, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+class IndustryV2 < EtfgDbV2Base
+  self.record_timestamps = false
+  self.table_name = 'industries'
+  
+  VALID_EXPOSURES = ['geographic', 'currency', 'sector', 'industry_group', 'industry', 'subindustry', 'coupon', 'maturity']
+  
+  validates_presence_of :run_date, :composite_ticker
+  validates_length_of :distribution_frequency, :is => 1, :allow_nil => true
+  validates_length_of :avg_volume,
+                      :maximum => 10, :allow_nil => true
+  validates_length_of :put_vol, :call_vol,
+                      :maximum => 14, :allow_nil => true
+  validates_length_of :leverage_factor, :fiscal_year_end, :option_volume,
+                      :maximum => 16, :allow_nil => true
+  validates_length_of :asset_class, :development_level, :region, :put_call_ratio,
+                      :maximum => 32, :allow_nil => true
+  validates_length_of :administrator, :advisor, :transfer_agent, :trustee, :listing_exchange, :lead_market_maker, :issuer, :tax_classification,
+                      :maximum => 64, :allow_nil => true
+  validates_length_of :custodian, :distributor, :subadvisor, :futures_commission_merchant, :related_index, :name,
+                      :maximum => 128, :allow_nil => true
+  validates_inclusion_of :is_etn, :is_leveraged, :active, :option_available, :in => [true, false, nil]
+  validates_numericality_of :fund_aum, :creation_unit_size, :creation_fee, :short_interest, :num_constituents, :discount_premium,
+                            :bid_ask_spread, :management_fee, :other_expenses, :total_expenses, :fee_waivers, :net_expenses, :allow_nil => true
 end

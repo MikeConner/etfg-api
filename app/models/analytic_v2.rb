@@ -4,6 +4,7 @@
 #
 #  id                            :bigint(8)        not null, primary key
 #  run_date                      :date             not null
+#  as_of_date                    :date
 #  composite_ticker              :string(12)       not null
 #  risk_total_score              :decimal(16, 4)
 #  risk_volatility               :decimal(16, 4)
@@ -38,9 +39,11 @@
 #  quant_grade                   :string(1)
 #
 
-class Analytic < EtfgDbBase
+class AnalyticV2 < EtfgDbV2Base
   self.record_timestamps = false
-  
+  # Otherwise it would be analytic_v2s
+  self.table_name = 'analytics'
+
   VALID_FUNCTIONS = ['min', 'max', 'avg']
   VALID_GROUPS = ['asset_class', 'focus', 'region', 'category', 'development_level']
   

@@ -48,10 +48,10 @@
 #  short_interest              :decimal(12, )
 #  put_call_ratio              :string(32)
 #  num_constituents            :decimal(6, )
-#  discount_premium            :decimal(8, 2)
+#  discount_premium            :decimal(, )
 #  bid_ask_spread              :decimal(16, 12)
-#  put_vol                     :string(14)
-#  call_vol                    :string(14)
+#  put_vol                     :string
+#  call_vol                    :string
 #  management_fee              :decimal(12, 4)
 #  other_expenses              :decimal(12, 4)
 #  total_expenses              :decimal(12, 4)

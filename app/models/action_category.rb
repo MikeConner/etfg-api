@@ -8,7 +8,7 @@
 #  updated_at :datetime         not null
 #
 
-class ActionCategory < ApplicationRecord
+class ActionCategory < EtfgDbBase
   validates_presence_of :name
   
   has_many :actions

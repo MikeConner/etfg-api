@@ -4,6 +4,7 @@
 #
 #  id                :bigint(8)        not null, primary key
 #  run_date          :date             not null
+#  as_of_date        :date
 #  composite_ticker  :string(12)       not null
 #  identifier        :string(32)
 #  constituent_name  :string
@@ -18,16 +19,18 @@
 #  total_shares_held :decimal(18, 4)
 #  market_sector     :string(128)
 #  security_type     :string(128)
+#  currency          :string(16)
 #
 
-class Constituent < EtfgDbBase
+class ConstituentV2 < EtfgDbV2Base
   self.record_timestamps = false
+  self.table_name = 'constituents'
   
   validates_presence_of :run_date
-  validates_length_of :composite_ticker, :maximum => 12, :allow_nil => true
+  validates_length_of :composite_ticker, :maximum =>12, :allow_nil => true
   validates_numericality_of :weight, :market_value, :total_shares_held, :allow_nil => true
   validates_length_of :cusip, :maximum => 24, :allow_nil => true
-  validates_length_of :isin, :figi, :sedol, :exchange, :maximum => 16, :allow_nil => true
+  validates_length_of :isin, :figi, :sedol, :exchange, :currency, :maximum => 16, :allow_nil => true
   validates_length_of :country, :maximum => 32, :allow_nil => true
   validates_length_of :market_sector, :security_type, :maximum => 128, :allow_nil => true
 end

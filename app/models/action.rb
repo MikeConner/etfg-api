@@ -9,7 +9,7 @@
 #  updated_at         :datetime         not null
 #
 
-class Action < ApplicationRecord
+class Action < EtfgDbBase
   belongs_to :action_category
   
   validates_presence_of :description
@@ -17,7 +17,9 @@ class Action < ApplicationRecord
   has_and_belongs_to_many :users
   
   # :full_historical lets an internal user access < 2017 data for testing
-  enum description: [:read_industry, :read_analytics, :read_fund_flow, :read_constituents, :change_permissions, :manage_users, :full_historical]
+  enum description: [:read_industry, :read_analytics, :read_fund_flow, :read_constituents, 
+                     :change_permissions, :manage_users, :full_historical,
+                     :read_constituents_archive, :read_constituents_snapshot, :legacy, :sftp]
   
   def to_s
     self.description.to_s.humanize

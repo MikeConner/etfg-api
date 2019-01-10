@@ -4,6 +4,7 @@
 #
 #  id                            :bigint(8)        not null, primary key
 #  run_date                      :date             not null
+#  as_of_date                    :date
 #  composite_ticker              :string(12)       not null
 #  risk_total_score              :decimal(16, 4)
 #  risk_volatility               :decimal(16, 4)
@@ -38,19 +39,24 @@
 #  quant_grade                   :string(1)
 #
 
-class Analytic < EtfgDbBase
-  self.record_timestamps = false
+class AnalyticV2Serializer
+  include FastJsonapi::ObjectSerializer
   
-  VALID_FUNCTIONS = ['min', 'max', 'avg']
-  VALID_GROUPS = ['asset_class', 'focus', 'region', 'category', 'development_level']
-  
-  validates_presence_of :run_date
-  validates_length_of :composite_ticker, :maximum => 8
-  validates_numericality_of :risk_total_score, :risk_volatility, :risk_deviation, :risk_country, :risk_structure, :risk_liquidity, :risk_efficiency,
-                            :reward_score, :quant_total_score, :quant_technical_st, :quant_technical_it, :quant_technical_lt, :quant_composite_technical,
-                            :quant_sentiment_pc, :quant_sentiment_si, :quant_sentiment_iv, :quant_composite_sentiment, :quant_composite_behavioral,
-                            :quant_fundamental_pe, :quant_fundamental_pcf, :quant_fundamental_pb, :quant_fundamental_div, :quant_composite_fundamental,
-                            :quant_global_sector, :quant_global_country, :quant_composite_global, :quant_quality_liquidity, 
-                            :quant_quality_diversification, :quant_quality_firm, :quant_composite_quality, :allow_nil => true
-  validates_length_of :quant_grade, :is => 1, :allow_nil => true
+  attributes :run_date, :as_of_date, :composite_ticker, :quant_grade, :risk_total_score, :risk_volatility, :risk_deviation, :risk_country, :risk_structure, 
+             :risk_liquidity, :risk_efficiency, :reward_score, :quant_total_score, :quant_technical_st, :quant_technical_it, :quant_technical_lt, 
+             :quant_composite_technical, :quant_sentiment_pc, :quant_sentiment_si, :quant_sentiment_iv, :quant_composite_sentiment, 
+             :quant_composite_behavioral, :quant_fundamental_pe, :quant_fundamental_pcf, :quant_fundamental_pb, :quant_fundamental_div, 
+             :quant_composite_fundamental, :quant_global_sector, :quant_global_country, :quant_composite_global, :quant_quality_liquidity, 
+             :quant_quality_diversification, :quant_quality_firm, :quant_composite_quality
+
+  def self.extract(batch)
+    result = []
+
+    parsed = JSON.parse(AnalyticSerializerV2.new(batch).serialized_json)['data']
+    parsed.each do |a|
+      result.push(a['attributes'])
+    end   
+    
+    result     
+  end
 end
