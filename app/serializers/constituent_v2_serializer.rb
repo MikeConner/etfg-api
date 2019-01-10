@@ -15,7 +15,7 @@
 #  figi              :string(16)
 #  sedol             :string(16)
 #  country           :string(32)
-#  exchange          :string(16)
+#  exchange          :string(64)
 #  total_shares_held :decimal(18, 4)
 #  market_sector     :string(128)
 #  security_type     :string(128)
