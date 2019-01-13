@@ -1,6 +1,6 @@
 require 'rails/generators/active_record/model/model_generator'
 
-class FeedModelGenerator < ActiveRecord::Generators::ModelGenerator
+class Apiv2ModelGenerator < ActiveRecord::Generators::ModelGenerator
   source_root File.join(File.dirname(ActiveRecord::Generators::ModelGenerator.instance_method(:create_migration_file).source_location.first), "templates")
 
   def create_migration_file
