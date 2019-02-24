@@ -12,8 +12,8 @@
 #  related_index               :string(128)
 #  tax_classification          :string(32)
 #  is_etn                      :boolean
-#  fund_aum                    :decimal(24, 6)
-#  avg_volume                  :string(24)
+#  fund_aum                    :decimal(22, 6)
+#  avg_volume                  :string(10)
 #  asset_class                 :string(32)
 #  category                    :string(32)
 #  focus                       :string(32)
@@ -34,8 +34,8 @@
 #  fiscal_year_end             :string(16)
 #  distribution_frequency      :string(1)
 #  listing_exchange            :string(64)
-#  creation_unit_size          :decimal(12, )
-#  creation_fee                :decimal(8, )
+#  creation_unit_size          :decimal(22, 6)
+#  creation_fee                :decimal(22, 6)
 #  geographic_exposure         :text
 #  currency_exposure           :text
 #  sector_exposure             :text
@@ -46,18 +46,18 @@
 #  maturity_exposure           :text
 #  option_available            :boolean
 #  option_volume               :string(16)
-#  short_interest              :decimal(12, )
+#  short_interest              :decimal(22, 6)
 #  put_call_ratio              :string(32)
-#  num_constituents            :decimal(6, )
-#  discount_premium            :decimal(, )
-#  bid_ask_spread              :decimal(16, 12)
+#  num_constituents            :decimal(22, 6)
+#  discount_premium            :decimal(22, 6)
+#  bid_ask_spread              :decimal(22, 6)
 #  put_vol                     :string
 #  call_vol                    :string
-#  management_fee              :decimal(12, 4)
-#  other_expenses              :decimal(12, 4)
-#  total_expenses              :decimal(12, 4)
-#  fee_waivers                 :decimal(12, 4)
-#  net_expenses                :decimal(12, 4)
+#  management_fee              :decimal(22, 6)
+#  other_expenses              :decimal(22, 6)
+#  total_expenses              :decimal(22, 6)
+#  fee_waivers                 :decimal(22, 6)
+#  net_expenses                :decimal(22, 6)
 #  lead_market_maker           :string(64)
 #
 

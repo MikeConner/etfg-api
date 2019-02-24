@@ -35,6 +35,9 @@ Rails.application.routes.draw do
 
   namespace :v2 do
     concerns :api_base
+    
+    resources :esg_cores, :only => [:index, :show]
+    resources :esg_ratings, :only => [:index, :show]
   end
     
   # Constituents

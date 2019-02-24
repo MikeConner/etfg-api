@@ -6,9 +6,9 @@
 #  run_date         :date             not null
 #  as_of_date       :date
 #  composite_ticker :string(12)       not null
-#  shares           :decimal(14, 2)
-#  nav              :decimal(14, 6)
-#  value            :decimal(20, 6)
+#  shares           :decimal(22, 6)
+#  nav              :decimal(22, 6)
+#  value            :decimal(22, 6)
 #
 
 class FundFlowV2Serializer

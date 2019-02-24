@@ -6,17 +6,17 @@
 #  run_date          :date             not null
 #  as_of_date        :date
 #  composite_ticker  :string(12)       not null
-#  identifier        :string(32)
+#  identifier        :string(64)
 #  constituent_name  :string
-#  weight            :decimal(10, 6)
-#  market_value      :decimal(20, 6)
+#  weight            :decimal(18, 10)
+#  market_value      :decimal(22, 6)
 #  cusip             :string(24)
 #  isin              :string(16)
 #  figi              :string(16)
 #  sedol             :string(16)
 #  country           :string(32)
 #  exchange          :string(64)
-#  total_shares_held :decimal(18, 4)
+#  total_shares_held :decimal(22, 6)
 #  market_sector     :string(128)
 #  security_type     :string(128)
 #  currency          :string(16)
