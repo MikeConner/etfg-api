@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_10_023205) do
+ActiveRecord::Schema.define(version: 2019_03_11_191513) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -110,6 +110,7 @@ ActiveRecord::Schema.define(version: 2019_03_10_023205) do
     t.string "security_type", limit: 128
     t.string "currency", limit: 16
     t.string "region", limit: 2
+    t.string "base_currency", limit: 16
     t.index ["composite_ticker"], name: "index_constituents_on_composite_ticker"
     t.index ["constituent_name"], name: "index_constituents_on_constituent_name"
     t.index ["run_date"], name: "index_constituents_on_run_date"

@@ -21,6 +21,7 @@
 #  security_type     :string(128)
 #  currency          :string(16)
 #  region            :string(2)
+#  base_currency     :string(16)
 #
 
 class ConstituentV2 < EtfgDbV2Base
@@ -31,7 +32,7 @@ class ConstituentV2 < EtfgDbV2Base
   validates_length_of :composite_ticker, :maximum =>12, :allow_nil => true
   validates_numericality_of :weight, :market_value, :total_shares_held, :allow_nil => true
   validates_length_of :cusip, :maximum => 24, :allow_nil => true
-  validates_length_of :isin, :figi, :sedol, :currency, :maximum => 16, :allow_nil => true
+  validates_length_of :isin, :figi, :sedol, :currency, :base_currency, :maximum => 16, :allow_nil => true
   validates_length_of :country, :maximum => 32, :allow_nil => true
   validates_length_of :identifier, :exchange, :maximum => 64, :allow_nil => true
   validates_length_of :market_sector, :security_type, :maximum => 128, :allow_nil => true

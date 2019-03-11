@@ -22,7 +22,7 @@ class V2::AnalyticsController < ApplicationController
            
     result = []
     AnalyticV2.where(Utilities.date_clause(params, 'analytics')).find_in_batches do |batch|
-      result += AnalyticSerializer.extract(batch)      
+      result += AnalyticV2Serializer.extract(batch)      
     end
     
     if result.empty?

@@ -21,6 +21,7 @@
 #  security_type     :string(128)
 #  currency          :string(16)
 #  region            :string(2)
+#  base_currency     :string(16)
 #
 
 class ConstituentV2Serializer
