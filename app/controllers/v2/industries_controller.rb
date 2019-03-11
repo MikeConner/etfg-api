@@ -19,9 +19,11 @@ class V2::IndustriesController < ApplicationController
     end
 
     set_output_type
+    set_region
       
     result = []
-    IndustryV2.where(Utilities.date_clause(params, 'industries')).find_in_batches do |batch|
+    IndustryV2.where(Utilities.date_clause(params, 'industries'))
+              .where(:output_region => @region).find_in_batches do |batch|
       result += IndustryV2Serializer.extract(batch)      
     end
     
@@ -29,7 +31,8 @@ class V2::IndustriesController < ApplicationController
       head :not_found
     else
       if 'csv' == @output_type
-        fname = params.has_key?(:date) ? "Industry #{params[:date]}" : "Industry #{params[:start_date]}_#{params[:end_date]}"
+        fname = params.has_key?(:date) ? "#{@region} Industry #{params[:date]}" : 
+                                         "#{@region} Industry #{params[:start_date]}_#{params[:end_date]}"
         send_data Utilities.csv_emitter(result),
                   :filename => "#{fname}.csv",
                   :type => "text/csv",
@@ -59,9 +62,12 @@ class V2::IndustriesController < ApplicationController
     
     fund = params[:id] || params[:fund]
     set_output_type
+    set_region
     
     result = []
-    IndustryV2.where(Utilities.date_clause(params, 'industries')).where(:composite_ticker => fund).find_in_batches do |batch|
+    IndustryV2.where(Utilities.date_clause(params, 'industries'))
+              .where(:composite_ticker => fund)
+              .where(:output_region => @region).find_in_batches do |batch|
       result += IndustryV2Serializer.extract(batch)      
     end
     
@@ -69,7 +75,8 @@ class V2::IndustriesController < ApplicationController
       head :not_found
     else
       if 'csv' == @output_type
-        fname = params.has_key?(:date) ? "Industry #{fund}-#{params[:date]}" : "Industry #{fund}-#{params[:start_date]}_#{params[:end_date]}"
+        fname = params.has_key?(:date) ? "#{@region} Industry #{fund}-#{params[:date]}" : 
+                                         "#{@region} Industry #{fund}-#{params[:start_date]}_#{params[:end_date]}"
         send_data Utilities.csv_emitter(result),
                   :filename => "#{fname}.csv",
                   :type => "text/csv",
@@ -102,11 +109,14 @@ class V2::IndustriesController < ApplicationController
     
     fund = params[:id] || params[:fund]
     set_output_type
+    set_region
+    
     fieldname = "#{params[:type].downcase}_exposure"
     
     result = []
     IndustryV2.where(Utilities.date_clause(params, 'industries'), :composite_ticker => params[:fund])
               .where("#{fieldname} IS NOT NULL")
+              .where(:output_region => @region)
               .pluck(fieldname.to_sym).each do |value|
                 value.split(/;/).sort.each do |country|
                   fields = country.split(/=/)
@@ -120,7 +130,8 @@ class V2::IndustriesController < ApplicationController
       head :not_found
     else
       if 'csv' == @output_type
-        fname = params.has_key?(:date) ? "Industry #{fieldname}-#{fund}-#{params[:date]}" : "Industry #{fieldname}-#{fund}-#{params[:start_date]}_#{params[:end_date]}"
+        fname = params.has_key?(:date) ? "#{@region} Industry #{fieldname}-#{fund}-#{params[:date]}" : 
+                                         "#{@region} Industry #{fieldname}-#{fund}-#{params[:start_date]}_#{params[:end_date]}"
         send_data Utilities.csv_emitter(result),
                   :filename => "#{fname}.csv",
                   :type => "text/csv",
@@ -148,14 +159,20 @@ class V2::IndustriesController < ApplicationController
         head :forbidden and return
       end
     end
+    set_region
     
-    render :json => IndustryV2.where(Utilities.date_clause(params, 'industries')).order(:composite_ticker).map(&:composite_ticker).uniq
+    render :json => IndustryV2.where(Utilities.date_clause(params, 'industries'))
+                              .where(:output_region => @region).order(:composite_ticker).map(&:composite_ticker).uniq
     
   rescue Exception => ex
     render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :internal_server_error    
   end
     
 private
+  def set_region
+    @region = params[:region] || 'US'
+  end
+
   # can be csv or json (default)
   def set_output_type
     # downcase will throw if nil; default to json if missing

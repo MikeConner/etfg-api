@@ -59,6 +59,7 @@
 #  fee_waivers                 :decimal(22, 6)
 #  net_expenses                :decimal(22, 6)
 #  lead_market_maker           :string(64)
+#  output_region               :string(2)
 #
 
 class IndustryV2 < EtfgDbV2Base
@@ -84,4 +85,5 @@ class IndustryV2 < EtfgDbV2Base
   validates_inclusion_of :is_etn, :is_leveraged, :active, :option_available, :in => [true, false, nil]
   validates_numericality_of :fund_aum, :creation_unit_size, :creation_fee, :short_interest, :num_constituents, :discount_premium,
                             :bid_ask_spread, :management_fee, :other_expenses, :total_expenses, :fee_waivers, :net_expenses, :allow_nil => true
+  validates_length_of :output_region, :maximum => 2
 end

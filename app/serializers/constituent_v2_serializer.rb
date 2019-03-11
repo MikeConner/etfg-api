@@ -20,6 +20,7 @@
 #  market_sector     :string(128)
 #  security_type     :string(128)
 #  currency          :string(16)
+#  region            :string(2)
 #
 
 class ConstituentV2Serializer

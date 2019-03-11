@@ -31,12 +31,14 @@ class V2::ConstituentsController < ApplicationController
     
     fund = params[:id] || params[:fund]
     set_output_type
+    set_region
              
     result = []
     
     if params.has_key?(:identifier)
       result += ConstituentV2Serializer.extract(ConstituentV2.where(Utilities.date_clause(params, 'constituents'))
                                                              .where(:composite_ticker => fund)
+                                                             .where(:region => @region)
                                                              .where("#{params[:type].downcase} = '#{params[:identifier]}'"))      
     else
       ConstituentV2.where(Utilities.date_clause(params, 'constituents')).where(:composite_ticker => fund).find_in_batches do |batch|
@@ -48,7 +50,8 @@ class V2::ConstituentsController < ApplicationController
       head :not_found
     else
       if 'csv' == @output_type
-        fname = params.has_key?(:date) ? "Constituents #{fund}-#{params[:date]}" : "Constituents #{fund}-#{params[:start_date]}_#{params[:end_date]}"
+        fname = params.has_key?(:date) ? "#{@region} Constituents #{fund}-#{params[:date]}" : 
+                                         "#{@region} Constituents #{fund}-#{params[:start_date]}_#{params[:end_date]}"
         send_data Utilities.csv_emitter(result),
                   :filename => "#{fname}.csv",
                   :type => "text/csv",
@@ -74,8 +77,10 @@ class V2::ConstituentsController < ApplicationController
         head :forbidden and return
       end
     end
-
-    render :json => ConstituentV2.where(Utilities.date_clause(params, 'constituents')).order(:composite_ticker).map(&:composite_ticker).uniq
+    set_region
+    
+    render :json => ConstituentV2.where(Utilities.date_clause(params, 'constituents'))
+                                 .where(:region => @region).order(:composite_ticker).map(&:composite_ticker).uniq
     
   rescue Exception => ex
     render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :internal_server_error    
@@ -95,9 +100,11 @@ class V2::ConstituentsController < ApplicationController
     end
 
     fund = params[:id] || params[:fund]
+    set_region
     
     render :json => ConstituentV2.where(Utilities.date_clause(params, 'constituents'))
-                                 .where(:composite_ticker => fund).order(:constituent_name).map(&:constituent_name).uniq
+                                 .where(:composite_ticker => fund)
+                                 .where(:region => @region).order(:constituent_name).map(&:constituent_name).uniq
     
   rescue Exception => ex
     render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :internal_server_error
@@ -118,14 +125,18 @@ class V2::ConstituentsController < ApplicationController
       
     fund = params[:id] || params[:fund]
     set_output_type
+    set_region
     
-    result = ConstituentV2Serializer.extract(ConstituentV2.where(Utilities.date_clause(params, 'constituents')).where(:composite_ticker => fund ).order('weight DESC').limit(TOP_N))
+    result = ConstituentV2Serializer.extract(ConstituentV2.where(Utilities.date_clause(params, 'constituents'))
+                                                          .where(:composite_ticker => fund )
+                                                          .where(:region => @region).order('weight DESC').limit(TOP_N))
        
     if result.empty?
       head :not_found
     else
       if 'csv' == @output_type
-        fname = params.has_key?(:date) ? "Top Constituents #{fund}-#{params[:date]}" : "Top Constituents #{fund}-#{params[:start_date]}_#{params[:end_date]}"
+        fname = params.has_key?(:date) ? "#{@region} Top Constituents #{fund}-#{params[:date]}" : 
+                                         "#{@region} Top Constituents #{fund}-#{params[:start_date]}_#{params[:end_date]}"
         send_data Utilities.csv_emitter(result),
                   :filename => "#{fname}.csv",
                   :type => "text/csv",
@@ -140,6 +151,10 @@ class V2::ConstituentsController < ApplicationController
   end
     
 private
+  def set_region
+    @region = params[:region] || 'US'
+  end
+
   # can be csv or json (default)
   def set_output_type
     # downcase will throw if nil; default to json if missing

@@ -9,6 +9,8 @@
 #  shares           :decimal(22, 6)
 #  nav              :decimal(22, 6)
 #  value            :decimal(22, 6)
+#  region           :string(2)
+#  country          :string(2)
 #
 
 class FundFlowV2Serializer

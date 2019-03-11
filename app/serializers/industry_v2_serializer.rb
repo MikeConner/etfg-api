@@ -59,6 +59,7 @@
 #  fee_waivers                 :decimal(22, 6)
 #  net_expenses                :decimal(22, 6)
 #  lead_market_maker           :string(64)
+#  output_region               :string(2)
 #
 
 class IndustryV2Serializer

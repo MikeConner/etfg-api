@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_23_230600) do
+ActiveRecord::Schema.define(version: 2019_03_10_023205) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -109,6 +109,7 @@ ActiveRecord::Schema.define(version: 2019_02_23_230600) do
     t.string "market_sector", limit: 128
     t.string "security_type", limit: 128
     t.string "currency", limit: 16
+    t.string "region", limit: 2
     t.index ["composite_ticker"], name: "index_constituents_on_composite_ticker"
     t.index ["constituent_name"], name: "index_constituents_on_constituent_name"
     t.index ["run_date"], name: "index_constituents_on_run_date"
@@ -134,6 +135,7 @@ ActiveRecord::Schema.define(version: 2019_02_23_230600) do
     t.bigint "api_instrument_id"
     t.bigint "api_pooled_instrument_id"
     t.string "currency", limit: 16
+    t.string "region", limit: 2
   end
 
   create_table "esg_core_template", id: false, force: :cascade do |t|
@@ -696,6 +698,7 @@ ActiveRecord::Schema.define(version: 2019_02_23_230600) do
     t.text "e"
     t.text "s"
     t.text "g"
+    t.text "esg"
     t.text "carbon"
     t.text "diversity"
     t.text "controversy"
@@ -769,8 +772,9 @@ ActiveRecord::Schema.define(version: 2019_02_23_230600) do
     t.decimal "shares", precision: 22, scale: 6
     t.decimal "nav", precision: 22, scale: 6
     t.decimal "value", precision: 22, scale: 6
+    t.string "region", limit: 2
+    t.string "country", limit: 2
     t.index ["composite_ticker"], name: "index_fund_flows_on_composite_ticker_v2"
-    t.index ["run_date", "composite_ticker"], name: "index_fund_flows_on_run_date_and_composite_ticker_v2", unique: true
     t.index ["run_date"], name: "index_fund_flows_on_run_date_v2"
   end
 
@@ -831,6 +835,7 @@ ActiveRecord::Schema.define(version: 2019_02_23_230600) do
     t.decimal "fee_waivers", precision: 22, scale: 6
     t.decimal "net_expenses", precision: 22, scale: 6
     t.string "lead_market_maker", limit: 64
+    t.string "output_region", limit: 2
     t.index ["composite_ticker"], name: "index_industries_on_composite_ticker_v2"
     t.index ["run_date", "composite_ticker"], name: "index_industries_on_run_date_and_composite_ticker_v2", unique: true
     t.index ["run_date"], name: "index_industries_on_run_date_v2"

@@ -11,9 +11,11 @@ class V2::FundflowsController < ApplicationController
       render :json => {:error => I18n.t('date_required')}, :status => :bad_request and return
     end
     set_output_type
+    set_region
     
     result = []
-    FundFlowV2.where(Utilities.date_clause(params, 'fundflows')).find_in_batches do |batch|
+    FundFlowV2.where(Utilities.date_clause(params, 'fundflows'))
+              .where(:region => @region).find_in_batches do |batch|
       result += FundFlowV2Serializer.extract(batch)      
     end
     
@@ -21,7 +23,8 @@ class V2::FundflowsController < ApplicationController
       head :not_found
     else
       if 'csv' == @output_type
-        fname = params.has_key?(:date) ? "FundFlows #{params[:date]}" : "FundFlows #{params[:start_date]}_#{params[:end_date]}"
+        fname = params.has_key?(:date) ? "#{@region} FundFlows #{params[:date]}" : 
+                                         "#{@region} FundFlows #{params[:start_date]}_#{params[:end_date]}"
         send_data Utilities.csv_emitter(result),
                   :filename => "#{fname}.csv",
                   :type => "text/csv",
@@ -54,7 +57,8 @@ class V2::FundflowsController < ApplicationController
       head :not_found
     else
       if 'csv' == @output_type
-        fname = params.has_key?(:date) ? "FundFlows #{fund}-#{params[:date]}" : "FundFlows #{fund}-#{params[:start_date]}_#{params[:end_date]}"
+        fname = params.has_key?(:date) ? "#{@region} FundFlows #{fund}-#{params[:date]}" : 
+                                         "#{@region} FundFlows #{fund}-#{params[:start_date]}_#{params[:end_date]}"
         send_data Utilities.csv_emitter(result),
                   :filename => "#{fname}.csv",
                   :type => "text/csv",
@@ -82,6 +86,10 @@ class V2::FundflowsController < ApplicationController
   end
   
 private
+  def set_region
+    @region = params[:region] || 'US'
+  end
+
   # can be csv or json (default)
   def set_output_type
     # downcase will throw if nil; default to json if missing

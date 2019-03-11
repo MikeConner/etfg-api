@@ -20,6 +20,7 @@
 #  market_sector     :string(128)
 #  security_type     :string(128)
 #  currency          :string(16)
+#  region            :string(2)
 #
 
 class ConstituentV2 < EtfgDbV2Base
@@ -34,4 +35,5 @@ class ConstituentV2 < EtfgDbV2Base
   validates_length_of :country, :maximum => 32, :allow_nil => true
   validates_length_of :identifier, :exchange, :maximum => 64, :allow_nil => true
   validates_length_of :market_sector, :security_type, :maximum => 128, :allow_nil => true
+  validates_length_of :region, :maximum => 2
 end
