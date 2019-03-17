@@ -109,7 +109,7 @@ ActiveRecord::Schema.define(version: 2019_03_11_191513) do
     t.string "market_sector", limit: 128
     t.string "security_type", limit: 128
     t.string "currency", limit: 16
-    t.string "region", limit: 2
+    t.string "source_country", limit: 2
     t.string "base_currency", limit: 16
     t.index ["composite_ticker"], name: "index_constituents_on_composite_ticker"
     t.index ["constituent_name"], name: "index_constituents_on_constituent_name"
@@ -121,7 +121,7 @@ ActiveRecord::Schema.define(version: 2019_03_11_191513) do
     t.date "as_of_date"
     t.string "composite_ticker", limit: 32
     t.string "identifier", limit: 64
-    t.string "constituent_name", limit: 128
+    t.string "constituent_name", limit: 255
     t.decimal "weight", precision: 18, scale: 10
     t.decimal "market_value", precision: 22, scale: 6
     t.string "cusip", limit: 9
@@ -136,7 +136,7 @@ ActiveRecord::Schema.define(version: 2019_03_11_191513) do
     t.bigint "api_instrument_id"
     t.bigint "api_pooled_instrument_id"
     t.string "currency", limit: 16
-    t.string "region", limit: 2
+    t.string "source_country", limit: 2
   end
 
   create_table "esg_core_template", id: false, force: :cascade do |t|
@@ -773,9 +773,10 @@ ActiveRecord::Schema.define(version: 2019_03_11_191513) do
     t.decimal "shares", precision: 22, scale: 6
     t.decimal "nav", precision: 22, scale: 6
     t.decimal "value", precision: 22, scale: 6
-    t.string "region", limit: 2
     t.string "country", limit: 2
     t.index ["composite_ticker"], name: "index_fund_flows_on_composite_ticker_v2"
+    t.index ["country"], name: "index_fund_flows_country"
+    t.index ["run_date", "composite_ticker", "country"], name: "index_fund_flows_date_ticker_country", unique: true
     t.index ["run_date"], name: "index_fund_flows_on_run_date_v2"
   end
 
