@@ -6,7 +6,7 @@
 #  run_date                    :date             not null
 #  as_of_date                  :date
 #  composite_ticker            :string(12)       not null
-#  issuer                      :string(32)
+#  issuer                      :string(64)
 #  name                        :string(128)
 #  inception_date              :date
 #  related_index               :string(128)
