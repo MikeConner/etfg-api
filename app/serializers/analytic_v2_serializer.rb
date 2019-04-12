@@ -52,7 +52,7 @@ class AnalyticV2Serializer
   def self.extract(batch)
     result = []
 
-    parsed = JSON.parse(AnalyticSerializerV2.new(batch).serialized_json)['data']
+    parsed = JSON.parse(AnalyticV2Serializer.new(batch).serialized_json)['data']
     parsed.each do |a|
       result.push(a['attributes'])
     end   
