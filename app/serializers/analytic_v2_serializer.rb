@@ -47,7 +47,7 @@ class AnalyticV2Serializer
              :quant_composite_technical, :quant_sentiment_pc, :quant_sentiment_si, :quant_sentiment_iv, :quant_composite_sentiment, 
              :quant_composite_behavioral, :quant_fundamental_pe, :quant_fundamental_pcf, :quant_fundamental_pb, :quant_fundamental_div, 
              :quant_composite_fundamental, :quant_global_sector, :quant_global_country, :quant_composite_global, :quant_quality_liquidity, 
-             :quant_quality_diversification, :quant_quality_firm, :quant_composite_quality, :quant_grade
+             :quant_quality_diversification, :quant_quality_firm, :quant_composite_quality
 
   def self.extract(batch)
     result = []
