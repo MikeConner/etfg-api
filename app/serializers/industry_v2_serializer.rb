@@ -65,13 +65,14 @@
 class IndustryV2Serializer
   include FastJsonapi::ObjectSerializer
   
-  attributes :run_date, :as_of_date, :composite_ticker, :distribution_frequency, :avg_volume, :put_vol, :call_vol, :leverage_factor, 
-             :fiscal_year_end, :option_volume, :issuer, :tax_classification, :asset_class, :category, :focus, :development_level, :region, 
-             :put_call_ratio, :administrator, :advisor, :transfer_agent, :trustee, :listing_exchange, :lead_market_maker, :name, :related_index, 
-             :custodian, :distributor, :subadvisor, :futures_commission_merchant, :is_etn, :is_leveraged, :active, :option_available, :fund_aum, 
-             :creation_unit_size, :creation_fee, :short_interest, :num_constituents, :discount_premium, :bid_ask_spread, :management_fee, 
-             :other_expenses, :total_expenses, :fee_waivers, :net_expenses, :geographic_exposure, :currency_exposure, :sector_exposure, 
-             :industry_group_exposure, :subindustry_exposure, :coupon_exposure, :maturity_exposure, :portfolio_manager
+  attributes :run_date, :as_of_date, :composite_ticker, :issuer, :name, :inception_date, :related_index, :tax_classification, :is_etn, :fund_aum,
+             :avg_volume, :asset_class, :category, :focus, :development_level, :region, :is_leveraged, :leverage_factor, :active,
+             :administrator, :advisor, :custodian, :distributor, :portfolio_manager, :subadvisor, :transfer_agent, :trustee,
+             :futures_commission_merchant, :fiscal_year_end, :distribution_frequency, :listing_exchange, :creation_unit_size,
+             :creation_fee, :geographic_exposure, :currency_exposure, :sector_exposure, :industry_group_exposure, :industry_exposure,
+             :subindustry_exposure, :coupon_exposure, :maturity_exposure, :option_available, :option_volume, :short_interest,
+             :put_call_ratio, :num_constituents, :discount_premium, :bid_ask_spread, :put_vol, :call_vol, :management_fee,
+             :other_expenses, :total_expenses, :fee_waivers, :net_expenses, :lead_market_maker
 
   attribute :security_type do |obj|
     if obj.is_etn
@@ -80,7 +81,7 @@ class IndustryV2Serializer
       ['Currency', 'Commodity'].include?(obj.asset_class) ? 'ETC' : 'ETF'
     end
   end
-  
+    
   def self.extract(batch)
     result = []
 
