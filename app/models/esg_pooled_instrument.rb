@@ -68,7 +68,7 @@
 class EsgPooledInstrument < EtfgDbV2Base
   self.record_timestamps = false
 
- def self.date_range(date_param)
+ def self.date_range(date)
     #date = date_param.try(:strftime, "%Y%m%d")
     clause = "((effective_date IS NULL AND expiration_date IS NULL) OR " +
               "(effective_date IS NULL AND expiration_date IS NOT NULL AND '#{date}' <= expiration_date) OR " +
