@@ -10,7 +10,7 @@ class V2::EsgPooledInstrumentsController < ApplicationController
     recs = EsgPooledInstrument.date_range(params[:date]).where(:exclude_from_ts => false)
     result = []
    
-    result = EsgPooledInstrumentSerializer.extract(recs) 
+    result = PooledInstrumentSerializer.extract(recs) 
          
     if result.empty?
       head :not_found

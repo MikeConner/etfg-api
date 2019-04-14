@@ -10,7 +10,7 @@ class V2::EsgInstrumentsController < ApplicationController
     recs = EsgInstrument.date_range(params[:date])
     result = []
    
-    result = EsgInstrumentSerializer.extract(recs) 
+    result = InstrumentSerializer.extract(recs) 
          
     if result.empty?
       head :not_found
