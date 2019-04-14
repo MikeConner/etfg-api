@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_01_220752) do
+ActiveRecord::Schema.define(version: 2019_04_13_054957) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -594,6 +594,102 @@ ActiveRecord::Schema.define(version: 2019_04_01_220752) do
     t.index ["sector"], name: "index_esg_cores_on_sector"
   end
 
+  create_table "esg_instruments", force: :cascade do |t|
+    t.bigint "instrument_id", null: false
+    t.date "effective_date"
+    t.date "expiration_date"
+    t.string "ticker", limit: 64
+    t.string "exchange_country", limit: 64
+    t.string "currency", limit: 16
+    t.string "standard_name", limit: 128
+    t.text "name_variants"
+    t.string "figi", limit: 12
+    t.boolean "is_exchange_figi"
+    t.string "sedol", limit: 7
+    t.string "isin", limit: 12
+    t.string "cusip", limit: 9
+    t.string "secid", limit: 12
+    t.string "cusip_validated", limit: 16
+    t.string "exchange", limit: 64
+    t.string "market_sector", limit: 128
+    t.string "security_type", limit: 128
+    t.string "sector", limit: 64
+    t.string "industry", limit: 64
+    t.string "industry_group", limit: 128
+    t.string "subindustry", limit: 128
+    t.string "rating", limit: 32
+    t.string "geography", limit: 3
+    t.string "asset_class", limit: 128
+    t.integer "datasource_id"
+    t.boolean "approved", default: false, null: false
+    t.boolean "is_valid", default: false, null: false
+    t.boolean "default_instrument", default: false, null: false
+    t.text "notes"
+  end
+
+  create_table "esg_pooled_instruments", force: :cascade do |t|
+    t.bigint "pooled_instrument_id", null: false
+    t.string "composite_ticker", limit: 32, null: false
+    t.string "exchange_country", limit: 64, null: false
+    t.date "effective_date"
+    t.date "expiration_date"
+    t.string "standard_composite_name", limit: 128, null: false
+    t.text "composite_name_variants", null: false
+    t.string "composite_description"
+    t.string "issuer", limit: 64
+    t.boolean "is_index", default: false, null: false
+    t.boolean "is_active"
+    t.boolean "is_etn"
+    t.boolean "is_levered"
+    t.boolean "is_inverse"
+    t.boolean "has_derivatives"
+    t.boolean "options_available"
+    t.date "inception_date"
+    t.string "etp_structure_type", limit: 50
+    t.string "category", limit: 28
+    t.string "related_index_symbol", limit: 16
+    t.decimal "net_expenses", precision: 18, scale: 6
+    t.decimal "expense_ratio", precision: 18, scale: 6
+    t.string "listing_exchange", limit: 64
+    t.string "asset_class", limit: 28
+    t.string "development_class", limit: 32
+    t.string "focus", limit: 28
+    t.string "lead_market_maker", limit: 128
+    t.string "region", limit: 28
+    t.decimal "levered_amount", precision: 18, scale: 6
+    t.date "maturity_date"
+    t.string "exposure_country", limit: 64
+    t.string "selection_criteria", limit: 32
+    t.string "weighting_scheme", limit: 32
+    t.string "administrator", limit: 128
+    t.string "advisor", limit: 128
+    t.string "distributor", limit: 128
+    t.decimal "fee_waivers", precision: 18, scale: 6
+    t.string "fiscal_year_end", limit: 16
+    t.string "futures_commission_merchant", limit: 128
+    t.string "subadvisor", limit: 128
+    t.string "tax_classification", limit: 128
+    t.string "transfer_agent", limit: 50
+    t.string "trustee", limit: 128
+    t.decimal "creation_fee", precision: 18, scale: 6
+    t.decimal "creation_unit_size", precision: 18, scale: 6
+    t.string "custodian", limit: 128
+    t.string "distribution_frequency", limit: 32
+    t.decimal "management_fee", precision: 18, scale: 6
+    t.string "portfolio_manager"
+    t.string "primary_benchmark"
+    t.decimal "total_expenses", precision: 18, scale: 6
+    t.decimal "other_expenses", precision: 18, scale: 6
+    t.boolean "approved", default: false, null: false
+    t.string "figi", limit: 12
+    t.boolean "is_exchange_figi"
+    t.string "sedol", limit: 7
+    t.string "isin", limit: 12
+    t.string "cusip", limit: 9
+    t.string "secid", limit: 12
+    t.integer "datasource_id"
+  end
+
   create_table "esg_ratings", force: :cascade do |t|
     t.date "etfg_date"
     t.date "rating_date"
@@ -793,7 +889,7 @@ ActiveRecord::Schema.define(version: 2019_04_01_220752) do
     t.string "tax_classification", limit: 32
     t.boolean "is_etn"
     t.decimal "fund_aum", precision: 22, scale: 6
-    t.string "avg_volume", limit: 10
+    t.string "avg_volume", limit: 32
     t.string "asset_class", limit: 32
     t.string "category", limit: 32
     t.string "focus", limit: 32

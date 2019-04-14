@@ -99,6 +99,25 @@ ActiveRecord::Schema.define(version: 2018_06_08_235913) do
     t.index ["run_date"], name: "index_constituents_on_run_date"
   end
 
+  create_table "constituents2016", id: false, force: :cascade do |t|
+    t.bigint "id"
+    t.date "run_date"
+    t.text "composite_ticker"
+    t.text "identifier"
+    t.text "constituent_name"
+    t.decimal "weight", precision: 24, scale: 12
+    t.decimal "market_value"
+    t.text "cusip"
+    t.string "isin", limit: 16
+    t.string "figi", limit: 16
+    t.string "sedol", limit: 16
+    t.string "country", limit: 32
+    t.text "exchange"
+    t.decimal "total_shares_held", precision: 18, scale: 4
+    t.string "market_sector", limit: 128
+    t.string "security_type", limit: 128
+  end
+
   create_table "fund_flows", force: :cascade do |t|
     t.date "run_date", null: false
     t.string "composite_ticker", limit: 12, null: false
@@ -156,10 +175,10 @@ ActiveRecord::Schema.define(version: 2018_06_08_235913) do
     t.decimal "short_interest", precision: 12
     t.string "put_call_ratio", limit: 32
     t.decimal "num_constituents", precision: 6
-    t.decimal "discount_premium", precision: 8, scale: 2
+    t.decimal "discount_premium"
     t.decimal "bid_ask_spread", precision: 16, scale: 12
-    t.string "put_vol", limit: 14
-    t.string "call_vol", limit: 14
+    t.string "put_vol"
+    t.string "call_vol"
     t.decimal "management_fee", precision: 12, scale: 4
     t.decimal "other_expenses", precision: 12, scale: 4
     t.decimal "total_expenses", precision: 12, scale: 4
@@ -169,6 +188,130 @@ ActiveRecord::Schema.define(version: 2018_06_08_235913) do
     t.index ["composite_ticker"], name: "index_industries_on_composite_ticker"
     t.index ["run_date", "composite_ticker"], name: "index_industries_on_run_date_and_composite_ticker", unique: true
     t.index ["run_date"], name: "index_industries_on_run_date"
+  end
+
+  create_table "load_template_analytics", id: false, force: :cascade do |t|
+    t.date "run_date", null: false
+    t.text "composite_ticker", null: false
+    t.decimal "risk_total_score", precision: 16, scale: 4
+    t.decimal "risk_volatility", precision: 16, scale: 4
+    t.decimal "risk_deviation", precision: 16, scale: 4
+    t.decimal "risk_country", precision: 16, scale: 4
+    t.decimal "risk_structure", precision: 16, scale: 4
+    t.decimal "risk_liquidity", precision: 16, scale: 4
+    t.decimal "risk_efficiency", precision: 16, scale: 4
+    t.decimal "reward_score", precision: 16, scale: 4
+    t.decimal "quant_total_score", precision: 16, scale: 4
+    t.decimal "quant_tech_st", precision: 16, scale: 4
+    t.decimal "quant_tech_it", precision: 16, scale: 4
+    t.decimal "quant_tech_lt", precision: 16, scale: 4
+    t.decimal "quant_technical", precision: 16, scale: 4
+    t.decimal "quant_sent_pc", precision: 16, scale: 4
+    t.decimal "quant_sent_si", precision: 16, scale: 4
+    t.decimal "quant_sent_iv", precision: 16, scale: 4
+    t.decimal "quant_sentiment", precision: 16, scale: 4
+    t.decimal "quant_behavioral", precision: 16, scale: 4
+    t.decimal "quant_fund_pe", precision: 16, scale: 4
+    t.decimal "quant_fund_pcf", precision: 16, scale: 4
+    t.decimal "quant_fund_pb", precision: 16, scale: 4
+    t.decimal "quant_fund_div", precision: 16, scale: 4
+    t.decimal "quant_fundamental", precision: 16, scale: 4
+    t.decimal "quant_global_sector", precision: 16, scale: 4
+    t.decimal "quant_global_country", precision: 16, scale: 4
+    t.decimal "quant_global_theme", precision: 16, scale: 4
+    t.decimal "quant_quality_liq", precision: 16, scale: 4
+    t.decimal "quant_quality_div", precision: 16, scale: 4
+    t.decimal "quant_quality_firm", precision: 16, scale: 4
+    t.decimal "quant_quality", precision: 16, scale: 4
+    t.string "quant_grade", limit: 1
+  end
+
+  create_table "load_template_constituents", id: false, force: :cascade do |t|
+    t.date "run_date"
+    t.text "composite_ticker"
+    t.text "identifier"
+    t.text "constituent_name"
+    t.text "weight"
+    t.decimal "market_value", precision: 28, scale: 6
+    t.text "cusip"
+    t.text "isin"
+    t.text "figi"
+    t.text "sedol"
+    t.string "country", limit: 32
+    t.string "exchange", limit: 16
+    t.text "total_shares_held"
+    t.string "market_sector", limit: 128
+    t.string "security_type", limit: 128
+  end
+
+  create_table "load_template_fundflow", id: false, force: :cascade do |t|
+    t.date "run_date"
+    t.string "composite_ticker", limit: 8
+    t.decimal "shares", precision: 14, scale: 2
+    t.decimal "nav", precision: 14, scale: 6
+    t.decimal "value", precision: 20, scale: 6
+  end
+
+  create_table "load_template_industry", id: false, force: :cascade do |t|
+    t.date "run_date"
+    t.string "composite_ticker", limit: 8
+    t.string "issuer", limit: 32
+    t.string "name", limit: 128
+    t.text "inceptiondate"
+    t.string "related_index", limit: 128
+    t.string "tax_classification", limit: 32
+    t.integer "is_etn"
+    t.decimal "fund_aum", precision: 24, scale: 6
+    t.string "avg_volume", limit: 10
+    t.string "asset_class", limit: 32
+    t.string "category", limit: 32
+    t.string "focus", limit: 32
+    t.string "development_level", limit: 32
+    t.string "region", limit: 32
+    t.integer "is_leveraged"
+    t.string "leverage_factor", limit: 16
+    t.integer "active"
+    t.string "administrator", limit: 64
+    t.string "advisor", limit: 64
+    t.string "custodian", limit: 128
+    t.string "distributor", limit: 128
+    t.string "portfolio_manager", limit: 256
+    t.string "subadvisor", limit: 128
+    t.string "transfer_agent", limit: 64
+    t.string "trustee", limit: 64
+    t.string "futures_commission_merchant", limit: 128
+    t.string "fiscal_year_end", limit: 16
+    t.string "distribution_frequency", limit: 1
+    t.string "listing_exchange", limit: 64
+    t.decimal "creation_unit_size", precision: 12
+    t.decimal "creation_fee", precision: 8
+    t.text "geographic_exposure"
+    t.text "currency_exposure"
+    t.text "sector_exposure"
+    t.text "industry_group_exposure"
+    t.text "industry_exposure"
+    t.text "subindustry_exposure"
+    t.text "coupon_exposure"
+    t.text "maturity_exposure"
+    t.integer "option_available"
+    t.string "option_volume", limit: 16
+    t.decimal "short_interest", precision: 12
+    t.string "put_call_ratio", limit: 32
+    t.decimal "num_constituents", precision: 6
+    t.decimal "discount_premium"
+    t.decimal "bid_ask_spread"
+    t.text "put_vol"
+    t.text "call_vol"
+    t.decimal "management_fee", precision: 12, scale: 4
+    t.decimal "other_expenses", precision: 12, scale: 4
+    t.decimal "total_expenses", precision: 12, scale: 4
+    t.decimal "fee_waivers", precision: 12, scale: 4
+    t.text "net_expenses"
+    t.string "lead_market_maker", limit: 64
+  end
+
+  create_table "ticker", id: false, force: :cascade do |t|
+    t.string "ticker", limit: 32
   end
 
   create_table "users", force: :cascade do |t|

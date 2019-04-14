@@ -38,6 +38,8 @@ Rails.application.routes.draw do
     
     resources :esg_cores, :only => [:index, :show]
     resources :esg_ratings, :only => [:index, :show]
+    resources :esg_instruments, :only => [:index]
+    resources :esg_pooled_instruments, :only => [:index]
   end
     
   # Constituents
