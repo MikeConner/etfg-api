@@ -7,11 +7,11 @@ class V2::EsgPooledInstrumentsController < ApplicationController
       render :json => {:error => I18n.t('date_required')}, :status => :bad_request and return
     end
  
-    recs = EsgPooledInstrument.date_range(params[:date]).where(:exclude_from_ts => false)
     result = []
-   
-    result = PooledInstrumentSerializer.extract(recs) 
-         
+    EsgPooledInstrument.date_range(params[:date]).find_in_batches do |batch|
+      result += PooledInstrumentSerializer.extract(recs) 
+    end
+  
     if result.empty?
       head :not_found
     else

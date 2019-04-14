@@ -7,11 +7,11 @@ class V2::EsgInstrumentsController < ApplicationController
       render :json => {:error => I18n.t('date_required')}, :status => :bad_request and return
     end
  
-    recs = EsgInstrument.date_range(params[:date])
     result = []
-   
-    result = InstrumentSerializer.extract(recs) 
-         
+    EsgInstrument.date_range(params[:date]).find_in_batches do |batch|
+      result += InstrumentSerializer.extract(recs) 
+    end
+            
     if result.empty?
       head :not_found
     else
