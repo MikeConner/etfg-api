@@ -9,7 +9,7 @@ class InstrumentSerializer
   def self.extract(batch)
     result = []
 
-    parsed = JSON.parse(Instrument.new(batch).serialized_json)['data']
+    parsed = JSON.parse(EsgInstrument.new(batch).serialized_json)['data']
     parsed.each do |a|
       result.push(a['attributes'])
     end   

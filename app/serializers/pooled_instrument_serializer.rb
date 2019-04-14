@@ -14,7 +14,7 @@ class PooledInstrumentSerializer
   def self.extract(batch)
     result = []
 
-    parsed = JSON.parse(PooledInstrument.new(batch).serialized_json)['data']
+    parsed = JSON.parse(EsgPooledInstrument.new(batch).serialized_json)['data']
     parsed.each do |a|
       result.push(a['attributes'])
     end   
