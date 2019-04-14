@@ -13,7 +13,7 @@
 #  tax_classification          :string(32)
 #  is_etn                      :boolean
 #  fund_aum                    :decimal(22, 6)
-#  avg_volume                  :string(10)
+#  avg_volume                  :string(32)
 #  asset_class                 :string(32)
 #  category                    :string(32)
 #  focus                       :string(32)

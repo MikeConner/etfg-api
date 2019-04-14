@@ -9,7 +9,7 @@ class V2::EsgInstrumentsController < ApplicationController
  
     result = []
     EsgInstrument.date_range(params[:date]).find_in_batches do |batch|
-      result += InstrumentSerializer.extract(batch) 
+      result += EsgInstrumentSerializer.extract(batch) 
     end
             
     if result.empty?
