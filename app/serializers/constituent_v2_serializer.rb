@@ -28,7 +28,7 @@ class ConstituentV2Serializer
   include FastJsonapi::ObjectSerializer
   
   attributes :run_date, :as_of_date, :composite_ticker, :identifier, :constituent_name, :weight, :market_value, :cusip, :isin, :figi, :sedol,
-             :country, :exchange, :total_shares_held, :market_sector, :security_type, :currency
+             :country, :exchange, :total_shares_held, :market_sector, :security_type, :currency, :base_currency
 
   def self.extract(batch)
     result = []
