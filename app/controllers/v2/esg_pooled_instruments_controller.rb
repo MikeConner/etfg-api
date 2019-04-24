@@ -15,7 +15,11 @@ class V2::EsgPooledInstrumentsController < ApplicationController
     if result.empty?
       head :not_found
     else
-      render :json => result
+      fname = "Pooled Instruments #{params[:date]}"
+      send_data Utilities.csv_emitter(result),
+                :filename => "#{fname}.csv",
+                :type => "text/csv",
+                :disposition => 'attachment'
     end    
 
   rescue Exception => ex
