@@ -44,6 +44,16 @@ class EsgInstrument < EtfgDbV2Base
               "(effective_date IS NULL AND expiration_date IS NOT NULL AND '#{date}' <= expiration_date) OR " +
               "(effective_date IS NOT NULL AND expiration_date IS NULL AND '#{date}' > effective_date) OR " +
               "(effective_date IS NOT NULL AND expiration_date IS NOT NULL AND '#{date}' > effective_date AND '#{date}' <= expiration_date))"
-    ensure_no_dups ? EsgInstrument.where(clause).distinct(:instrument_id) : EsgInstrument.where(clause)
+    if ensure_no_dups
+      ids = [] 
+      EsgInstrument.where(clause).group_by {|i| i.instrument_id}.each do |id, recs|
+        unless recs.count > 1
+           ids.push(recs[0].id)
+        end
+      end
+      EsgInstrument.where("id IN (?)", ids)
+    else
+      EsgInstrument.where(clause)
+    end
   end
 end
