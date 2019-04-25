@@ -8,7 +8,8 @@ class V2::EsgInstrumentsController < ApplicationController
     end
  
     result = []
-    EsgInstrument.date_range(params[:date]).find_in_batches do |batch|
+    # true ensures no duplicates
+    EsgInstrument.date_range(params[:date], true).find_in_batches do |batch|
       result += EsgInstrumentSerializer.extract(batch) 
     end
             

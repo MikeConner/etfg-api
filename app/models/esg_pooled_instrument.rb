@@ -68,12 +68,13 @@
 class EsgPooledInstrument < EtfgDbV2Base
   self.record_timestamps = false
 
- def self.date_range(date)
+ def self.date_range(date, ensure_no_dups = false)
     #date = date_param.try(:strftime, "%Y%m%d")
     clause = "((effective_date IS NULL AND expiration_date IS NULL) OR " +
               "(effective_date IS NULL AND expiration_date IS NOT NULL AND '#{date}' <= expiration_date) OR " +
               "(effective_date IS NOT NULL AND expiration_date IS NULL AND '#{date}' > effective_date) OR " +
               "(effective_date IS NOT NULL AND expiration_date IS NOT NULL AND '#{date}' > effective_date AND '#{date}' <= expiration_date))"
-    EsgPooledInstrument.where(clause)
+    ensure_no_dups ? EsgPooledInstrument.find(EsgPooledInstrument.where(clause).order(:id).map {|i| i.pooled_instrument_id}.uniq) : 
+                     EsgPooledInstrument.where(clause)
   end
 end

@@ -8,7 +8,8 @@ class V2::EsgPooledInstrumentsController < ApplicationController
     end
  
     result = []
-    EsgPooledInstrument.date_range(params[:date]).find_in_batches do |batch|
+    # true ensures no duplicates
+    EsgPooledInstrument.date_range(params[:date], true).find_in_batches do |batch|
       result += EsgPooledInstrumentSerializer.extract(batch) 
     end
   
