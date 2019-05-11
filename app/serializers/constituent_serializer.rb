@@ -7,7 +7,7 @@
 #  composite_ticker  :string(12)       not null
 #  identifier        :string(32)
 #  constituent_name  :string
-#  weight            :decimal(10, 6)
+#  weight            :decimal(22, 6)
 #  market_value      :decimal(20, 6)
 #  cusip             :string(24)
 #  isin              :string(16)

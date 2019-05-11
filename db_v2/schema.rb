@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_13_054957) do
+ActiveRecord::Schema.define(version: 2019_05_11_040838) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -121,7 +121,7 @@ ActiveRecord::Schema.define(version: 2019_04_13_054957) do
     t.date "as_of_date"
     t.string "composite_ticker", limit: 32
     t.string "identifier", limit: 64
-    t.string "constituent_name", limit: 255
+    t.string "constituent_name", limit: 128
     t.decimal "weight", precision: 18, scale: 10
     t.decimal "market_value", precision: 22, scale: 6
     t.string "cusip", limit: 9
@@ -873,8 +873,6 @@ ActiveRecord::Schema.define(version: 2019_04_13_054957) do
     t.string "region", limit: 2
     t.string "country", limit: 2
     t.index ["composite_ticker"], name: "index_fund_flows_on_composite_ticker_v2"
-    t.index ["region"], name: "index_fund_flows_country"
-    t.index ["run_date", "region", "country", "composite_ticker"], name: "index_fund_flows_date_ticker_country_region", unique: true
     t.index ["run_date"], name: "index_fund_flows_on_run_date_v2"
   end
 
@@ -885,11 +883,11 @@ ActiveRecord::Schema.define(version: 2019_04_13_054957) do
     t.string "issuer", limit: 64
     t.string "name", limit: 128
     t.date "inception_date"
-    t.string "related_index", limit: 128
+    t.string "related_index"
     t.string "tax_classification", limit: 32
     t.boolean "is_etn"
     t.decimal "fund_aum", precision: 22, scale: 6
-    t.string "avg_volume", limit: 32
+    t.string "avg_volume", limit: 10
     t.string "asset_class", limit: 32
     t.string "category", limit: 32
     t.string "focus", limit: 32
@@ -937,7 +935,7 @@ ActiveRecord::Schema.define(version: 2019_04_13_054957) do
     t.string "lead_market_maker", limit: 64
     t.string "output_region", limit: 2
     t.index ["composite_ticker"], name: "index_industries_on_composite_ticker_v2"
-    t.index ["run_date", "composite_ticker", "output_region"], name: "index_on_date_ticker_region", unique: true
+    t.index ["run_date", "composite_ticker", "output_region"], name: "index_fund_flows_date_ticker_country", unique: true
     t.index ["run_date"], name: "index_industries_on_run_date_v2"
   end
 

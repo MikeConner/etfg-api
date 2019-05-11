@@ -9,11 +9,11 @@
 #  issuer                      :string(64)
 #  name                        :string(128)
 #  inception_date              :date
-#  related_index               :string(128)
+#  related_index               :string
 #  tax_classification          :string(32)
 #  is_etn                      :boolean
 #  fund_aum                    :decimal(22, 6)
-#  avg_volume                  :string(32)
+#  avg_volume                  :string(10)
 #  asset_class                 :string(32)
 #  category                    :string(32)
 #  focus                       :string(32)
@@ -80,7 +80,7 @@ class IndustryV2 < EtfgDbV2Base
                       :maximum => 32, :allow_nil => true
   validates_length_of :administrator, :advisor, :transfer_agent, :trustee, :listing_exchange, :lead_market_maker, :issuer, :tax_classification,
                       :maximum => 64, :allow_nil => true
-  validates_length_of :custodian, :distributor, :subadvisor, :futures_commission_merchant, :related_index, :name,
+  validates_length_of :custodian, :distributor, :subadvisor, :futures_commission_merchant, :name,
                       :maximum => 128, :allow_nil => true
   validates_inclusion_of :is_etn, :is_leveraged, :active, :option_available, :in => [true, false, nil]
   validates_numericality_of :fund_aum, :creation_unit_size, :creation_fee, :short_interest, :num_constituents, :discount_premium,

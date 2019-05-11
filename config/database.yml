@@ -7,7 +7,7 @@ default: &default
 #  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   pool: 100
   timeout: 5000
-  host: 10.10.10.10 #167.99.237.105 #10.10.10.10 #public.etfg.com # 167.99.237.105 # 10.10.10.10
+  host: engine.etfg.com
   schema_search_path: api
   database: etfg
   username: etfg
