@@ -18,9 +18,12 @@ class V2::IndustriesController < ApplicationController
       end
     end
 
-    set_output_type
     set_region
+    unless Action.verify_region(current_user, @region)
+      head :forbidden and return
+    end
       
+    set_output_type
     result = []
     IndustryV2.where(Utilities.date_clause(params, 'industries'))
               .where(:output_region => @region).find_in_batches do |batch|
@@ -28,7 +31,7 @@ class V2::IndustriesController < ApplicationController
     end
     
     if result.empty?
-      head :not_found
+      head :not_found and return
     else
       if 'csv' == @output_type
         fname = params.has_key?(:date) ? "#{@region} Industry #{params[:date]}" : 
@@ -60,10 +63,13 @@ class V2::IndustriesController < ApplicationController
       end
     end
     
+    set_region
+    unless Action.verify_region(current_user, @region)
+      head :forbidden and return
+    end
+    
     fund = params[:id] || params[:fund]
     set_output_type
-    set_region
-    
     result = []
     IndustryV2.where(Utilities.date_clause(params, 'industries'))
               .where(:composite_ticker => fund)
@@ -72,7 +78,7 @@ class V2::IndustriesController < ApplicationController
     end
     
     if result.empty?
-      head :not_found
+      head :not_found and return
     else
       if 'csv' == @output_type
         fname = params.has_key?(:date) ? "#{@region} Industry #{fund}-#{params[:date]}" : 
@@ -107,12 +113,15 @@ class V2::IndustriesController < ApplicationController
       end
     end
     
-    fund = params[:id] || params[:fund]
-    set_output_type
     set_region
+    unless Action.verify_region(current_user, @region)
+      head :forbidden and return
+    end
     
     fieldname = "#{params[:type].downcase}_exposure"
     
+    fund = params[:id] || params[:fund]
+    set_output_type
     result = []
     IndustryV2.where(Utilities.date_clause(params, 'industries'), :composite_ticker => params[:fund])
               .where("#{fieldname} IS NOT NULL")
@@ -127,7 +136,7 @@ class V2::IndustriesController < ApplicationController
               end
     
     if result.empty?
-      head :not_found
+      head :not_found and return
     else
       if 'csv' == @output_type
         fname = params.has_key?(:date) ? "#{@region} Industry #{fieldname}-#{fund}-#{params[:date]}" : 
@@ -159,8 +168,12 @@ class V2::IndustriesController < ApplicationController
         head :forbidden and return
       end
     end
-    set_region
     
+    set_region
+    unless Action.verify_region(current_user, @region)
+      head :forbidden and return
+    end
+   
     render :json => IndustryV2.where(Utilities.date_clause(params, 'industries'))
                               .where(:output_region => @region).order(:composite_ticker).map(&:composite_ticker).uniq
     

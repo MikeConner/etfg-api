@@ -10,17 +10,29 @@ class V2::FundflowsController < ApplicationController
     unless params.has_key?(:date) or (params.has_key?(:start_date) and params.has_key?(:end_date))
       render :json => {:error => I18n.t('date_required')}, :status => :bad_request and return
     end
-    set_output_type
+
+    unless current_user.has_permission(:full_historical)   
+      earliest_date = Utilities.earliest_date(params, 'fundflows')
+      if earliest_date < Utilities::TESTED_DATA_BOUNDARY
+        head :forbidden and return
+      end
+    end
+
     set_region
-    
+    unless Action.verify_region(current_user, @region)
+      head :forbidden and return
+    end
+
+    set_output_type    
     result = []
+    
     FundFlowV2.where(Utilities.date_clause(params, 'fundflows'))
               .where(:region => @region).find_in_batches do |batch|
       result += FundFlowV2Serializer.extract(batch)      
     end
     
     if result.empty?
-      head :not_found
+      head :not_found and return
     else
       if 'csv' == @output_type
         fname = params.has_key?(:date) ? "#{@region} FundFlows #{params[:date]}" : 
@@ -44,17 +56,31 @@ class V2::FundflowsController < ApplicationController
     unless params.has_key?(:date) or (params.has_key?(:start_date) and params.has_key?(:end_date))
       render :json => {:error => I18n.t('date_required')}, :status => :bad_request and return
     end
+
+    unless current_user.has_permission(:full_historical)   
+      earliest_date = Utilities.earliest_date(params, 'fundflows')
+      if earliest_date < Utilities::TESTED_DATA_BOUNDARY
+        head :forbidden and return
+      end
+    end
     
+    set_region
+    unless Action.verify_region(current_user, @region)
+      head :forbidden and return
+    end
+
     fund = params[:id] || params[:fund]
     set_output_type
     
     result = []
-    FundFlowV2.where(Utilities.date_clause(params, 'fundflows')).where(:composite_ticker => fund).find_in_batches do |batch|
+    FundFlowV2.where(Utilities.date_clause(params, 'fundflows'))
+              .where(:composite_ticker => fund, :region => @region)
+              .find_in_batches do |batch|
       result += FundFlowV2Serializer.extract(batch)      
     end
     
     if result.empty?
-      head :not_found
+      head :not_found and return
     else
       if 'csv' == @output_type
         fname = params.has_key?(:date) ? "#{@region} FundFlows #{fund}-#{params[:date]}" : 
@@ -78,8 +104,22 @@ class V2::FundflowsController < ApplicationController
     unless params.has_key?(:date) or (params.has_key?(:start_date) and params.has_key?(:end_date))
       render :json => {:error => I18n.t('date_required')}, :status => :bad_request and return
     end
+
+    unless current_user.has_permission(:full_historical)   
+      earliest_date = Utilities.earliest_date(params, 'fundflows')
+      if earliest_date < Utilities::TESTED_DATA_BOUNDARY
+        head :forbidden and return
+      end
+    end
     
-    render :json => FundFlowV2.where(Utilities.date_clause(params, 'fundflows')).order(:composite_ticker).map(&:composite_ticker).uniq
+    set_region
+    unless Action.verify_region(current_user, @region)
+      head :forbidden and return
+    end
+    
+    render :json => FundFlowV2.where(Utilities.date_clause(params, 'fundflows'))
+                              .where(:region => @region)
+                              .order(:composite_ticker).map(&:composite_ticker).uniq
     
   rescue Exception => ex
     render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :internal_server_error    

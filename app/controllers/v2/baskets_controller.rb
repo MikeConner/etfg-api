@@ -10,9 +10,12 @@ class V2::BasketsController < ApplicationController
     unless params.has_key?(:date) or (params.has_key?(:start_date) and params.has_key?(:end_date))
       render :json => {:error => I18n.t('date_required')}, :status => :bad_request and return
     end
-    set_output_type
     set_region
+    unless Action.verify_region(current_user, @region)
+      head :forbidden and return
+    end
     
+    set_output_type
     result = []
     Basket.where(Utilities.date_clause(params, 'baskets'))
           .where(:output_region => @region).find_in_batches do |batch|
@@ -20,7 +23,7 @@ class V2::BasketsController < ApplicationController
     end
     
     if result.empty?
-      head :not_found
+      head :not_found and return
     else
       if 'csv' == @output_type
         fname = params.has_key?(:date) ? "#{@region} Baskets #{params[:date]}" : 
@@ -44,10 +47,13 @@ class V2::BasketsController < ApplicationController
     unless params.has_key?(:date) or (params.has_key?(:start_date) and params.has_key?(:end_date))
       render :json => {:error => I18n.t('date_required')}, :status => :bad_request and return
     end
-    set_output_type
     set_region
+    unless Action.verify_region(current_user, @region)
+      head :forbidden and return
+    end
     
     result = Hash.new
+    set_output_type
     
     tickers = Basket.where(Utilities.date_clause(params, 'baskets'))
                     .where(:output_region => @region).pluck(:composite_ticker).uniq
@@ -82,12 +88,19 @@ class V2::BasketsController < ApplicationController
     unless params.has_key?(:date) or (params.has_key?(:start_date) and params.has_key?(:end_date))
       render :json => {:error => I18n.t('date_required')}, :status => :bad_request and return
     end
-    
+
+    set_region
+    unless Action.verify_region(current_user, @region)
+      head :forbidden and return
+    end
+        
     fund = params[:id] || params[:fund]
     set_output_type
     
     result = []
-    Basket.where(Utilities.date_clause(params, 'baskets')).where(:composite_ticker => fund).find_in_batches do |batch|
+    Basket.where(Utilities.date_clause(params, 'baskets'))
+          .where(:composite_ticker => fund, :output_region => @region)
+          .find_in_batches do |batch|
       result += BasketSerializer.extract(batch)      
     end
     

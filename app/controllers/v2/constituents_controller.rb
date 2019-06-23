@@ -29,10 +29,13 @@ class V2::ConstituentsController < ApplicationController
       end
     end
     
+    set_region    
+    unless Action.verify_region(current_user, @region)
+      head :forbidden and return
+    end
+             
     fund = params[:id] || params[:fund]
     set_output_type
-    set_region
-             
     result = []
     
     if params.has_key?(:identifier)
@@ -47,7 +50,7 @@ class V2::ConstituentsController < ApplicationController
     end
     
     if result.empty?
-      head :not_found
+      head :not_found and return
     else
       if 'csv' == @output_type
         fname = params.has_key?(:date) ? "#{@region} Constituents #{fund}-#{params[:date]}" : 
@@ -77,7 +80,11 @@ class V2::ConstituentsController < ApplicationController
         head :forbidden and return
       end
     end
+
     set_region
+    unless Action.verify_region(current_user, @region)
+      head :forbidden and return
+    end
     
     render :json => ConstituentV2.where(Utilities.date_clause(params, 'constituents'))
                                  .where(:region => @region).order(:composite_ticker).map(&:composite_ticker).uniq
@@ -99,8 +106,11 @@ class V2::ConstituentsController < ApplicationController
       end
     end
 
-    fund = params[:id] || params[:fund]
     set_region
+    unless Action.verify_region(current_user, @region)
+      head :forbidden and return
+    end
+    fund = params[:id] || params[:fund]
     
     render :json => ConstituentV2.where(Utilities.date_clause(params, 'constituents'))
                                  .where(:composite_ticker => fund)
@@ -123,16 +133,29 @@ class V2::ConstituentsController < ApplicationController
       end
     end
       
+    set_region
+    unless Action.verify_region(current_user, @region)
+      head :forbidden and return
+    end
     fund = params[:id] || params[:fund]
     set_output_type
-    set_region
+
+    # If there is only 1 date, run it normally
+    # If there are two - run it multiple times, and return a hash of date -> results
+    if params.has_key?(:date)
+      result = ConstituentV2Serializer.extract(ConstituentV2.where(Utilities.date_clause(params, 'constituents'))
+                                      .where(:composite_ticker => fund ).order('weight DESC').limit(TOP_N))
+    else
+      result = Hash.new
+      for day in Utilities.date_range(params, 'constituents')
+        today = ConstituentV2Serializer.extract(ConstituentV2.where(:run_date => day)
+                                       .where(:composite_ticker => fund).order('weight DESC').limit(TOP_N))
+        result[day] = today unless today.empty?
+      end
+    end
     
-    result = ConstituentV2Serializer.extract(ConstituentV2.where(Utilities.date_clause(params, 'constituents'))
-                                                          .where(:composite_ticker => fund )
-                                                          .where(:region => @region).order('weight DESC').limit(TOP_N))
-       
     if result.empty?
-      head :not_found
+      head :not_found and return
     else
       if 'csv' == @output_type
         fname = params.has_key?(:date) ? "#{@region} Top Constituents #{fund}-#{params[:date]}" : 

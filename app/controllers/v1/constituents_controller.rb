@@ -129,7 +129,19 @@ class V1::ConstituentsController < ApplicationController
     fund = params[:id] || params[:fund]
     set_output_type
     
-    result = ConstituentSerializer.extract(Constituent.where(Utilities.date_clause(params, 'constituents')).where(:composite_ticker => fund ).order('weight DESC').limit(TOP_N))
+    # If there is only 1 date, run it normally
+    # If there are two - run it multiple times, and return a hash of date -> results
+    if params.has_key?(:date)
+      result = ConstituentSerializer.extract(Constituent.where(Utilities.date_clause(params, 'constituents'))
+                                    .where(:composite_ticker => fund ).order('weight DESC').limit(TOP_N))
+    else
+      result = Hash.new
+      for day in Utilities.date_range(params, 'constituents')
+        today = ConstituentSerializer.extract(Constituent.where(:run_date => day)
+                                     .where(:composite_ticker => fund).order('weight DESC').limit(TOP_N))
+        result[day] = today unless today.empty?
+      end
+    end
        
     if result.empty?
       head :not_found

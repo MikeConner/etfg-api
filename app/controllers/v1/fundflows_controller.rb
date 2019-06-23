@@ -12,6 +12,14 @@ class V1::FundflowsController < ApplicationController
     unless params.has_key?(:date) or (params.has_key?(:start_date) and params.has_key?(:end_date))
       render :json => {:error => I18n.t('date_required')}, :status => :bad_request and return
     end
+
+    unless current_user.has_permission(:full_historical)   
+      earliest_date = Utilities.earliest_date(params, 'fundflows')
+      if earliest_date < Utilities::TESTED_DATA_BOUNDARY
+        head :forbidden and return
+      end
+    end
+    
     set_output_type
     
     result = []
@@ -45,7 +53,14 @@ class V1::FundflowsController < ApplicationController
     unless params.has_key?(:date) or (params.has_key?(:start_date) and params.has_key?(:end_date))
       render :json => {:error => I18n.t('date_required')}, :status => :bad_request and return
     end
-    
+ 
+    unless current_user.has_permission(:full_historical)   
+      earliest_date = Utilities.earliest_date(params, 'fundflows')
+      if earliest_date < Utilities::TESTED_DATA_BOUNDARY
+        head :forbidden and return
+      end
+    end
+   
     fund = params[:id] || params[:fund]
     set_output_type
     
@@ -77,6 +92,13 @@ class V1::FundflowsController < ApplicationController
   def products
     unless params.has_key?(:date) or (params.has_key?(:start_date) and params.has_key?(:end_date))
       render :json => {:error => I18n.t('date_required')}, :status => :bad_request and return
+    end
+
+    unless current_user.has_permission(:full_historical)   
+      earliest_date = Utilities.earliest_date(params, 'fundflows')
+      if earliest_date < Utilities::TESTED_DATA_BOUNDARY
+        head :forbidden and return
+      end
     end
     
     render :json => FundFlow.where(Utilities.date_clause(params, 'fundflows')).order(:composite_ticker).map(&:composite_ticker).uniq
