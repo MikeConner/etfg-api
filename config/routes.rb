@@ -40,6 +40,9 @@ Rails.application.routes.draw do
     resources :esg_ratings, :only => [:index, :show]
     resources :esg_instruments, :only => [:index]
     resources :esg_pooled_instruments, :only => [:index]
+    resources :baskets, :only => [:show] do
+      get 'tickers', :on => :collection
+    end
   end
     
   # Constituents

@@ -20,7 +20,7 @@ class Action < EtfgDbBase
   enum description: [:read_industry, :read_analytics, :read_fund_flow, :read_constituents, 
                      :change_permissions, :manage_users, :full_historical,
                      :read_constituents_archive, :read_constituents_snapshot, :legacy, :sftp,
-                     :read_esg_core, :read_esg_ratings, :cca_internal]
+                     :read_esg_core, :read_esg_ratings, :cca_internal, :read_baskets]
   
   def to_s
     self.description.to_s.humanize

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_11_040838) do
+ActiveRecord::Schema.define(version: 2019_06_22_145748) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -89,6 +89,54 @@ ActiveRecord::Schema.define(version: 2019_05_11_040838) do
     t.text "quant_quality_firm"
     t.text "quant_composite_quality"
     t.text "quant_grade"
+  end
+
+  create_table "baskets", force: :cascade do |t|
+    t.date "run_date", null: false
+    t.date "as_of_date"
+    t.string "composite_ticker", limit: 32, null: false
+    t.string "exchange_country", limit: 16, null: false
+    t.string "composite_name", limit: 128
+    t.string "issuer", limit: 32
+    t.string "composite_cusip", limit: 9
+    t.string "composite_isin", limit: 12
+    t.decimal "creation_unit_size", precision: 18, scale: 6
+    t.decimal "estimated_cash", precision: 22, scale: 6
+    t.decimal "total_cash", precision: 22, scale: 6
+    t.decimal "cash_in_lieu_value", precision: 22, scale: 6
+    t.string "constituent_ticker", limit: 64
+    t.string "constituent_name", limit: 128
+    t.string "cusip", limit: 9
+    t.string "figi", limit: 12
+    t.string "isin", limit: 12
+    t.string "sedol", limit: 7
+    t.decimal "market_value", precision: 22, scale: 6
+    t.decimal "basket_weight", precision: 18, scale: 10
+    t.decimal "holdings_weight", precision: 18, scale: 10
+    t.decimal "weight_diff", precision: 18, scale: 10
+    t.decimal "total_shares_held", precision: 22, scale: 6
+    t.boolean "cash_in_lieu_flag"
+    t.boolean "new_security_flag"
+    t.integer "component_count"
+    t.string "asset_class", limit: 28
+    t.string "category", limit: 28
+    t.string "development_class", limit: 32
+    t.string "focus", limit: 28
+    t.decimal "expense_ratio", precision: 18, scale: 6
+    t.decimal "aum", precision: 22, scale: 6
+    t.decimal "nav", precision: 22, scale: 6
+    t.decimal "shares_outstanding", precision: 22, scale: 6
+    t.text "geographic_exposure"
+    t.text "sector_exposure"
+    t.text "industry_exposure"
+    t.text "industry_group_exposure"
+    t.text "subindustry_exposure"
+    t.decimal "reward_score", precision: 16, scale: 4
+    t.decimal "risk_total_score", precision: 16, scale: 4
+    t.string "output_region", limit: 2
+    t.index ["composite_ticker"], name: "index_baskets_on_composite_ticker"
+    t.index ["run_date", "composite_ticker"], name: "index_baskets_on_run_date_and_composite_ticker"
+    t.index ["run_date"], name: "index_baskets_on_run_date"
   end
 
   create_table "constituents", force: :cascade do |t|
