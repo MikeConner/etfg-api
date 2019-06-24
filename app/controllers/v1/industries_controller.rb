@@ -23,7 +23,7 @@ class V1::IndustriesController < ApplicationController
     set_output_type
       
     result = []
-    Industry.where(Utilities.date_clause(params, 'industries')).find_in_batches do |batch|
+    Industry.where(Utilities.date_clause(params, 'industries', 1)).find_in_batches do |batch|
       result += IndustrySerializer.extract(batch)      
     end
     
@@ -65,7 +65,7 @@ class V1::IndustriesController < ApplicationController
     set_output_type
     
     result = []
-    Industry.where(Utilities.date_clause(params, 'industries')).where(:composite_ticker => fund).find_in_batches do |batch|
+    Industry.where(Utilities.date_clause(params, 'industries', 1)).where(:composite_ticker => fund).find_in_batches do |batch|
       result += IndustrySerializer.extract(batch)      
     end
     
@@ -108,13 +108,13 @@ class V1::IndustriesController < ApplicationController
         
     if fund.nil?
       # Index
-      Industry.where(Utilities.date_clause(params, 'industries')).find_in_batches do |batch|
+      Industry.where(Utilities.date_clause(params, 'industries', 1)).find_in_batches do |batch|
         result += IndustrySerializer.extract(batch)      
       end
     else
       # Show
       fname += "_#{fund}"
-      Industry.where(Utilities.date_clause(params, 'industries')).where(:composite_ticker => fund).find_in_batches do |batch|
+      Industry.where(Utilities.date_clause(params, 'industries', 1)).where(:composite_ticker => fund).find_in_batches do |batch|
         result += IndustrySerializer.extract(batch)      
       end
     end
@@ -156,7 +156,7 @@ class V1::IndustriesController < ApplicationController
     fieldname = "#{params[:type].downcase}_exposure"
     
     result = []
-    Industry.where(Utilities.date_clause(params, 'industries'), :composite_ticker => params[:fund])
+    Industry.where(Utilities.date_clause(params, 'industries', 1), :composite_ticker => params[:fund])
             .where("#{fieldname} IS NOT NULL")
             .pluck(fieldname.to_sym).each do |value|
               value.split(/;/).sort.each do |country|
@@ -200,7 +200,7 @@ class V1::IndustriesController < ApplicationController
       end
     end
     
-    render :json => Industry.where(Utilities.date_clause(params, 'industries')).order(:composite_ticker).map(&:composite_ticker).uniq
+    render :json => Industry.where(Utilities.date_clause(params, 'industries', 1)).order(:composite_ticker).map(&:composite_ticker).uniq
     
   rescue Exception => ex
     render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :internal_server_error    

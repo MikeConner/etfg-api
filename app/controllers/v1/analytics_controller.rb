@@ -23,7 +23,7 @@ class V1::AnalyticsController < ApplicationController
     set_output_type
            
     result = []
-    Analytic.where(Utilities.date_clause(params, 'analytics')).find_in_batches do |batch|
+    Analytic.where(Utilities.date_clause(params, 'analytics', 1)).find_in_batches do |batch|
       result += AnalyticSerializer.extract(batch)      
     end
     
@@ -65,7 +65,7 @@ class V1::AnalyticsController < ApplicationController
     set_output_type
            
     result = []
-    Analytic.where(Utilities.date_clause(params, 'analytics')).where(:composite_ticker => fund).find_in_batches do |batch|
+    Analytic.where(Utilities.date_clause(params, 'analytics', 1)).where(:composite_ticker => fund).find_in_batches do |batch|
       result += AnalyticSerializer.extract(batch)      
     end
     
@@ -144,7 +144,7 @@ class V1::AnalyticsController < ApplicationController
       where_clause += "#{group} IN (SELECT #{group} FROM industries WHERE composite_ticker='#{fund}') "      
     end
 
-    sql = "SELECT " + select_clause + " FROM analytics WHERE #{Utilities.date_clause(params, 'analytics')} AND composite_ticker in " +
+    sql = "SELECT " + select_clause + " FROM analytics WHERE #{Utilities.date_clause(params, 'analytics', 1)} AND composite_ticker in " +
           "(SELECT composite_ticker FROM industries WHERE (#{where_clause}))"
     
     render :json => ActiveRecord::Base.connection.execute(sql)
@@ -167,7 +167,7 @@ class V1::AnalyticsController < ApplicationController
       end
     end
     
-    render :json => Analytic.where(Utilities.date_clause(params, 'analytics')).order(:composite_ticker).map(&:composite_ticker).uniq
+    render :json => Analytic.where(Utilities.date_clause(params, 'analytics', 1)).order(:composite_ticker).map(&:composite_ticker).uniq
     
   rescue Exception => ex
     render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :internal_server_error

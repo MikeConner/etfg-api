@@ -23,7 +23,7 @@ class V1::FundflowsController < ApplicationController
     set_output_type
     
     result = []
-    FundFlow.where(Utilities.date_clause(params, 'fundflows')).find_in_batches do |batch|
+    FundFlow.where(Utilities.date_clause(params, 'fundflows', 1)).find_in_batches do |batch|
       result += FundFlowSerializer.extract(batch)      
     end
     
@@ -65,7 +65,7 @@ class V1::FundflowsController < ApplicationController
     set_output_type
     
     result = []
-    FundFlow.where(Utilities.date_clause(params, 'fundflows')).where(:composite_ticker => fund).find_in_batches do |batch|
+    FundFlow.where(Utilities.date_clause(params, 'fundflows', 1)).where(:composite_ticker => fund).find_in_batches do |batch|
       result += FundFlowSerializer.extract(batch)      
     end
     
@@ -101,7 +101,7 @@ class V1::FundflowsController < ApplicationController
       end
     end
     
-    render :json => FundFlow.where(Utilities.date_clause(params, 'fundflows')).order(:composite_ticker).map(&:composite_ticker).uniq
+    render :json => FundFlow.where(Utilities.date_clause(params, 'fundflows', 1)).order(:composite_ticker).map(&:composite_ticker).uniq
     
   rescue Exception => ex
     render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :internal_server_error    

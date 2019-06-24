@@ -44,11 +44,11 @@ class V1::ConstituentsController < ApplicationController
     result = []
     
     if params.has_key?(:identifier)
-      result += ConstituentSerializer.extract(Constituent.where(Utilities.date_clause(params, 'constituents'))
+      result += ConstituentSerializer.extract(Constituent.where(Utilities.date_clause(params, 'constituents', 1))
                                                          .where(:composite_ticker => fund)
                                                          .where("#{params[:type].downcase} = '#{params[:identifier]}'"))      
     else
-      Constituent.where(Utilities.date_clause(params, 'constituents')).where(:composite_ticker => fund).find_in_batches do |batch|
+      Constituent.where(Utilities.date_clause(params, 'constituents', 1)).where(:composite_ticker => fund).find_in_batches do |batch|
         result += ConstituentSerializer.extract(batch)      
       end
     end
@@ -84,7 +84,7 @@ class V1::ConstituentsController < ApplicationController
       end
     end
 
-    render :json => Constituent.where(Utilities.date_clause(params, 'constituents')).order(:composite_ticker).map(&:composite_ticker).uniq
+    render :json => Constituent.where(Utilities.date_clause(params, 'constituents', 1)).order(:composite_ticker).map(&:composite_ticker).uniq
     
   rescue Exception => ex
     render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :internal_server_error    
@@ -105,7 +105,7 @@ class V1::ConstituentsController < ApplicationController
 
     fund = params[:id] || params[:fund]
     
-    render :json => Constituent.where(Utilities.date_clause(params, 'constituents'))
+    render :json => Constituent.where(Utilities.date_clause(params, 'constituents', 1))
                                .where(:composite_ticker => fund).order(:constituent_name).map(&:constituent_name).uniq
     
   rescue Exception => ex
@@ -132,11 +132,11 @@ class V1::ConstituentsController < ApplicationController
     # If there is only 1 date, run it normally
     # If there are two - run it multiple times, and return a hash of date -> results
     if params.has_key?(:date)
-      result = ConstituentSerializer.extract(Constituent.where(Utilities.date_clause(params, 'constituents'))
+      result = ConstituentSerializer.extract(Constituent.where(Utilities.date_clause(params, 'constituents', 1))
                                     .where(:composite_ticker => fund ).order('weight DESC').limit(TOP_N))
     else
       result = Hash.new
-      for day in Utilities.date_range(params, 'constituents')
+      for day in Utilities.date_range(params, 'constituents', 1)
         today = ConstituentSerializer.extract(Constituent.where(:run_date => day)
                                      .where(:composite_ticker => fund).order('weight DESC').limit(TOP_N))
         result[day] = today unless today.empty?

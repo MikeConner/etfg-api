@@ -12,7 +12,7 @@ class V2::EsgCoresController < ApplicationController
     isin = params[:id]
     set_output_type
 
-    result = EsgCoreSerializer.extract(EsgCore.where(Utilities.date_clause(params, 'esg_cores', 'etfg_date'))
+    result = EsgCoreSerializer.extract(EsgCore.where(Utilities.date_clause(params, 'esg_cores', 2, 'etfg_date'))
                                               .where(:isin => isin))      
     if result.empty?
       head :not_found
@@ -38,7 +38,7 @@ class V2::EsgCoresController < ApplicationController
       render :json => {:error => I18n.t('date_required')}, :status => :bad_request and return
     end
  
-    recs = EsgCore.where(Utilities.date_clause(params, 'esg_cores', 'etfg_date'))
+    recs = EsgCore.where(Utilities.date_clause(params, 'esg_cores', 2, 'etfg_date'))
     filter = []
     if params.has_key?(:region)
       recs = recs.where(:region => params[:region])

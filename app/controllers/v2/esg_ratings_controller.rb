@@ -13,7 +13,7 @@ class V2::EsgRatingsController < ApplicationController
     set_output_type
     result = []
 
-    result = EsgRatingSerializer.extract(EsgRating.where(Utilities.date_clause(params, 'esg_ratings', 'etfg_date'))
+    result = EsgRatingSerializer.extract(EsgRating.where(Utilities.date_clause(params, 'esg_ratings', 2, 'etfg_date'))
                                                   .where(:composite_ticker => ticker))      
     if result.empty?
       head :not_found
@@ -41,7 +41,7 @@ class V2::EsgRatingsController < ApplicationController
  
     set_output_type   
     
-    result = EsgRatingSerializer.extract(EsgRating.where(Utilities.date_clause(params, 'esg_ratings', 'etfg_date'))) 
+    result = EsgRatingSerializer.extract(EsgRating.where(Utilities.date_clause(params, 'esg_ratings', 2, 'etfg_date'))) 
          
     if result.empty?
       head :not_found
