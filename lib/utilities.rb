@@ -15,7 +15,7 @@ module Utilities
     csv_string   
   end
   
-  def self.earliest_date(params, table, version)
+  def self.earliest_date(params, table, version = 2)
     if params.has_key?(:date)
       # The date could be coming from the REST API or the legacy API
       # In the legacy case, it will be in the form "start:end". So if there is a colon, it's legacy and we need to split

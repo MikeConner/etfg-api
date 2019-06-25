@@ -32,7 +32,7 @@ class V1::ConstituentsController < ApplicationController
     end
 
     unless current_user.has_permission(:full_historical)   
-      earliest_date = Utilities.earliest_date(params, 'constituents')
+      earliest_date = Utilities.earliest_date(params, 'constituents', 1)
       if earliest_date < Utilities::TESTED_DATA_BOUNDARY
         head :forbidden and return
       end
@@ -78,7 +78,7 @@ class V1::ConstituentsController < ApplicationController
     end
     
     unless current_user.has_permission(:full_historical)   
-      earliest_date = Utilities.earliest_date(params, 'constituents')
+      earliest_date = Utilities.earliest_date(params, 'constituents', 1)
       if earliest_date < Utilities::TESTED_DATA_BOUNDARY
         head :forbidden and return
       end
@@ -97,7 +97,7 @@ class V1::ConstituentsController < ApplicationController
     end
 
     unless current_user.has_permission(:full_historical)   
-      earliest_date = Utilities.earliest_date(params, 'constituents')
+      earliest_date = Utilities.earliest_date(params, 'constituents', 1)
       if earliest_date < Utilities::TESTED_DATA_BOUNDARY
         head :forbidden and return
       end
@@ -120,7 +120,7 @@ class V1::ConstituentsController < ApplicationController
     end
 
     unless current_user.has_permission(:full_historical)   
-      earliest_date = Utilities.earliest_date(params, 'constituents')
+      earliest_date = Utilities.earliest_date(params, 'constituents', 1)
       if earliest_date < Utilities::TESTED_DATA_BOUNDARY
         head :forbidden and return
       end

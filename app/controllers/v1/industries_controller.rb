@@ -14,7 +14,7 @@ class V1::IndustriesController < ApplicationController
     end
 
     unless current_user.has_permission(:full_historical)   
-      earliest_date = Utilities.earliest_date(params, 'industries')
+      earliest_date = Utilities.earliest_date(params, 'industries', 1)
       if earliest_date < Utilities::TESTED_DATA_BOUNDARY
         head :forbidden and return
       end
@@ -55,7 +55,7 @@ class V1::IndustriesController < ApplicationController
     end
 
     unless current_user.has_permission(:full_historical)   
-      earliest_date = Utilities.earliest_date(params, 'industries')
+      earliest_date = Utilities.earliest_date(params, 'industries', 1)
       if earliest_date < Utilities::TESTED_DATA_BOUNDARY
         head :forbidden and return
       end
@@ -95,7 +95,7 @@ class V1::IndustriesController < ApplicationController
     end
 
     unless current_user.has_permission(:full_historical)   
-      earliest_date = Utilities.earliest_date(params, 'industries')
+      earliest_date = Utilities.earliest_date(params, 'industries', 1)
       if earliest_date < Utilities::TESTED_DATA_BOUNDARY
         head :forbidden and return
       end
@@ -145,7 +145,7 @@ class V1::IndustriesController < ApplicationController
     end
 
     unless current_user.has_permission(:full_historical)   
-      earliest_date = Utilities.earliest_date(params, 'industries')
+      earliest_date = Utilities.earliest_date(params, 'industries', 1)
       if earliest_date < Utilities::TESTED_DATA_BOUNDARY
         head :forbidden and return
       end
@@ -194,7 +194,7 @@ class V1::IndustriesController < ApplicationController
     end
 
     unless current_user.has_permission(:full_historical)   
-      earliest_date = Utilities.earliest_date(params, 'industries')
+      earliest_date = Utilities.earliest_date(params, 'industries', 1)
       if earliest_date < Utilities::TESTED_DATA_BOUNDARY
         head :forbidden and return
       end

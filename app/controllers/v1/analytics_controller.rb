@@ -14,7 +14,7 @@ class V1::AnalyticsController < ApplicationController
     end
     
     unless current_user.has_permission(:full_historical)   
-      earliest_date = Utilities.earliest_date(params, 'analytics')
+      earliest_date = Utilities.earliest_date(params, 'analytics', 1)
       if earliest_date < Utilities::TESTED_DATA_BOUNDARY
         head :forbidden and return
       end
@@ -55,7 +55,7 @@ class V1::AnalyticsController < ApplicationController
     end
 
     unless current_user.has_permission(:full_historical)   
-      earliest_date = Utilities.earliest_date(params, 'analytics')
+      earliest_date = Utilities.earliest_date(params, 'analytics', 1)
       if earliest_date < Utilities::TESTED_DATA_BOUNDARY
         head :forbidden and return
       end
@@ -118,7 +118,7 @@ class V1::AnalyticsController < ApplicationController
     end
 
     unless current_user.has_permission(:full_historical)   
-      earliest_date = Utilities.earliest_date(params, 'analytics')
+      earliest_date = Utilities.earliest_date(params, 'analytics', 1)
       if earliest_date < Utilities::TESTED_DATA_BOUNDARY
         head :forbidden and return
       end
@@ -161,7 +161,7 @@ class V1::AnalyticsController < ApplicationController
     end
 
     unless current_user.has_permission(:full_historical)   
-      earliest_date = Utilities.earliest_date(params, 'analytics')
+      earliest_date = Utilities.earliest_date(params, 'analytics', 1)
       if earliest_date < Utilities::TESTED_DATA_BOUNDARY
         head :forbidden and return
       end
