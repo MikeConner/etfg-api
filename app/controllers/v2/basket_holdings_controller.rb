@@ -1,11 +1,11 @@
 require 'utilities'
 
-class V2::BasketsController < ApplicationController
+class V2::BasketHoldingsController < ApplicationController
   before_action :authenticate_user!
   before_action :check_permissions
   
-  # /v2/baskets?date=20180509&output=[csv|json]
-  # /v2/baskets?start_date=20180509&end_date=20180509
+  # /v2/basket_holdings?date=20180509&output=[csv|json]
+  # /v2/basket_holdings?start_date=20180509&end_date=20180509
   def index        
     unless params.has_key?(:date) or (params.has_key?(:start_date) and params.has_key?(:end_date))
       render :json => {:error => I18n.t('date_required')}, :status => :bad_request and return
@@ -17,17 +17,17 @@ class V2::BasketsController < ApplicationController
     
     set_output_type
     result = []
-    Basket.where(Utilities.date_clause(params, 'baskets'))
-          .where(:output_region => @region).find_in_batches do |batch|
-      result += BasketSerializer.extract(batch)      
+    BasketHolding.where(Utilities.date_clause(params, 'baskets'))
+                 .where(:output_region => @region).find_in_batches do |batch|
+      result += BasketHoldingSerializer.extract(batch)      
     end
     
     if result.empty?
       head :not_found and return
     else
       if 'csv' == @output_type
-        fname = params.has_key?(:date) ? "#{@region} Baskets #{params[:date]}" : 
-                                         "#{@region} Baskets #{params[:start_date]}_#{params[:end_date]}"
+        fname = params.has_key?(:date) ? "#{@region} Basket Holdings #{params[:date]}" : 
+                                         "#{@region} Basket Holdings #{params[:start_date]}_#{params[:end_date]}"
         send_data Utilities.csv_emitter(result),
                   :filename => "#{fname}.csv",
                   :type => "text/csv",
@@ -41,8 +41,8 @@ class V2::BasketsController < ApplicationController
     render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :internal_server_error    
   end
 
-  # /v2/baskets/tickers?date=20180509&output=[csv|json]
-  # /v2/baskets/tickers?start_date=20180509&end_date=20180509
+  # /v2/basket_holdings/tickers?date=20180509&output=[csv|json]
+  # /v2/basket_holdings/tickers?start_date=20180509&end_date=20180509
   def tickers        
     unless params.has_key?(:date) or (params.has_key?(:start_date) and params.has_key?(:end_date))
       render :json => {:error => I18n.t('date_required')}, :status => :bad_request and return
@@ -55,11 +55,11 @@ class V2::BasketsController < ApplicationController
     result = Hash.new
     set_output_type
     
-    tickers = Basket.where(Utilities.date_clause(params, 'baskets'))
-                    .where(:output_region => @region).pluck(:composite_ticker).uniq
+    tickers = BasketHolding.where(Utilities.date_clause(params, 'basket_holdings'))
+                           .where(:output_region => @region).pluck(:composite_ticker).uniq
     tickers.each do |ticker|
-      cnt = Basket.where(Utilities.date_clause(params, 'baskets'))
-                  .where(:output_region => @region, :composite_ticker => ticker).count
+      cnt = BasketHolding.where(Utilities.date_clause(params, 'basket_holdings'))
+                         .where(:output_region => @region, :composite_ticker => ticker).count
       result[ticker] = cnt
     end    
     
@@ -67,8 +67,8 @@ class V2::BasketsController < ApplicationController
       head :not_found
     else
       if 'csv' == @output_type
-        fname = params.has_key?(:date) ? "#{@region} Baskets #{params[:date]}" : 
-                                         "#{@region} Baskets #{params[:start_date]}_#{params[:end_date]}"
+        fname = params.has_key?(:date) ? "#{@region} Basket Holdings #{params[:date]}" : 
+                                         "#{@region} Basket Holdings #{params[:start_date]}_#{params[:end_date]}"
         send_data Utilities.csv_emitter(result),
                   :filename => "#{fname}.csv",
                   :type => "text/csv",
@@ -82,8 +82,8 @@ class V2::BasketsController < ApplicationController
     render :json => {:error => ex.message, :trace => ex.backtrace}, :status => :internal_server_error    
   end
   
-  # /v2/baskets/:fund?date=20180509&output=[csv|json]
-  # /v2/baskets/:fund?start_date=20180509&end_date=20180509
+  # /v2/basket_holdings/:fund?date=20180509&output=[csv|json]
+  # /v2/basket_holdings/:fund?start_date=20180509&end_date=20180509
   def show
     unless params.has_key?(:date) or (params.has_key?(:start_date) and params.has_key?(:end_date))
       render :json => {:error => I18n.t('date_required')}, :status => :bad_request and return
@@ -98,18 +98,18 @@ class V2::BasketsController < ApplicationController
     set_output_type
     
     result = []
-    Basket.where(Utilities.date_clause(params, 'baskets'))
-          .where(:composite_ticker => fund, :output_region => @region)
-          .find_in_batches do |batch|
-      result += BasketSerializer.extract(batch)      
+    BasketHolding.where(Utilities.date_clause(params, 'basket_holdings'))
+                 .where(:composite_ticker => fund, :output_region => @region)
+                 .find_in_batches do |batch|
+      result += BasketHoldingSerializer.extract(batch)      
     end
     
     if result.empty?
       head :not_found
     else
       if 'csv' == @output_type
-        fname = params.has_key?(:date) ? "#{@region} Baskets #{fund}-#{params[:date]}" : 
-                                         "#{@region} Baskets #{fund}-#{params[:start_date]}_#{params[:end_date]}"
+        fname = params.has_key?(:date) ? "#{@region} Basket Holdings #{fund}-#{params[:date]}" : 
+                                         "#{@region} Basket Holdings #{fund}-#{params[:start_date]}_#{params[:end_date]}"
         send_data Utilities.csv_emitter(result),
                   :filename => "#{fname}.csv",
                   :type => "text/csv",
