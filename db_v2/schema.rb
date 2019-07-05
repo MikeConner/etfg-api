@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_04_170023) do
+ActiveRecord::Schema.define(version: 2019_07_05_040851) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -151,6 +151,7 @@ ActiveRecord::Schema.define(version: 2019_07_04_170023) do
     t.decimal "total_shares_held", precision: 22, scale: 6
     t.boolean "cash_in_lieu_flag"
     t.boolean "new_security_flag"
+    t.string "output_region", limit: 2
     t.index ["composite_ticker"], name: "index_basket_holdings_on_composite_ticker"
     t.index ["constituent_ticker"], name: "index_basket_holdings_on_constituent_ticker"
     t.index ["run_date", "composite_ticker"], name: "index_basket_holdings_on_run_date_and_composite_ticker"
