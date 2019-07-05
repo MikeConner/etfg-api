@@ -17,7 +17,7 @@
 #  category                    :string(32)
 #  focus                       :string(32)
 #  development_level           :string(32)
-#  region                      :string(64)
+#  region                      :string(32)
 #  is_leveraged                :boolean
 #  leverage_factor             :string(16)
 #  active                      :boolean
