@@ -158,54 +158,6 @@ ActiveRecord::Schema.define(version: 2019_07_04_170023) do
     t.index ["run_date"], name: "index_basket_holdings_on_run_date"
   end
 
-  create_table "baskets", force: :cascade do |t|
-    t.date "run_date", null: false
-    t.date "as_of_date"
-    t.string "composite_ticker", limit: 32, null: false
-    t.string "exchange_country", limit: 16, null: false
-    t.string "composite_name", limit: 128
-    t.string "issuer", limit: 32
-    t.string "composite_cusip", limit: 9
-    t.string "composite_isin", limit: 12
-    t.decimal "creation_unit_size", precision: 18, scale: 6
-    t.decimal "estimated_cash", precision: 22, scale: 6
-    t.decimal "total_cash", precision: 22, scale: 6
-    t.decimal "cash_in_lieu_value", precision: 22, scale: 6
-    t.string "constituent_ticker", limit: 64
-    t.string "constituent_name", limit: 128
-    t.string "cusip", limit: 9
-    t.string "figi", limit: 12
-    t.string "isin", limit: 12
-    t.string "sedol", limit: 7
-    t.decimal "market_value", precision: 22, scale: 6
-    t.decimal "basket_weight", precision: 18, scale: 10
-    t.decimal "holdings_weight", precision: 18, scale: 10
-    t.decimal "weight_diff", precision: 18, scale: 10
-    t.decimal "total_shares_held", precision: 22, scale: 6
-    t.boolean "cash_in_lieu_flag"
-    t.boolean "new_security_flag"
-    t.integer "component_count"
-    t.string "asset_class", limit: 28
-    t.string "category", limit: 28
-    t.string "development_class", limit: 32
-    t.string "focus", limit: 28
-    t.decimal "expense_ratio", precision: 18, scale: 6
-    t.decimal "aum", precision: 22, scale: 6
-    t.decimal "nav", precision: 22, scale: 6
-    t.decimal "shares_outstanding", precision: 22, scale: 6
-    t.text "geographic_exposure"
-    t.text "sector_exposure"
-    t.text "industry_exposure"
-    t.text "industry_group_exposure"
-    t.text "subindustry_exposure"
-    t.decimal "reward_score", precision: 16, scale: 4
-    t.decimal "risk_total_score", precision: 16, scale: 4
-    t.string "output_region", limit: 2
-    t.index ["composite_ticker"], name: "index_baskets_on_composite_ticker"
-    t.index ["run_date", "composite_ticker"], name: "index_baskets_on_run_date_and_composite_ticker"
-    t.index ["run_date"], name: "index_baskets_on_run_date"
-  end
-
   create_table "constituents", force: :cascade do |t|
     t.date "run_date", null: false
     t.date "as_of_date"
@@ -236,7 +188,7 @@ ActiveRecord::Schema.define(version: 2019_07_04_170023) do
     t.date "as_of_date"
     t.string "composite_ticker", limit: 32
     t.string "identifier", limit: 64
-    t.string "constituent_name", limit: 128
+    t.string "constituent_name", limit: 255
     t.decimal "weight", precision: 18, scale: 10
     t.decimal "market_value", precision: 22, scale: 6
     t.string "cusip", limit: 9
@@ -988,6 +940,8 @@ ActiveRecord::Schema.define(version: 2019_07_04_170023) do
     t.string "region", limit: 2
     t.string "country", limit: 2
     t.index ["composite_ticker"], name: "index_fund_flows_on_composite_ticker_v2"
+    t.index ["region"], name: "index_fund_flows_country"
+    t.index ["run_date", "region", "country", "composite_ticker"], name: "index_fund_flows_date_ticker_country_region", unique: true
     t.index ["run_date"], name: "index_fund_flows_on_run_date_v2"
   end
 
@@ -1002,7 +956,7 @@ ActiveRecord::Schema.define(version: 2019_07_04_170023) do
     t.string "tax_classification", limit: 32
     t.boolean "is_etn"
     t.decimal "fund_aum", precision: 22, scale: 6
-    t.string "avg_volume", limit: 10
+    t.string "avg_volume", limit: 32
     t.string "asset_class", limit: 32
     t.string "category", limit: 32
     t.string "focus", limit: 32
@@ -1050,7 +1004,7 @@ ActiveRecord::Schema.define(version: 2019_07_04_170023) do
     t.string "lead_market_maker", limit: 64
     t.string "output_region", limit: 2
     t.index ["composite_ticker"], name: "index_industries_on_composite_ticker_v2"
-    t.index ["run_date", "composite_ticker", "output_region"], name: "index_fund_flows_date_ticker_country", unique: true
+    t.index ["run_date", "composite_ticker", "output_region"], name: "index_on_date_ticker_region", unique: true
     t.index ["run_date"], name: "index_industries_on_run_date_v2"
   end
 
