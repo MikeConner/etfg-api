@@ -44,7 +44,9 @@ class V2::ConstituentsController < ApplicationController
                                                              .where(:region => @region)
                                                              .where("#{params[:type].downcase} = '#{params[:identifier]}'"))      
     else
-      ConstituentV2.where(Utilities.date_clause(params, 'constituents')).where(:composite_ticker => fund).find_in_batches do |batch|
+      ConstituentV2.where(Utilities.date_clause(params, 'constituents'))
+                   .where(:composite_ticker => fund)
+                   .where(:region => @region).find_in_batches do |batch|
         result += ConstituentV2Serializer.extract(batch)      
       end
     end
@@ -144,12 +146,14 @@ class V2::ConstituentsController < ApplicationController
     # If there are two - run it multiple times, and return a hash of date -> results
     if params.has_key?(:date)
       result = ConstituentV2Serializer.extract(ConstituentV2.where(Utilities.date_clause(params, 'constituents'))
-                                      .where(:composite_ticker => fund ).order('weight DESC').limit(TOP_N))
+                                      .where(:composite_ticker => fund )
+                                      .where(:region => @region).order('weight DESC').limit(TOP_N))
     else
       result = Hash.new
       for day in Utilities.date_range(params, 'constituents')
         today = ConstituentV2Serializer.extract(ConstituentV2.where(:run_date => day)
-                                       .where(:composite_ticker => fund).order('weight DESC').limit(TOP_N))
+                                       .where(:composite_ticker => fund)
+                                       .where(:region => @region).order('weight DESC').limit(TOP_N))
         result[day] = today unless today.empty?
       end
     end
@@ -175,7 +179,7 @@ class V2::ConstituentsController < ApplicationController
     
 private
   def set_region
-    @region = params[:region] || 'US'
+    @region = (params[:region] || 'US').upcase
   end
 
   # can be csv or json (default)

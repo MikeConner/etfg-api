@@ -15,7 +15,6 @@ class V2::BasketHoldingsController < ApplicationController
       head :forbidden and return
     end
     
-    set_output_type
     result = []
     BasketHolding.where(Utilities.date_clause(params, 'baskets'))
                  .where(:output_region => @region).find_in_batches do |batch|
@@ -25,6 +24,7 @@ class V2::BasketHoldingsController < ApplicationController
     if result.empty?
       head :not_found and return
     else
+      set_output_type
       if 'csv' == @output_type
         fname = params.has_key?(:date) ? "#{@region} Basket Holdings #{params[:date]}" : 
                                          "#{@region} Basket Holdings #{params[:start_date]}_#{params[:end_date]}"
@@ -53,7 +53,6 @@ class V2::BasketHoldingsController < ApplicationController
     end
     
     result = Hash.new
-    set_output_type
     
     tickers = BasketHolding.where(Utilities.date_clause(params, 'basket_holdings'))
                            .where(:output_region => @region).pluck(:composite_ticker).uniq
@@ -66,6 +65,7 @@ class V2::BasketHoldingsController < ApplicationController
     if result.empty?
       head :not_found
     else
+      set_output_type
       if 'csv' == @output_type
         fname = params.has_key?(:date) ? "#{@region} Basket Holdings #{params[:date]}" : 
                                          "#{@region} Basket Holdings #{params[:start_date]}_#{params[:end_date]}"
@@ -95,7 +95,6 @@ class V2::BasketHoldingsController < ApplicationController
     end
         
     fund = params[:id] || params[:fund]
-    set_output_type
     
     result = []
     BasketHolding.where(Utilities.date_clause(params, 'basket_holdings'))
@@ -107,6 +106,7 @@ class V2::BasketHoldingsController < ApplicationController
     if result.empty?
       head :not_found
     else
+      set_output_type
       if 'csv' == @output_type
         fname = params.has_key?(:date) ? "#{@region} Basket Holdings #{fund}-#{params[:date]}" : 
                                          "#{@region} Basket Holdings #{fund}-#{params[:start_date]}_#{params[:end_date]}"
@@ -125,7 +125,7 @@ class V2::BasketHoldingsController < ApplicationController
     
 private
   def set_region
-    @region = params[:region] || 'US'
+    @region = (params[:region] || 'US').upcase
   end
 
   # can be csv or json (default)

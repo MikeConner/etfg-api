@@ -23,7 +23,6 @@ class V2::FundflowsController < ApplicationController
       head :forbidden and return
     end
 
-    set_output_type    
     result = []
     
     FundFlowV2.where(Utilities.date_clause(params, 'fundflows'))
@@ -34,6 +33,7 @@ class V2::FundflowsController < ApplicationController
     if result.empty?
       head :not_found and return
     else
+      set_output_type    
       if 'csv' == @output_type
         fname = params.has_key?(:date) ? "#{@region} FundFlows #{params[:date]}" : 
                                          "#{@region} FundFlows #{params[:start_date]}_#{params[:end_date]}"
@@ -70,7 +70,6 @@ class V2::FundflowsController < ApplicationController
     end
 
     fund = params[:id] || params[:fund]
-    set_output_type
     
     result = []
     FundFlowV2.where(Utilities.date_clause(params, 'fundflows'))
@@ -82,6 +81,7 @@ class V2::FundflowsController < ApplicationController
     if result.empty?
       head :not_found and return
     else
+      set_output_type
       if 'csv' == @output_type
         fname = params.has_key?(:date) ? "#{@region} FundFlows #{fund}-#{params[:date]}" : 
                                          "#{@region} FundFlows #{fund}-#{params[:start_date]}_#{params[:end_date]}"
@@ -127,7 +127,7 @@ class V2::FundflowsController < ApplicationController
   
 private
   def set_region
-    @region = params[:region] || 'US'
+    @region = (params[:region] || 'US').upcase
   end
 
   # can be csv or json (default)

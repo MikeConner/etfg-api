@@ -15,7 +15,6 @@ class V2::BasketFundsController < ApplicationController
       head :forbidden and return
     end
     
-    set_output_type
     result = []
     BasketFund.where(Utilities.date_clause(params, 'basket_funds'))
               .where(:output_region => @region).find_in_batches do |batch|
@@ -25,6 +24,7 @@ class V2::BasketFundsController < ApplicationController
     if result.empty?
       head :not_found and return
     else
+      set_output_type
       if 'csv' == @output_type
         fname = params.has_key?(:date) ? "#{@region} Basket Funds #{params[:date]}" : 
                                          "#{@region} Basket Funds #{params[:start_date]}_#{params[:end_date]}"
@@ -54,7 +54,6 @@ class V2::BasketFundsController < ApplicationController
     end
         
     fund = params[:id] || params[:fund]
-    set_output_type
     
     result = []
     BasketFund.where(Utilities.date_clause(params, 'basket_funds'))
@@ -66,6 +65,7 @@ class V2::BasketFundsController < ApplicationController
     if result.empty?
       head :not_found
     else
+      set_output_type
       if 'csv' == @output_type
         fname = params.has_key?(:date) ? "#{@region} Basket Funds #{fund}-#{params[:date]}" : 
                                          "#{@region} Basket Funds #{fund}-#{params[:start_date]}_#{params[:end_date]}"
@@ -84,7 +84,7 @@ class V2::BasketFundsController < ApplicationController
     
 private
   def set_region
-    @region = params[:region] || 'US'
+    @region = (params[:region] || 'US').upcase
   end
 
   # can be csv or json (default)

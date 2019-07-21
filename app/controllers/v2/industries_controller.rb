@@ -23,7 +23,6 @@ class V2::IndustriesController < ApplicationController
       head :forbidden and return
     end
       
-    set_output_type
     result = []
     IndustryV2.where(Utilities.date_clause(params, 'industries'))
               .where(:output_region => @region).find_in_batches do |batch|
@@ -33,6 +32,7 @@ class V2::IndustriesController < ApplicationController
     if result.empty?
       head :not_found and return
     else
+      set_output_type
       if 'csv' == @output_type
         fname = params.has_key?(:date) ? "#{@region} Industry #{params[:date]}" : 
                                          "#{@region} Industry #{params[:start_date]}_#{params[:end_date]}"
@@ -69,7 +69,6 @@ class V2::IndustriesController < ApplicationController
     end
     
     fund = params[:id] || params[:fund]
-    set_output_type
     result = []
     IndustryV2.where(Utilities.date_clause(params, 'industries'))
               .where(:composite_ticker => fund)
@@ -80,6 +79,7 @@ class V2::IndustriesController < ApplicationController
     if result.empty?
       head :not_found and return
     else
+      set_output_type
       if 'csv' == @output_type
         fname = params.has_key?(:date) ? "#{@region} Industry #{fund}-#{params[:date]}" : 
                                          "#{@region} Industry #{fund}-#{params[:start_date]}_#{params[:end_date]}"
@@ -121,7 +121,6 @@ class V2::IndustriesController < ApplicationController
     fieldname = "#{params[:type].downcase}_exposure"
     
     fund = params[:id] || params[:fund]
-    set_output_type
     result = []
     IndustryV2.where(Utilities.date_clause(params, 'industries'), :composite_ticker => params[:fund])
               .where("#{fieldname} IS NOT NULL")
@@ -138,6 +137,7 @@ class V2::IndustriesController < ApplicationController
     if result.empty?
       head :not_found and return
     else
+      set_output_type
       if 'csv' == @output_type
         fname = params.has_key?(:date) ? "#{@region} Industry #{fieldname}-#{fund}-#{params[:date]}" : 
                                          "#{@region} Industry #{fieldname}-#{fund}-#{params[:start_date]}_#{params[:end_date]}"
@@ -183,7 +183,7 @@ class V2::IndustriesController < ApplicationController
     
 private
   def set_region
-    @region = params[:region] || 'US'
+    @region = (params[:region] || 'US').upcase
   end
 
   # can be csv or json (default)
