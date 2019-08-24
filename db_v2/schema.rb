@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_05_040851) do
+ActiveRecord::Schema.define(version: 2019_08_24_174605) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -135,7 +135,7 @@ ActiveRecord::Schema.define(version: 2019_07_05_040851) do
     t.date "run_date", null: false
     t.date "as_of_date"
     t.string "composite_ticker", limit: 32, null: false
-    t.string "exchange_country", limit: 16, null: false
+    t.string "exchange_country", limit: 16
     t.string "composite_name", limit: 128
     t.string "issuer", limit: 32
     t.string "constituent_ticker", limit: 64
@@ -181,6 +181,8 @@ ActiveRecord::Schema.define(version: 2019_07_05_040851) do
     t.string "base_currency", limit: 16
     t.index ["composite_ticker"], name: "index_constituents_on_composite_ticker"
     t.index ["constituent_name"], name: "index_constituents_on_constituent_name"
+    t.index ["run_date", "region", "composite_ticker"], name: "index_constituents_region_date_ticker"
+    t.index ["run_date", "region"], name: "index_constituents_on_run_date_and_region"
     t.index ["run_date"], name: "index_constituents_on_run_date"
   end
 
