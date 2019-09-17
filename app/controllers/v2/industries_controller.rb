@@ -97,9 +97,9 @@ class V2::IndustriesController < ApplicationController
   end
   
   # /v2/industries/:fund/exposures?date=20180509&type=geographic&output=[csv|json]
-  # /v2/industries/:fund/exposures?start_date=20180509&end_date=20180512&type=geographic
+  # Don't allow date ranges; take directly from ts_industries
   def exposures
-    unless params.has_key?(:date) or (params.has_key?(:start_date) and params.has_key?(:end_date))
+    unless params.has_key?(:date)
       render :json => {:error => I18n.t('date_required')}, :status => :bad_request and return
     end
     unless params.has_key?(:type) and Industry::VALID_EXPOSURES.include?(params[:type].downcase)
@@ -122,25 +122,29 @@ class V2::IndustriesController < ApplicationController
     
     fund = params[:id] || params[:fund]
     result = []
-    IndustryV2.where(Utilities.date_clause(params, 'industries'), :composite_ticker => params[:fund])
-              .where("#{fieldname} IS NOT NULL")
-              .where(:output_region => @region)
-              .pluck(fieldname.to_sym).each do |value|
-                value.split(/;/).sort.each do |country|
-                  fields = country.split(/=/)
-                  raise "Invalid exposure #{country}" unless 2 == fields.count
-                
-                  result.push({:name => fields[0], :weight => fields[1]})
-                end
-              end
+    sql = "SELECT #{params[:type].downcase}_exposure FROM public.ts_industries WHERE composite_ticker='#{fund}' AND " +
+          "etfg_date='#{params[:date]}' AND output_region='#{@region}' " + 
+          "AND (inception_date IS NULL OR inception_date <= etfg_date)"
+          
+    recs = ActiveRecord::Base.connection.execute(sql)
+    unless recs.nil?
+      recs.each do |rec|
+        rec[fieldname].split(/;/).sort.each do |country|
+          fields = country.split(/=/)
+          raise "Invalid exposure #{country}" unless 2 == fields.count
+        
+          result.push({:name => fields[0], :weight => fields[1]})
+        end
+      end
+    end
     
     if result.empty?
       head :not_found and return
     else
       set_output_type
       if 'csv' == @output_type
-        fname = params.has_key?(:date) ? "#{@region} Industry #{fieldname}-#{fund}-#{params[:date]}" : 
-                                         "#{@region} Industry #{fieldname}-#{fund}-#{params[:start_date]}_#{params[:end_date]}"
+        fname = "#{@region} Industry #{fieldname}-#{fund}-#{params[:date]}"
+        
         send_data Utilities.csv_emitter(result),
                   :filename => "#{fname}.csv",
                   :type => "text/csv",
