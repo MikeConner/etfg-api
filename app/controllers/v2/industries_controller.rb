@@ -99,7 +99,7 @@ class V2::IndustriesController < ApplicationController
   # /v2/industries/:fund/exposures?date=20180509&type=geographic&output=[csv|json]
   # Don't allow date ranges; take directly from ts_industries
   def exposures
-    unless params.has_key?(:date)
+    unless params.has_key?(:date) and not params.has_key?(:start_date)
       render :json => {:error => I18n.t('date_required')}, :status => :bad_request and return
     end
     unless params.has_key?(:type) and Industry::VALID_EXPOSURES.include?(params[:type].downcase)
@@ -123,12 +123,13 @@ class V2::IndustriesController < ApplicationController
     fund = params[:id] || params[:fund]
     result = []
     sql = "SELECT #{params[:type].downcase}_exposure FROM public.ts_industries WHERE composite_ticker='#{fund}' AND " +
-          "etfg_date='#{params[:date]}' AND output_region='#{@region}' " + 
+          "#{Utilities.date_clause(params, 'industries', 2, 'etfg_date')} AND output_region='#{@region}' " + 
           "AND (inception_date IS NULL OR inception_date <= etfg_date)"
           
     recs = ActiveRecord::Base.connection.execute(sql)
     unless recs.nil?
       recs.each do |rec|
+        next unless rec.has_key?(fieldname) and not rec[fieldname].nil?
         rec[fieldname].split(/;/).sort.each do |country|
           fields = country.split(/=/)
           raise "Invalid exposure #{country}" unless 2 == fields.count
