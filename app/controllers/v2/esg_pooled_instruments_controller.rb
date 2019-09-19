@@ -1,3 +1,5 @@
+require 'utilities'
+
 class V2::EsgPooledInstrumentsController < ApplicationController
   before_action :authenticate_user!
   before_action :check_permissions

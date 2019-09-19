@@ -1,15 +1,13 @@
+require 'utilities'
+
 class V2::EsgInstrumentsController < ApplicationController
   before_action :authenticate_user!
   before_action :check_permissions
   
+  # /v2/esg_instruments
   def index
-    unless params.has_key?(:date)
-      render :json => {:error => I18n.t('date_required')}, :status => :bad_request and return
-    end
- 
     result = []
-    # true ensures no duplicates
-    EsgInstrument.date_range(params[:date], true).find_in_batches do |batch|
+    EsgInstrument.all.find_in_batches do |batch|
       result += EsgInstrumentSerializer.extract(batch) 
     end
             
