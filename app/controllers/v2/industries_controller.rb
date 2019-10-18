@@ -128,14 +128,19 @@ class V2::IndustriesController < ApplicationController
           
     recs = ActiveRecord::Base.connection.execute(sql)
     unless recs.nil?
+      by_weight = {}
       recs.each do |rec|
         next unless rec.has_key?(fieldname) and not rec[fieldname].nil?
         rec[fieldname].split(/;/).sort.each do |country|
           fields = country.split(/=/)
           raise "Invalid exposure #{country}" unless 2 == fields.count
-        
-          result.push({:name => fields[0], :weight => fields[1]})
+          by_weight[fields[0]] = fields[1]          
+          #result.push({:name => fields[0], :weight => fields[1]})
         end
+
+        by_weight.sort_by {|_key, value| -value.to_i}.each do |country, exposure|
+          result.push({:name => country, :weight => exposure})
+        end  
       end
     end
     
