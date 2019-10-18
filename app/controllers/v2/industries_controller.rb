@@ -135,10 +135,9 @@ class V2::IndustriesController < ApplicationController
           fields = country.split(/=/)
           raise "Invalid exposure #{country}" unless 2 == fields.count
           by_weight[fields[0]] = fields[1]          
-          #result.push({:name => fields[0], :weight => fields[1]})
         end
 
-        by_weight.sort_by {|_key, value| -value.to_i}.each do |country, exposure|
+        by_weight.sort_by {|_key, value| -value.to_f}.each do |country, exposure|
           result.push({:name => country, :weight => exposure})
         end  
       end
