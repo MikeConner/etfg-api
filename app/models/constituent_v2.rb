@@ -37,4 +37,6 @@ class ConstituentV2 < EtfgDbV2Base
   validates_length_of :identifier, :exchange, :maximum => 64, :allow_nil => true
   validates_length_of :market_sector, :security_type, :maximum => 128, :allow_nil => true
   validates_length_of :region, :maximum => 2
+  
+  scope :weighted, -> {where('weight IS NOT NULL')}
 end

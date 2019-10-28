@@ -145,13 +145,13 @@ class V2::ConstituentsController < ApplicationController
     # If there is only 1 date, run it normally
     # If there are two - run it multiple times, and return a hash of date -> results
     if params.has_key?(:date)
-      result = ConstituentV2Serializer.extract(ConstituentV2.where(Utilities.date_clause(params, 'constituents'))
-                                      .where(:composite_ticker => fund )
+      result = ConstituentV2Serializer.extract(ConstituentV2.weighted.where(Utilities.date_clause(params, 'constituents'))
+                                      .where(:composite_ticker => fund)
                                       .where(:region => @region).order('weight DESC').limit(TOP_N))
     else
       result = Hash.new
       for day in Utilities.date_range(params, 'constituents')
-        today = ConstituentV2Serializer.extract(ConstituentV2.where(:run_date => day)
+        today = ConstituentV2Serializer.extract(ConstituentV2.weighted.where(:run_date => day)
                                        .where(:composite_ticker => fund)
                                        .where(:region => @region).order('weight DESC').limit(TOP_N))
         result[day] = today unless today.empty?
